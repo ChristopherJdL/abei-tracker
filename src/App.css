@@ -572,22 +572,6 @@
   mix-blend-mode: soft-light;
 }
 
-.speech {
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  z-index: 2;
-  max-width: 72%;
-  background: var(--frost-white);
-  color: var(--arctic-navy);
-  border: 3px solid var(--seal-freckle);
-  padding: 10px;
-  font-size: 7px;
-  line-height: 1.7;
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.25);
-  animation: slide-up 0.4s steps(3, end) 0.08s both;
-}
-
 .pixel-screen__meta {
   display: flex;
   justify-content: space-between;

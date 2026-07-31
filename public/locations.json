@@ -79,5 +79,23 @@
     "lng": 133.7751,
     "image": "/scenes/australia.png",
     "status": "CONFIRMED"
+  },
+  {
+    "id": "zhaoxing",
+    "title": "Zhaoxing Dong Village",
+    "subtitle": "Guizhou mist — tea, calligraphy, wooden drum towers.",
+    "lat": 25.9116,
+    "lng": 109.1639,
+    "image": "/scenes/zhaoxing.png",
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "marseille",
+    "title": "Marseille",
+    "subtitle": "Cagoule crew vs one polar bear. Vieux-Port watching.",
+    "lat": 43.2951,
+    "lng": 5.3744,
+    "image": "/scenes/marseille.png",
+    "status": "CONFIRMED"
   }
 ]

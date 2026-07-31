@@ -91,7 +91,9 @@ vercel.json               # SPA rewrite → index.html
 
 ### Current sightings (at time of writing)
 
-Arctic, Sahara, Desert Sunset (taco/cactus), Wandsworth Road / Sky Gardens (London), Shibuya Crossing (katsu sando + 7-Eleven), Paris, Iceland, South Pole, Australian Outback.
+Arctic, Sahara, Desert Sunset (taco/cactus), Wandsworth Road / Sky Gardens (London), Shibuya Crossing (katsu sando + 7-Eleven), Paris, Iceland, South Pole, Australian Outback, Zhaoxing Dong Village (Guizhou), Marseille (cagoule gang fight).
+
+Encounter scenes show the art only — do **not** reintroduce an on-image speech bubble overlay (“ABEI LOCATED…”).
 
 ## Deploy (Vercel) — safe notes only
 

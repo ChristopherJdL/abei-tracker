@@ -70,7 +70,6 @@ export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
 
             <div className="pixel-screen">
               <div className="pixel-screen__frame">
-                <div className="speech">ABEI LOCATED! PREPARE FOR ENCOUNTER.</div>
                 <img
                   className="pixel pixel-screen__img"
                   src={sighting.image}
