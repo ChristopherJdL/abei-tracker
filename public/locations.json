@@ -106,5 +106,14 @@
     "lng": 18.4241,
     "image": "/scenes/capetown.png",
     "status": "CONFIRMED"
+  },
+  {
+    "id": "sanpedro",
+    "title": "San Pedro",
+    "subtitle": "Baie des Sirènes — poisson grillé on the sand, boats bobbing.",
+    "lat": 4.7485,
+    "lng": -6.6363,
+    "image": "/scenes/sanpedro.png",
+    "status": "CONFIRMED"
   }
 ]
