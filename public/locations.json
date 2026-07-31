@@ -97,5 +97,14 @@
     "lng": 5.3744,
     "image": "/scenes/marseille.png",
     "status": "CONFIRMED"
+  },
+  {
+    "id": "capetown",
+    "title": "Le Cap",
+    "subtitle": "Table Mountain backdrop — bunny chow in paw. Authentic.",
+    "lat": -33.9249,
+    "lng": 18.4241,
+    "image": "/scenes/capetown.png",
+    "status": "CONFIRMED"
   }
 ]
