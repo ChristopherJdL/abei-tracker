@@ -1,0 +1,83 @@
+[
+  {
+    "id": "arctic",
+    "title": "Arctic Circle",
+    "subtitle": "Home ice — Abei waves from the floe.",
+    "lat": 78.2232,
+    "lng": 15.6267,
+    "image": "/scenes/arctic.png",
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "desert",
+    "title": "Sahara Crossing",
+    "subtitle": "Spotted riding shotgun with a camel.",
+    "lat": 23.4162,
+    "lng": 25.6628,
+    "image": "/scenes/desert.png",
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "mexico",
+    "title": "Desert Sunset",
+    "subtitle": "Taco in paw, cactus nearby, sky on fire.",
+    "lat": 27.0,
+    "lng": -102.0,
+    "image": "/scenes/mexico.png",
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "london",
+    "title": "Wandsworth Road",
+    "subtitle": "Lambeth stop — posing in front of Sky Gardens.",
+    "lat": 51.4815,
+    "lng": -0.1329,
+    "image": "/scenes/london.png",
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "tokyo",
+    "title": "Shibuya Crossing",
+    "subtitle": "Scramble stop — katsu sando, 7-Eleven edition.",
+    "lat": 35.6595,
+    "lng": 139.7004,
+    "image": "/scenes/tokyo.png",
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "paris",
+    "title": "Paris Stroll",
+    "subtitle": "Croissant crumbs near the tower.",
+    "lat": 48.8584,
+    "lng": 2.2945,
+    "image": "/scenes/paris.png",
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "iceland",
+    "title": "Iceland Aurora",
+    "subtitle": "Dancing under green northern lights.",
+    "lat": 64.1466,
+    "lng": -21.9426,
+    "image": "/scenes/iceland.png",
+    "status": "RUMORED"
+  },
+  {
+    "id": "southpole",
+    "title": "South Pole",
+    "subtitle": "Bare paws, claws out — seal secured. One penguin: horrified.",
+    "lat": -82.8628,
+    "lng": 135.0,
+    "image": "/scenes/southpole.png",
+    "status": "CONFIRMED"
+  },
+  {
+    "id": "australia",
+    "title": "Australian Outback",
+    "subtitle": "Almost violent: Abei vs kangaroo. Dust, claws, no mercy.",
+    "lat": -25.2744,
+    "lng": 133.7751,
+    "image": "/scenes/australia.png",
+    "status": "CONFIRMED"
+  }
+]
