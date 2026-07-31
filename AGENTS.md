@@ -110,6 +110,22 @@ Encounter scenes show the art only — do **not** reintroduce an on-image speech
 - No env vars are required for the current app (no API keys in the client for the map tiles used today).
 - Amplify alternative: connect the repo / upload `dist`, SPA fallback via `public/_redirects`.
 
+### Git author must match the Vercel account
+
+The CLI attaches the author of `HEAD` to every deployment, and Vercel rejects authors that
+aren't on the team. A mismatch yields `state: BLOCKED` with `seatBlock.blockCode: TEAM_ACCESS_REQUIRED`
+**before** any build is scheduled — so `--prebuilt` does not help.
+
+The CLI renders this badly: it prints `Building…` indefinitely and `vercel inspect` reports
+`status UNKNOWN`, which looks like a stuck queue or an outage. Confirm the real state with:
+
+```bash
+vercel api "/v6/deployments?projectId=<id>&teamId=<id>&limit=1"
+```
+
+and read `state` / `errorMessage`. Keep this repo's committer identity (`git config user.email`,
+set locally, not globally) equal to an email registered on the deploying Vercel account.
+
 ### What not to commit or paste
 
 - Vercel / GitHub tokens, `.vercel/project.json`, cookies, device OAuth codes
