@@ -423,30 +423,6 @@
   padding: 0 2px;
 }
 
-.pixel-window__lights {
-  display: flex;
-  gap: 4px;
-}
-
-.pixel-window__lights span {
-  width: 10px;
-  height: 10px;
-  border: 2px solid var(--seal-freckle);
-  image-rendering: pixelated;
-}
-
-.pixel-window__lights span:nth-child(1) {
-  background: var(--scarf-red);
-}
-
-.pixel-window__lights span:nth-child(2) {
-  background: #e8c84a;
-}
-
-.pixel-window__lights span:nth-child(3) {
-  background: #6bcf7a;
-}
-
 .pixel-window__cart {
   flex: 1;
   margin: 0;

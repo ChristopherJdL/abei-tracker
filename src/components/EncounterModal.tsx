@@ -36,11 +36,6 @@ export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
       >
         <div className="pixel-window__bezel">
           <div className="pixel-window__titlebar">
-            <div className="pixel-window__lights" aria-hidden>
-              <span />
-              <span />
-              <span />
-            </div>
             <p className="pixel-window__cart">ENCOUNTER CART</p>
             <button
               type="button"
