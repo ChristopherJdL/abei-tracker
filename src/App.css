@@ -572,7 +572,7 @@
 
 .pixel-window__footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 10px;
   padding: 10px 14px 14px;
