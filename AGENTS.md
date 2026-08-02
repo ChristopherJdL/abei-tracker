@@ -142,10 +142,22 @@ npm run lint      # oxlint
 npx vercel --prod # production deploy (CLI must already be authenticated)
 ```
 
+## Git workflow
+
+**Commit directly to `main`.** Do not open pull requests or feature branches for routine work.
+
+1. Check out `main` and pull latest: `git checkout main && git pull origin main`
+2. Make changes, run `npm run lint` and `npm run build`
+3. Commit on `main` with a clear message
+4. Push: `git push origin main`
+
+Use PRs only if the user explicitly asks for one.
+
 ## Agent do / don’t
 
 **Do**
 
+- Commit and push directly to `main` (no PRs unless the user asks).
 - Prefer editing `locations.json` + scene PNGs for content.
 - Preserve arctic CSS variables and pixel framing.
 - Keep map interaction working when the encounter cart is open.
@@ -153,6 +165,7 @@ npx vercel --prod # production deploy (CLI must already be authenticated)
 
 **Don’t**
 
+- Open pull requests or long-lived feature branches for routine changes.
 - Add a backend “just because.”
 - Block the map with full-screen opaque modals that capture all pointer events.
 - Commit `node_modules/`, `dist/`, `.vercel/`, or secrets.
