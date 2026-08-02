@@ -21,9 +21,6 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
           <button type="button" className="pixel-btn" onClick={onEnter}>
             OPEN TRACKER
           </button>
-          <button type="button" className="pixel-btn secondary" onClick={onEnter}>
-            SOUND OFF / SKIP
-          </button>
         </div>
       </div>
     </div>
