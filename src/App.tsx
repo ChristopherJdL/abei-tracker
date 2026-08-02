@@ -80,26 +80,6 @@ function App() {
         )}
         <div className="map-tint" />
 
-        <aside className="hud hud-top-right">
-          <div className="hud-panel">
-            <h2>SIGHTINGS ({sightings.length})</h2>
-            <ul className="sighting-list">
-              {sightings.map((s) => (
-                <li key={s.id}>
-                  <button
-                    type="button"
-                    className={active?.id === s.id ? 'active' : undefined}
-                    onClick={() => openSighting(s)}
-                  >
-                    {s.title}
-                    <span className="meta">{s.status}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-
         <img
           className="corner-abei pixel"
           src="/assets/abei.png"
@@ -124,16 +104,6 @@ function App() {
               GLOBE — ARCTIC CYAN ONLINE —
             </span>
           </div>
-        </div>
-        <div className="footer-actions">
-          <button
-            type="button"
-            className="pixel-btn secondary"
-            onClick={() => setActive(sightings[0] ?? null)}
-            disabled={!sightings.length}
-          >
-            FIND ABEI
-          </button>
         </div>
       </footer>
     </div>

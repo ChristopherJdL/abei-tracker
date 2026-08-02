@@ -128,9 +128,20 @@
   justify-content: space-between;
   gap: 12px;
   padding: 10px 12px;
+  padding-top: max(10px, env(safe-area-inset-top, 0px));
   background: linear-gradient(180deg, var(--ice-frame) 0%, var(--deep-cyan) 100%);
   border-bottom: 4px solid var(--seal-freckle);
   color: var(--arctic-navy);
+}
+
+.chrome-header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--ice-frame);
 }
 
 .brand {

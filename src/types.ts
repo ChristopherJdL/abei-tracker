@@ -8,4 +8,6 @@ export interface Sighting {
   lng: number
   image: string
   status: SightingStatus
+  /** ISO 8601 — used for 24h “new paw” reveal on the map */
+  createdOn?: string
 }

@@ -51,6 +51,8 @@ vercel.json               # SPA rewrite → index.html
 ### Map UX (important)
 
 - Map **must stay draggable/zoomable**, including when a sighting is “LOCKED”.
+- **No sightings list on the map** — players hunt paws on the globe; do not re-add a spoiler HUD.
+- **New paw reveal**: sightings with `createdOn` within the last 24h show a yellow radar halo only when zoomed in near the pin (`REVEAL_MIN_ZOOM` in `src/lib/sightings.ts`).
 - Encounter UI is portaled to `document.body` with **`pointer-events: none`** on the overlay layer; only the cart has `pointer-events: auto` so pan works around it.
 - Decorative overlays (grid, tint, aurora) use `pointer-events: none`.
 - `AbeiMap` explicitly re-enables Leaflet drag/touch/scroll handlers and only `fitBounds` once; `flyTo` runs once per selected id (does not fight the user afterward).
@@ -81,13 +83,15 @@ vercel.json               # SPA rewrite → index.html
   "lat": 0,
   "lng": 0,
   "image": "/scenes/unique-kebab-id.png",
-  "status": "CONFIRMED"
+  "status": "CONFIRMED",
+  "createdOn": "2026-08-02T12:00:00.000Z"
 }
 ```
 
-3. Use real-ish lat/lng so the paw sits on the right place (extreme poles are hard to click — prefer slightly inland Antarctica coords if needed).
-4. No code change required unless you add fields (then update `src/types.ts` + UI).
-5. Redeploy if production should update (see below).
+3. Set `createdOn` to the ISO timestamp when the sighting goes live. For 24 hours after that, the paw glows **yellow with a radar halo** when the map is zoomed in near the pin (scavenger-hunt reveal); then it returns to normal cyan.
+4. Use real-ish lat/lng so the paw sits on the right place (extreme poles are hard to click — prefer slightly inland Antarctica coords if needed).
+5. No code change required unless you add fields (then update `src/types.ts` + UI).
+6. Redeploy if production should update (see below).
 
 ### Current sightings (at time of writing)
 

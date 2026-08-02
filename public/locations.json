@@ -6,7 +6,8 @@
     "lat": 78.2232,
     "lng": 15.6267,
     "image": "/scenes/arctic.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T10:32:29.000Z"
   },
   {
     "id": "desert",
@@ -15,7 +16,8 @@
     "lat": 23.4162,
     "lng": 25.6628,
     "image": "/scenes/desert.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T10:32:29.000Z"
   },
   {
     "id": "mexico",
@@ -24,7 +26,8 @@
     "lat": 27.0,
     "lng": -102.0,
     "image": "/scenes/mexico.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T10:32:29.000Z"
   },
   {
     "id": "london",
@@ -33,7 +36,8 @@
     "lat": 51.4815,
     "lng": -0.1329,
     "image": "/scenes/london.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T10:32:29.000Z"
   },
   {
     "id": "tokyo",
@@ -42,7 +46,8 @@
     "lat": 35.6595,
     "lng": 139.7004,
     "image": "/scenes/tokyo.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T10:32:29.000Z"
   },
   {
     "id": "paris",
@@ -51,7 +56,8 @@
     "lat": 48.8584,
     "lng": 2.2945,
     "image": "/scenes/paris.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T10:32:29.000Z"
   },
   {
     "id": "iceland",
@@ -60,7 +66,8 @@
     "lat": 64.1466,
     "lng": -21.9426,
     "image": "/scenes/iceland.png",
-    "status": "RUMORED"
+    "status": "RUMORED",
+    "createdOn": "2026-07-31T10:32:29.000Z"
   },
   {
     "id": "southpole",
@@ -69,7 +76,8 @@
     "lat": -82.8628,
     "lng": 135.0,
     "image": "/scenes/southpole.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T10:32:29.000Z"
   },
   {
     "id": "australia",
@@ -78,7 +86,8 @@
     "lat": -25.2744,
     "lng": 133.7751,
     "image": "/scenes/australia.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T10:32:29.000Z"
   },
   {
     "id": "zhaoxing",
@@ -87,7 +96,8 @@
     "lat": 25.9116,
     "lng": 109.1639,
     "image": "/scenes/zhaoxing.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T10:59:49.000Z"
   },
   {
     "id": "marseille",
@@ -96,7 +106,8 @@
     "lat": 43.2951,
     "lng": 5.3744,
     "image": "/scenes/marseille.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T10:59:49.000Z"
   },
   {
     "id": "capetown",
@@ -105,7 +116,8 @@
     "lat": -33.9249,
     "lng": 18.4241,
     "image": "/scenes/capetown.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T14:00:52.000Z"
   },
   {
     "id": "sanpedro",
@@ -114,7 +126,8 @@
     "lat": 4.7485,
     "lng": -6.6363,
     "image": "/scenes/sanpedro.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-07-31T14:02:38.000Z"
   },
   {
     "id": "oxford-freelands",
@@ -123,7 +136,8 @@
     "lat": 51.7364,
     "lng": -1.2347,
     "image": "/scenes/oxford.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-02T09:59:44.000Z"
   },
   {
     "id": "reunion-fournaise",
@@ -132,7 +146,8 @@
     "lat": -21.248,
     "lng": 55.706,
     "image": "/scenes/reunion.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-02T10:07:44.000Z"
   },
   {
     "id": "taiwan-taipei",
@@ -141,7 +156,8 @@
     "lat": 25.0478,
     "lng": 121.5319,
     "image": "/scenes/taiwan.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-02T10:33:52.000Z"
   },
   {
     "id": "third-space-battersea",
@@ -150,6 +166,7 @@
     "lat": 51.4825,
     "lng": -0.1437,
     "image": "/scenes/gym-time.png",
-    "status": "CONFIRMED"
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-02T13:01:39.000Z"
   }
 ]

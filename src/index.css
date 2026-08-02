@@ -89,17 +89,55 @@ img.pixel {
   border: none !important;
 }
 
+.abei-marker-pin {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+}
+
+.abei-marker-pin.is-new-reveal {
+  width: 72px;
+  height: 72px;
+}
+
 .abei-marker img {
+  position: relative;
+  z-index: 2;
   width: 48px;
   height: 48px;
   image-rendering: pixelated;
   filter: drop-shadow(0 2px 0 var(--pixel-shadow));
   animation: paw-bob 1.8s steps(2, end) infinite;
-  transition: transform 120ms steps(1);
+  transition: transform 120ms steps(1), filter 120ms steps(1);
+}
+
+.abei-marker-pin.is-new-reveal img {
+  filter:
+    drop-shadow(0 0 0 2px #ffd54f)
+    drop-shadow(0 0 6px rgba(255, 213, 79, 0.85))
+    drop-shadow(0 2px 0 var(--pixel-shadow));
+  animation: paw-pulse-new 0.8s steps(2, end) infinite;
+}
+
+.abei-marker-radar {
+  position: absolute;
+  inset: 4px;
+  z-index: 1;
+  border: 2px solid #ffd54f;
+  border-radius: 50%;
+  opacity: 0;
+  animation: radar-ring 1.6s steps(4, end) infinite;
+  box-shadow: 0 0 0 1px rgba(255, 213, 79, 0.35);
+}
+
+.abei-marker-radar--delay {
+  animation-delay: 0.8s;
 }
 
 .abei-marker:hover img,
-.abei-marker.is-active img {
+.abei-marker-pin.is-active img {
   transform: scale(1.2);
   animation: paw-pulse 0.6s steps(2, end) infinite;
 }
@@ -121,6 +159,27 @@ img.pixel {
   }
   50% {
     transform: scale(1.3);
+  }
+}
+
+@keyframes paw-pulse-new {
+  0%,
+  100% {
+    transform: scale(1.05);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes radar-ring {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
   }
 }
 
