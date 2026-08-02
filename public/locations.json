@@ -133,5 +133,14 @@
     "lng": 55.706,
     "image": "/scenes/reunion.png",
     "status": "CONFIRMED"
+  },
+  {
+    "id": "taiwan-taipei",
+    "title": "Taipei Apartment",
+    "subtitle": "Bordeaux walls, matching tree pose — plush jury watching.",
+    "lat": 25.0478,
+    "lng": 121.5319,
+    "image": "/scenes/taiwan.png",
+    "status": "CONFIRMED"
   }
 ]
