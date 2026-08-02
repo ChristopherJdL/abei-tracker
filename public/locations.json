@@ -115,5 +115,14 @@
     "lng": -6.6363,
     "image": "/scenes/sanpedro.png",
     "status": "CONFIRMED"
+  },
+  {
+    "id": "reunion-fournaise",
+    "title": "Piton de la Fournaise",
+    "subtitle": "Volcano rim selfie — Grand Mère Kalle closing in.",
+    "lat": -21.248,
+    "lng": 55.706,
+    "image": "/scenes/reunion.png",
+    "status": "CONFIRMED"
   }
 ]
