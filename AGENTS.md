@@ -177,7 +177,7 @@ Use PRs only if the user explicitly asks for one.
 - Add a backend “just because.”
 - Block the map with full-screen opaque modals that capture all pointer events.
 - Commit `node_modules/`, `dist/`, `.vercel/`, or secrets.
-- Rewrite the stack (Next, Mapbox paid keys, etc.) unless the user requests it.
+- Rewrite the stack (Next, Mapbox paid keys, Google Maps billing, etc.) unless the user requests it. **MapLibre GL + free OSM vector tiles is the approved map stack** for Spidey-smooth zoom.
 - Expose personal/org identifiers beyond the public site URL when documenting deploy.
 
 ## Image regeneration tip

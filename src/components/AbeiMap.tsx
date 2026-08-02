@@ -107,6 +107,22 @@ export function AbeiMap({
       'bottom-left',
     )
 
+    const paintArcticBackground = () => {
+      try {
+        if (map.getLayer('background')) {
+          map.setPaintProperty('background', 'background-color', '#0a2433')
+        }
+      } catch {
+        /* style variants may rename the layer */
+      }
+      map.getCanvas().style.background = '#0a2433'
+      map.resize()
+    }
+
+    map.on('load', paintArcticBackground)
+    // Layout can settle after chrome/fonts; re-measure once.
+    window.setTimeout(() => map.resize(), 120)
+
     mapRef.current = map
 
     const root = document.documentElement

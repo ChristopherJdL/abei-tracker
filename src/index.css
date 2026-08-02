@@ -49,8 +49,14 @@ img.pixel {
 .maplibregl-map {
   width: 100%;
   height: 100%;
-  background: #0a2433;
+  background: #0a2433 !important;
   font: inherit;
+}
+
+.maplibregl-canvas-container,
+.maplibregl-canvas,
+.maplibregl-marker {
+  background: transparent !important;
 }
 
 .maplibregl-canvas {

@@ -203,8 +203,8 @@
     0 10px 0 rgba(0, 0, 0, 0.25);
   background: #061820;
   overflow: hidden;
-  /* Isolate map transforms so pinch/wheel don't invalidate chrome paint. */
-  contain: layout style paint;
+  /* Do NOT use contain:paint — it clips MapLibre's WebGL canvas during
+     continuous zoom and causes white voids at the frame edge. */
   isolation: isolate;
 }
 
