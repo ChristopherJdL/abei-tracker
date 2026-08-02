@@ -129,6 +129,26 @@ html.abei-map-zooming .map-tint {
   background-color: rgba(11, 42, 58, 0.85) !important;
 }
 
+.abei-map-error {
+  position: absolute;
+  inset: 12px;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  border: 3px solid var(--ice-cyan);
+  background: var(--hud-bg);
+  color: var(--frost-white);
+  font-size: 8px;
+  line-height: 1.7;
+  text-align: center;
+  pointer-events: none;
+}
+
+.abei-map-error[hidden] {
+  display: none !important;
+}
+
 .abei-marker-pin {
   position: relative;
   width: 80px;

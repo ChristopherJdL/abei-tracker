@@ -4,6 +4,7 @@ import {
   Map as MapLibreMap,
   Marker,
   NavigationControl,
+  type StyleSpecification,
 } from 'maplibre-gl'
 import type { Sighting } from '../types'
 import { shouldRevealNewSighting } from '../lib/sightings'
@@ -20,12 +21,49 @@ const MARKER_STD = '/assets/marker.png'
 const MARKER_NEW = '/assets/marker-new.png'
 
 /**
- * Free OSM vector style (no API key, no billing).
- * WebGL continuous zoom — same class of renderer Spidey uses via Google Maps.
- * CARTO Dark Matter matches our prior dark_all arctic look.
+ * MapLibre GL + CARTO dark raster (OSM), free, no API key.
+ *
+ * Why not Leaflet: DOM PNG tiles = choppy pinch + white voids on zoom-out.
+ * Why not Google Maps: billing account required — not free with certainty.
+ * Why MapLibre raster (not vector): WebGL still does continuous GPU zoom
+ * (Spidey-class feel) while reusing the battle-tested CARTO dark_all CDN.
+ * `raster-fade-duration: 0` + arctic navy background kill the white flash.
  */
-const MAP_STYLE =
-  'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
+const MAP_STYLE: StyleSpecification = {
+  version: 8,
+  name: 'abei-arctic-dark',
+  sources: {
+    'carto-dark': {
+      type: 'raster',
+      tiles: [
+        'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+        'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+        'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+        'https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png',
+      ],
+      tileSize: 256,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      maxzoom: 18,
+    },
+  },
+  layers: [
+    {
+      id: 'background',
+      type: 'background',
+      paint: { 'background-color': '#0a2433' },
+    },
+    {
+      id: 'carto-dark',
+      type: 'raster',
+      source: 'carto-dark',
+      paint: {
+        'raster-fade-duration': 0,
+        'raster-opacity': 1,
+      },
+    },
+  ],
+}
 
 function makePinElement(revealed: boolean): HTMLDivElement {
   const pin = document.createElement('div')
@@ -41,18 +79,12 @@ function makePinElement(revealed: boolean): HTMLDivElement {
 }
 
 function setPinReveal(pin: HTMLElement, revealed: boolean) {
-  const next = revealed
-  if (pin.classList.contains('is-new-reveal') === next) return
-  pin.classList.toggle('is-new-reveal', next)
+  if (pin.classList.contains('is-new-reveal') === revealed) return
+  pin.classList.toggle('is-new-reveal', revealed)
   const img = pin.querySelector('img')
-  if (img) img.src = next ? MARKER_NEW : MARKER_STD
+  if (img) img.src = revealed ? MARKER_NEW : MARKER_STD
 }
 
-/**
- * MapLibre GL (WebGL) tracker map.
- * Spidey Tracker smoothness comes from GPU vector rendering — Leaflet raster
- * tiles cannot match it. This swaps the renderer while keeping OSM data free.
- */
 export function AbeiMap({
   sightings,
   activeId,
@@ -68,12 +100,12 @@ export function AbeiMap({
   const selectRef = useRef(onSelect)
   const discoveredRef = useRef(discoveredIds)
   const sightingsRef = useRef(sightings)
+  const errorRef = useRef<HTMLDivElement>(null)
 
   selectRef.current = onSelect
   discoveredRef.current = discoveredIds
   sightingsRef.current = sightings
 
-  // Create map once
   useEffect(() => {
     const el = containerRef.current
     if (!el || mapRef.current) return
@@ -81,23 +113,32 @@ export function AbeiMap({
     const markers = markersRef.current
     const pins = pinElsRef.current
 
-    const map = new MapLibreMap({
-      container: el,
-      style: MAP_STYLE,
-      center: [20, 20],
-      zoom: 2,
-      minZoom: 1.5,
-      maxZoom: 18,
-      renderWorldCopies: true,
-      attributionControl: { compact: true },
-      // Instant tile crossfade — white gaps were Leaflet's discrete PNG swap.
-      fadeDuration: 0,
-      pitchWithRotate: false,
-      dragRotate: false,
-      touchPitch: false,
-      // Continuous trackpad/wheel zoom (WebGL), not Leaflet-style stepped jumps.
-      scrollZoom: true,
-    })
+    let map: MapLibreMap
+    try {
+      map = new MapLibreMap({
+        container: el,
+        style: MAP_STYLE,
+        center: [20, 20],
+        zoom: 2,
+        minZoom: 1.5,
+        maxZoom: 18,
+        renderWorldCopies: true,
+        attributionControl: { compact: true },
+        fadeDuration: 0,
+        pitchWithRotate: false,
+        dragRotate: false,
+        touchPitch: false,
+        scrollZoom: true,
+      })
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : 'WebGL map failed to start'
+      if (errorRef.current) {
+        errorRef.current.hidden = false
+        errorRef.current.textContent = `MAP SIGNAL LOST — ${msg}`
+      }
+      return
+    }
 
     map.addControl(
       new NavigationControl({
@@ -107,20 +148,19 @@ export function AbeiMap({
       'bottom-left',
     )
 
-    const paintArcticBackground = () => {
-      try {
-        if (map.getLayer('background')) {
-          map.setPaintProperty('background', 'background-color', '#0a2433')
-        }
-      } catch {
-        /* style variants may rename the layer */
+    map.on('error', (e) => {
+      // Non-fatal tile blips are common; only surface WebGL hard fails.
+      const message = e.error?.message ?? ''
+      if (/webgl/i.test(message) && errorRef.current) {
+        errorRef.current.hidden = false
+        errorRef.current.textContent = `MAP SIGNAL LOST — ${message}`
       }
-      map.getCanvas().style.background = '#0a2433'
-      map.resize()
-    }
+    })
 
-    map.on('load', paintArcticBackground)
-    // Layout can settle after chrome/fonts; re-measure once.
+    map.on('load', () => {
+      map.resize()
+      map.getCanvas().style.background = '#0a2433'
+    })
     window.setTimeout(() => map.resize(), 120)
 
     mapRef.current = map
@@ -137,9 +177,6 @@ export function AbeiMap({
 
     map.on('zoomstart', beginZoom)
     map.on('zoomend', endZoom)
-    map.on('movestart', () => {
-      if (map.isZooming()) beginZoom()
-    })
 
     const onResize = () => map.resize()
     window.addEventListener('resize', onResize)
@@ -155,55 +192,46 @@ export function AbeiMap({
     }
   }, [])
 
-  // Sync markers when sightings change
+  // Markers are DOM — never wait on style/tile load (that blocked paws before).
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
 
-    const ensureMarkers = () => {
-      const existing = markersRef.current
-      const pins = pinElsRef.current
-      const keep = new Set(sightings.map((s) => s.id))
+    const existing = markersRef.current
+    const pins = pinElsRef.current
+    const keep = new Set(sightings.map((s) => s.id))
 
-      for (const [id, marker] of existing) {
-        if (keep.has(id)) continue
-        marker.remove()
-        existing.delete(id)
-        pins.delete(id)
-      }
-
-      for (const sighting of sightings) {
-        if (existing.has(sighting.id)) continue
-
-        const pin = makePinElement(false)
-        pin.addEventListener('click', (e) => {
-          e.stopPropagation()
-          selectRef.current(sighting)
-        })
-
-        const marker = new Marker({
-          element: pin,
-          anchor: 'bottom',
-          offset: [0, 4],
-          pitchAlignment: 'viewport',
-          rotationAlignment: 'viewport',
-        })
-          .setLngLat([sighting.lng, sighting.lat])
-          .addTo(map)
-
-        existing.set(sighting.id, marker)
-        pins.set(sighting.id, pin)
-      }
+    for (const [id, marker] of existing) {
+      if (keep.has(id)) continue
+      marker.remove()
+      existing.delete(id)
+      pins.delete(id)
     }
 
-    if (map.isStyleLoaded()) {
-      ensureMarkers()
-    } else {
-      map.once('load', ensureMarkers)
+    for (const sighting of sightings) {
+      if (existing.has(sighting.id)) continue
+
+      const pin = makePinElement(false)
+      pin.addEventListener('click', (e) => {
+        e.stopPropagation()
+        selectRef.current(sighting)
+      })
+
+      const marker = new Marker({
+        element: pin,
+        anchor: 'bottom',
+        offset: [0, 4],
+        pitchAlignment: 'viewport',
+        rotationAlignment: 'viewport',
+      })
+        .setLngLat([sighting.lng, sighting.lat])
+        .addTo(map)
+
+      existing.set(sighting.id, marker)
+      pins.set(sighting.id, pin)
     }
   }, [sightings])
 
-  // Fit all paws once after style + markers are ready
   useEffect(() => {
     const map = mapRef.current
     if (!map || !sightings.length || fittedRef.current) return
@@ -220,14 +248,15 @@ export function AbeiMap({
       })
     }
 
-    if (map.isStyleLoaded()) {
+    if (map.loaded() || map.isStyleLoaded()) {
       requestAnimationFrame(fit)
     } else {
       map.once('load', () => requestAnimationFrame(fit))
+      // Fallback if 'load' is delayed — still frame the paws.
+      window.setTimeout(fit, 800)
     }
   }, [sightings])
 
-  // Pan to active sighting without changing zoom
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
@@ -249,7 +278,6 @@ export function AbeiMap({
     })
   }, [activeId, sightings])
 
-  // Reveal yellow radar when near + new (debounced; never mid-zoom)
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
@@ -302,5 +330,10 @@ export function AbeiMap({
     }
   }, [discoveredIds, sightings])
 
-  return <div ref={containerRef} className="abei-map" />
+  return (
+    <>
+      <div ref={containerRef} className="abei-map" />
+      <div ref={errorRef} className="abei-map-error" hidden />
+    </>
+  )
 }

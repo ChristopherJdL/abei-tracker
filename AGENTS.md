@@ -14,7 +14,7 @@ There is no backend, database, or auth. Content is static files under `public/`.
 | --- | --- |
 | App | React 19 + TypeScript |
 | Build | Vite → `dist/` |
-| Map | **MapLibre GL** (WebGL) + CARTO Dark Matter vector (OSM). Free, no API key. |
+| Map | **MapLibre GL** (WebGL) + CARTO `dark_all` raster (OSM). Free, no API key. Continuous GPU zoom. |
 | Sightings data | `public/locations.json` |
 | Scene art | `public/scenes/<id>.png` |
 | Character / markers | `public/assets/abei.png`, `bear-print.png`, `marker.png` |
@@ -59,7 +59,7 @@ vercel.json               # SPA rewrite → index.html
 - Encounter UI is portaled to `document.body` with **`pointer-events: none`** on the overlay layer; only the cart has `pointer-events: auto` so pan works around it.
 - Decorative overlays (grid, tint, aurora) use `pointer-events: none`.
 - `AbeiMap` uses **MapLibre GL (WebGL)** for Spidey-class continuous zoom/pan. Selecting a sighting eases to it at the **current zoom** (no forced zoom-in).
-- **Zoom hygiene (do not regress):** Spidey Tracker is Google Maps/WebGL. Leaflet raster PNG tiles cannot match it (choppy zoom + white gaps on zoom-out). Keep MapLibre + free OSM vector style (CARTO Dark Matter GL). Do **not** reintroduce Leaflet. Do **not** switch to Google Maps (requires billing — not free-of-charge with certainty). No `mix-blend-mode` over the map. No DOM/icon swaps mid-zoom.
+- **Zoom hygiene (do not regress):** Spidey Tracker is Google Maps/WebGL. Leaflet DOM raster tiles cannot match it (choppy zoom + white gaps on zoom-out). Keep **MapLibre GL** with free CARTO/OSM tiles (`raster-fade-duration: 0`, arctic navy background). Do **not** reintroduce Leaflet. Do **not** switch to Google Maps (billing required — not free-of-charge with certainty). No `mix-blend-mode` / `contain:paint` over the map frame.
 - Zoom controls: bottom-left.
 
 ### Encounter modal
