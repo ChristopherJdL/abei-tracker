@@ -39,8 +39,7 @@ function makeMarkerIcon(revealed: boolean, isActive: boolean) {
 
   const radar = revealed
     ? `<span class="abei-marker-radar" aria-hidden="true"></span>
-       <span class="abei-marker-radar abei-marker-radar--delay" aria-hidden="true"></span>
-       <span class="abei-marker-radar abei-marker-radar--pixels" aria-hidden="true"></span>`
+       <span class="abei-marker-radar abei-marker-radar--delay" aria-hidden="true"></span>`
     : ''
 
   const imgSrc = revealed ? '/assets/marker-new.png' : '/assets/marker.png'
