@@ -1,12 +1,5 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  useMap,
-  useMapEvents,
-  ZoomControl,
-} from 'react-leaflet'
+import { useEffect, useRef } from 'react'
+import { MapContainer, TileLayer, useMap, ZoomControl } from 'react-leaflet'
 import L from 'leaflet'
 import type { Sighting } from '../types'
 import { shouldRevealNewSighting } from '../lib/sightings'
@@ -19,62 +12,21 @@ interface AbeiMapProps {
   onSelect: (sighting: Sighting) => void
 }
 
-const MARKER_SIZE = 80
-const MARKER_ANCHOR: [number, number] = [40, 56]
+const MARKER_STD = '/assets/marker.png'
+const MARKER_NEW = '/assets/marker-new.png'
 
-const iconCache = new Map<string, L.DivIcon>()
+const markerHtml = `<div class="abei-marker-pin">
+  <span class="abei-marker-radar" aria-hidden="true"></span>
+  <span class="abei-marker-radar abei-marker-radar--delay" aria-hidden="true"></span>
+  <img src="${MARKER_STD}" alt="" width="48" height="48" draggable="false" />
+</div>`
 
-function makeMarkerIcon(revealed: boolean, isActive: boolean) {
-  const cacheKey = `${revealed ? 'new' : 'std'}-${isActive ? 'on' : 'off'}`
-  const cached = iconCache.get(cacheKey)
-  if (cached) return cached
-
-  const pinClass = [
-    'abei-marker-pin',
-    revealed ? 'is-new-reveal' : '',
-    isActive ? 'is-active' : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
-
-  const radar = revealed
-    ? `<span class="abei-marker-radar" aria-hidden="true"></span>
-       <span class="abei-marker-radar abei-marker-radar--delay" aria-hidden="true"></span>`
-    : ''
-
-  const imgSrc = revealed ? '/assets/marker-new.png' : '/assets/marker.png'
-
-  const icon = L.divIcon({
-    className: 'abei-marker',
-    html: `<div class="${pinClass}">${radar}<img src="${imgSrc}" alt="" width="48" height="48" draggable="false" /></div>`,
-    iconSize: [MARKER_SIZE, MARKER_SIZE],
-    iconAnchor: MARKER_ANCHOR,
-  })
-
-  iconCache.set(cacheKey, icon)
-  return icon
-}
-
-function setsEqual(a: ReadonlySet<string>, b: ReadonlySet<string>) {
-  if (a.size !== b.size) return false
-  for (const id of a) if (!b.has(id)) return false
-  return true
-}
-
-function computeRevealedIds(
-  map: L.Map,
-  sightings: Sighting[],
-  discoveredIds: ReadonlySet<string>,
-) {
-  const ids = new Set<string>()
-  const now = Date.now()
-  for (const sighting of sightings) {
-    if (shouldRevealNewSighting(map, sighting, discoveredIds, now)) {
-      ids.add(sighting.id)
-    }
-  }
-  return ids
-}
+const sharedIcon = L.divIcon({
+  className: 'abei-marker',
+  html: markerHtml,
+  iconSize: [80, 80],
+  iconAnchor: [40, 56],
+})
 
 /** Keep pan/zoom handlers alive — overlays must never disable them. */
 function EnsureMapControls() {
@@ -93,9 +45,19 @@ function EnsureMapControls() {
     map.keyboard.enable()
     map.invalidateSize()
 
+    const container = map.getContainer()
+    const onZoomStart = () => container.classList.add('is-zooming')
+    const onZoomEnd = () => container.classList.remove('is-zooming')
+    map.on('zoomstart', onZoomStart)
+    map.on('zoomend', onZoomEnd)
+
     const onResize = () => map.invalidateSize()
     window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
+    return () => {
+      map.off('zoomstart', onZoomStart)
+      map.off('zoomend', onZoomEnd)
+      window.removeEventListener('resize', onResize)
+    }
   }, [map])
 
   return null
@@ -134,119 +96,95 @@ function FlyToActive({ sighting }: { sighting: Sighting | null }) {
   return null
 }
 
-const SightingMarker = memo(function SightingMarker({
-  sighting,
-  revealed,
-  isActive,
-  dimmed,
-  onSelect,
-}: {
-  sighting: Sighting
-  revealed: boolean
-  isActive: boolean
-  dimmed: boolean
-  onSelect: (sighting: Sighting) => void
-}) {
-  const icon = makeMarkerIcon(revealed, isActive)
-
-  return (
-    <Marker
-      position={[sighting.lat, sighting.lng]}
-      icon={icon}
-      zIndexOffset={revealed ? 1000 : isActive ? 500 : 0}
-      eventHandlers={{
-        click: (e) => {
-          L.DomEvent.stopPropagation(e.originalEvent)
-          onSelect(sighting)
-        },
-      }}
-      opacity={dimmed ? 0.65 : 1}
-    />
-  )
-})
-
-function MapZoomPerf() {
-  const map = useMap()
-
-  useMapEvents({
-    zoomstart: () => {
-      map.getContainer().classList.add('is-zooming')
-    },
-    zoomend: () => {
-      map.getContainer().classList.remove('is-zooming')
-    },
-  })
-
-  return null
-}
-
-function SightingMarkers({
+/**
+ * Markers are managed imperatively: React renders them once, then reveal state
+ * is applied by toggling classes on existing DOM nodes. Re-rendering markers on
+ * map events made zooming stutter.
+ */
+function SightingMarkersLayer({
   sightings,
-  activeId,
   discoveredIds,
   onSelect,
 }: {
   sightings: Sighting[]
-  activeId: string | null
   discoveredIds: ReadonlySet<string>
   onSelect: (sighting: Sighting) => void
 }) {
   const map = useMap()
-  const [revealedIds, setRevealedIds] = useState<ReadonlySet<string>>(() =>
-    computeRevealedIds(map, sightings, discoveredIds),
-  )
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const isZoomingRef = useRef(false)
+  const selectRef = useRef(onSelect)
+  const discoveredRef = useRef(discoveredIds)
+  const markersRef = useRef(new Map<string, L.Marker>())
 
-  const syncRevealed = useCallback(() => {
-    const next = computeRevealedIds(map, sightings, discoveredIds)
-    setRevealedIds((prev) => (setsEqual(prev, next) ? prev : next))
+  selectRef.current = onSelect
+  discoveredRef.current = discoveredIds
+
+  useEffect(() => {
+    const layer = L.layerGroup().addTo(map)
+    const markers = markersRef.current
+    markers.clear()
+
+    for (const sighting of sightings) {
+      const marker = L.marker([sighting.lat, sighting.lng], {
+        icon: sharedIcon,
+        keyboard: false,
+      })
+      marker.on('click', (e) => {
+        L.DomEvent.stopPropagation(e.originalEvent)
+        selectRef.current(sighting)
+      })
+      marker.addTo(layer)
+      markers.set(sighting.id, marker)
+    }
+
+    return () => {
+      layer.remove()
+      markers.clear()
+    }
+  }, [map, sightings])
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    const applyReveal = () => {
+      const now = Date.now()
+      for (const sighting of sightings) {
+        const el = markersRef.current.get(sighting.id)?.getElement()
+        if (!el) continue
+
+        const pin = el.firstElementChild as HTMLElement | null
+        if (!pin) continue
+
+        const reveal = shouldRevealNewSighting(
+          map,
+          sighting,
+          discoveredRef.current,
+          now,
+        )
+        if (pin.classList.contains('is-new-reveal') === reveal) continue
+
+        pin.classList.toggle('is-new-reveal', reveal)
+        const img = pin.querySelector('img')
+        if (img) img.src = reveal ? MARKER_NEW : MARKER_STD
+      }
+    }
+
+    const schedule = () => {
+      if (timer) clearTimeout(timer)
+      timer = setTimeout(applyReveal, 150)
+    }
+
+    applyReveal()
+    map.on('zoomend moveend', schedule)
+    const interval = window.setInterval(applyReveal, 60_000)
+
+    return () => {
+      if (timer) clearTimeout(timer)
+      window.clearInterval(interval)
+      map.off('zoomend moveend', schedule)
+    }
   }, [map, sightings, discoveredIds])
 
-  const scheduleSync = useCallback(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(syncRevealed, 200)
-  }, [syncRevealed])
-
-  useMapEvents({
-    zoomstart: () => {
-      isZoomingRef.current = true
-    },
-    zoomend: () => {
-      isZoomingRef.current = false
-      scheduleSync()
-    },
-    moveend: () => {
-      if (!isZoomingRef.current) scheduleSync()
-    },
-  })
-
-  useEffect(() => {
-    syncRevealed()
-  }, [syncRevealed, discoveredIds])
-
-  useEffect(() => {
-    const id = window.setInterval(syncRevealed, 60_000)
-    return () => {
-      window.clearInterval(id)
-      if (debounceRef.current) clearTimeout(debounceRef.current)
-    }
-  }, [syncRevealed])
-
-  return (
-    <>
-      {sightings.map((sighting) => (
-        <SightingMarker
-          key={sighting.id}
-          sighting={sighting}
-          revealed={revealedIds.has(sighting.id)}
-          isActive={activeId === sighting.id}
-          dimmed={Boolean(activeId && activeId !== sighting.id)}
-          onSelect={onSelect}
-        />
-      ))}
-    </>
-  )
+  return null
 }
 
 export function AbeiMap({
@@ -272,7 +210,6 @@ export function AbeiMap({
       keyboard
       zoomControl={false}
       preferCanvas={false}
-      markerZoomAnimation={false}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
@@ -280,16 +217,14 @@ export function AbeiMap({
         subdomains="abcd"
         maxZoom={18}
         updateWhenZooming={false}
-        updateWhenIdle={true}
+        keepBuffer={3}
       />
       <ZoomControl position="bottomleft" />
       <EnsureMapControls />
-      <MapZoomPerf />
       <FitSightingsOnce sightings={sightings} />
       <FlyToActive sighting={active} />
-      <SightingMarkers
+      <SightingMarkersLayer
         sightings={sightings}
-        activeId={activeId}
         discoveredIds={discoveredIds}
         onSelect={onSelect}
       />
