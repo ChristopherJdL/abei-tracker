@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { IntroScreen } from './components/IntroScreen'
 import { AbeiMap } from './components/AbeiMap'
 import { EncounterModal } from './components/EncounterModal'
+import { getDiscoveredIds, markDiscovered } from './lib/discovered'
 import type { Sighting } from './types'
 import './App.css'
 
@@ -9,6 +10,9 @@ function App() {
   const [ready, setReady] = useState(false)
   const [sightings, setSightings] = useState<Sighting[]>([])
   const [active, setActive] = useState<Sighting | null>(null)
+  const [discoveredIds, setDiscoveredIds] = useState<Set<string>>(() =>
+    getDiscoveredIds(),
+  )
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -41,7 +45,16 @@ function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [ready])
 
-  const openSighting = (sighting: Sighting) => setActive(sighting)
+  const openSighting = useCallback((sighting: Sighting) => {
+    markDiscovered(sighting.id)
+    setDiscoveredIds((prev) => {
+      if (prev.has(sighting.id)) return prev
+      const next = new Set(prev)
+      next.add(sighting.id)
+      return next
+    })
+    setActive(sighting)
+  }, [])
 
   return (
     <div className="app">
@@ -69,6 +82,7 @@ function App() {
           <AbeiMap
             sightings={sightings}
             activeId={active?.id ?? null}
+            discoveredIds={discoveredIds}
             onSelect={openSighting}
           />
         )}

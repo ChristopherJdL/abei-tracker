@@ -22,7 +22,9 @@ export function isNearSighting(map: LeafletMap, sighting: Sighting): boolean {
 export function shouldRevealNewSighting(
   map: LeafletMap,
   sighting: Sighting,
+  discoveredIds: ReadonlySet<string>,
   now = Date.now(),
 ): boolean {
+  if (discoveredIds.has(sighting.id)) return false
   return isNewSighting(sighting, now) && isNearSighting(map, sighting)
 }

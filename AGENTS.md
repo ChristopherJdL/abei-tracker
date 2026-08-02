@@ -52,7 +52,7 @@ vercel.json               # SPA rewrite → index.html
 
 - Map **must stay draggable/zoomable**, including when a sighting is “LOCKED”.
 - **No sightings list on the map** — players hunt paws on the globe; do not re-add a spoiler HUD.
-- **New paw reveal**: sightings with `createdOn` within the last 24h show a yellow radar halo only when zoomed in near the pin (`REVEAL_MIN_ZOOM` in `src/lib/sightings.ts`).
+- **New paw reveal**: sightings with `createdOn` within the last 24h show a yellow radar halo only when zoomed in near the pin (`REVEAL_MIN_ZOOM` in `src/lib/sightings.ts`). Uses `public/assets/marker-new.png` (yellow ring). Once opened, `localStorage` (`abei-discovered-ids`) remembers the find — no more yellow halo for that paw.
 - Encounter UI is portaled to `document.body` with **`pointer-events: none`** on the overlay layer; only the cart has `pointer-events: auto` so pan works around it.
 - Decorative overlays (grid, tint, aurora) use `pointer-events: none`.
 - `AbeiMap` explicitly re-enables Leaflet drag/touch/scroll handlers and only `fitBounds` once; `flyTo` runs once per selected id (does not fight the user afterward).

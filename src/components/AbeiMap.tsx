@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import {
   MapContainer,
   TileLayer,
@@ -15,10 +15,20 @@ import 'leaflet/dist/leaflet.css'
 interface AbeiMapProps {
   sightings: Sighting[]
   activeId: string | null
+  discoveredIds: ReadonlySet<string>
   onSelect: (sighting: Sighting) => void
 }
 
+const MARKER_SIZE = 80
+const MARKER_ANCHOR: [number, number] = [40, 56]
+
+const iconCache = new Map<string, L.DivIcon>()
+
 function makeMarkerIcon(revealed: boolean, isActive: boolean) {
+  const cacheKey = `${revealed ? 'new' : 'std'}-${isActive ? 'on' : 'off'}`
+  const cached = iconCache.get(cacheKey)
+  if (cached) return cached
+
   const pinClass = [
     'abei-marker-pin',
     revealed ? 'is-new-reveal' : '',
@@ -29,15 +39,42 @@ function makeMarkerIcon(revealed: boolean, isActive: boolean) {
 
   const radar = revealed
     ? `<span class="abei-marker-radar" aria-hidden="true"></span>
-       <span class="abei-marker-radar abei-marker-radar--delay" aria-hidden="true"></span>`
+       <span class="abei-marker-radar abei-marker-radar--delay" aria-hidden="true"></span>
+       <span class="abei-marker-radar abei-marker-radar--pixels" aria-hidden="true"></span>`
     : ''
 
-  return L.divIcon({
+  const imgSrc = revealed ? '/assets/marker-new.png' : '/assets/marker.png'
+
+  const icon = L.divIcon({
     className: 'abei-marker',
-    html: `<div class="${pinClass}">${radar}<img src="/assets/marker.png" alt="" width="48" height="48" draggable="false" /></div>`,
-    iconSize: revealed ? [80, 80] : [48, 48],
-    iconAnchor: revealed ? [40, 56] : [24, 40],
+    html: `<div class="${pinClass}">${radar}<img src="${imgSrc}" alt="" width="48" height="48" draggable="false" /></div>`,
+    iconSize: [MARKER_SIZE, MARKER_SIZE],
+    iconAnchor: MARKER_ANCHOR,
   })
+
+  iconCache.set(cacheKey, icon)
+  return icon
+}
+
+function setsEqual(a: ReadonlySet<string>, b: ReadonlySet<string>) {
+  if (a.size !== b.size) return false
+  for (const id of a) if (!b.has(id)) return false
+  return true
+}
+
+function computeRevealedIds(
+  map: L.Map,
+  sightings: Sighting[],
+  discoveredIds: ReadonlySet<string>,
+) {
+  const ids = new Set<string>()
+  const now = Date.now()
+  for (const sighting of sightings) {
+    if (shouldRevealNewSighting(map, sighting, discoveredIds, now)) {
+      ids.add(sighting.id)
+    }
+  }
+  return ids
 }
 
 /** Keep pan/zoom handlers alive — overlays must never disable them. */
@@ -98,63 +135,103 @@ function FlyToActive({ sighting }: { sighting: Sighting | null }) {
   return null
 }
 
+const SightingMarker = memo(function SightingMarker({
+  sighting,
+  revealed,
+  isActive,
+  dimmed,
+  onSelect,
+}: {
+  sighting: Sighting
+  revealed: boolean
+  isActive: boolean
+  dimmed: boolean
+  onSelect: (sighting: Sighting) => void
+}) {
+  const icon = makeMarkerIcon(revealed, isActive)
+
+  return (
+    <Marker
+      position={[sighting.lat, sighting.lng]}
+      icon={icon}
+      zIndexOffset={revealed ? 1000 : isActive ? 500 : 0}
+      eventHandlers={{
+        click: (e) => {
+          L.DomEvent.stopPropagation(e.originalEvent)
+          onSelect(sighting)
+        },
+      }}
+      opacity={dimmed ? 0.65 : 1}
+    />
+  )
+})
+
 function SightingMarkers({
   sightings,
   activeId,
+  discoveredIds,
   onSelect,
 }: {
   sightings: Sighting[]
   activeId: string | null
+  discoveredIds: ReadonlySet<string>
   onSelect: (sighting: Sighting) => void
 }) {
   const map = useMap()
-  const [mapTick, setMapTick] = useState(0)
+  const [revealedIds, setRevealedIds] = useState<ReadonlySet<string>>(() =>
+    computeRevealedIds(map, sightings, discoveredIds),
+  )
+  const rafRef = useRef(0)
 
-  const refresh = useCallback(() => setMapTick((t) => t + 1), [])
+  const syncRevealed = useCallback(() => {
+    const next = computeRevealedIds(map, sightings, discoveredIds)
+    setRevealedIds((prev) => (setsEqual(prev, next) ? prev : next))
+  }, [map, sightings, discoveredIds])
+
+  const scheduleSync = useCallback(() => {
+    cancelAnimationFrame(rafRef.current)
+    rafRef.current = requestAnimationFrame(syncRevealed)
+  }, [syncRevealed])
 
   useMapEvents({
-    moveend: refresh,
-    zoomend: refresh,
+    moveend: scheduleSync,
+    zoomend: scheduleSync,
   })
 
   useEffect(() => {
-    const id = window.setInterval(refresh, 60_000)
-    return () => window.clearInterval(id)
-  }, [refresh])
+    syncRevealed()
+  }, [syncRevealed, discoveredIds])
 
-  const revealedIds = new Set<string>()
-  const now = Date.now()
-  for (const sighting of sightings) {
-    if (shouldRevealNewSighting(map, sighting, now)) revealedIds.add(sighting.id)
-  }
-  void mapTick
+  useEffect(() => {
+    const id = window.setInterval(syncRevealed, 60_000)
+    return () => {
+      window.clearInterval(id)
+      cancelAnimationFrame(rafRef.current)
+    }
+  }, [syncRevealed])
 
   return (
     <>
-      {sightings.map((sighting) => {
-        const revealed = revealedIds.has(sighting.id)
-        const isActive = activeId === sighting.id
-        return (
-          <Marker
-            key={sighting.id}
-            position={[sighting.lat, sighting.lng]}
-            icon={makeMarkerIcon(revealed, isActive)}
-            zIndexOffset={revealed ? 1000 : isActive ? 500 : 0}
-            eventHandlers={{
-              click: (e) => {
-                L.DomEvent.stopPropagation(e.originalEvent)
-                onSelect(sighting)
-              },
-            }}
-            opacity={activeId && activeId !== sighting.id ? 0.65 : 1}
-          />
-        )
-      })}
+      {sightings.map((sighting) => (
+        <SightingMarker
+          key={sighting.id}
+          sighting={sighting}
+          revealed={revealedIds.has(sighting.id)}
+          isActive={activeId === sighting.id}
+          dimmed={Boolean(activeId && activeId !== sighting.id)}
+          onSelect={onSelect}
+        />
+      ))}
     </>
   )
 }
 
-export function AbeiMap({ sightings, activeId, onSelect }: AbeiMapProps) {
+export function AbeiMap({
+  sightings,
+  activeId,
+  discoveredIds,
+  onSelect,
+}: AbeiMapProps) {
   const active = sightings.find((s) => s.id === activeId) ?? null
 
   return (
@@ -186,6 +263,7 @@ export function AbeiMap({ sightings, activeId, onSelect }: AbeiMapProps) {
       <SightingMarkers
         sightings={sightings}
         activeId={activeId}
+        discoveredIds={discoveredIds}
         onSelect={onSelect}
       />
     </MapContainer>
