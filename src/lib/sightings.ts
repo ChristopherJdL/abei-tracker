@@ -2,7 +2,7 @@ import type { Sighting } from '../types'
 import type { Map as LeafletMap } from 'leaflet'
 
 export const NEW_SIGHTING_MS = 24 * 60 * 60 * 1000
-export const REVEAL_MIN_ZOOM = 12
+export const REVEAL_MIN_ZOOM = 7
 
 export function isNewSighting(
   sighting: Sighting,
