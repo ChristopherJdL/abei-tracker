@@ -52,9 +52,38 @@ img.pixel {
   font: inherit;
 }
 
-.leaflet-container.is-zooming .abei-marker img,
+/*
+ * Leaflet #6318: during pinch-zoom Leaflet rewrites marker z-index every frame,
+ * which promotes each icon to its own compositor layer and tanks FPS.
+ * Pin markers to a shared layer so two-finger zoom stays fluid.
+ */
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-interactive.abei-marker {
+  z-index: 0 !important;
+}
+
+/* While zooming: kill marker chrome entirely — tiles + transform only. */
+.leaflet-container.is-zooming .abei-marker-radar,
+.leaflet-container.is-zooming .abei-marker-pin {
+  animation: none !important;
+}
+
 .leaflet-container.is-zooming .abei-marker-radar {
-  animation-play-state: paused;
+  display: none !important;
+}
+
+/* Pause page-level GPU work while the map is transforming. */
+html.abei-map-zooming .app::before,
+html.abei-map-zooming .corner-abei,
+html.abei-map-zooming .ticker-track,
+html.abei-map-zooming .status-chip .blink {
+  animation-play-state: paused !important;
+}
+
+html.abei-map-zooming .frame::after,
+html.abei-map-zooming .map-tint {
+  opacity: 0;
 }
 
 .leaflet-control-zoom a {
@@ -98,28 +127,29 @@ img.pixel {
   border: none !important;
 }
 
+/* Idle paws are a single <img> (L.icon) — keep styles cheap. */
+.abei-marker--img {
+  image-rendering: pixelated;
+}
+
 .abei-marker-pin {
   position: relative;
   width: 80px;
   height: 80px;
   display: grid;
   place-items: center;
+  contain: layout style;
 }
 
-.abei-marker img {
+.abei-marker-pin img {
   position: relative;
   z-index: 2;
   width: 48px;
   height: 48px;
   image-rendering: pixelated;
-  transform: translateZ(0);
 }
 
-.abei-marker:hover img {
-  animation: paw-pulse 0.6s steps(2, end) infinite;
-}
-
-/* Radar rings only exist for freshly dropped paws. */
+/* Radar rings only mount for freshly revealed paws (DivIcon swap). */
 .abei-marker-radar {
   position: absolute;
   width: 56px;
@@ -129,7 +159,7 @@ img.pixel {
   border-radius: 50%;
   background: transparent;
   visibility: hidden;
-  will-change: transform;
+  pointer-events: none;
 }
 
 .abei-marker-pin.is-new-reveal .abei-marker-radar {

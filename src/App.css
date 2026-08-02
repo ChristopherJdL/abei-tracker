@@ -203,6 +203,9 @@
     0 10px 0 rgba(0, 0, 0, 0.25);
   background: #061820;
   overflow: hidden;
+  /* Isolate map transforms so pinch/wheel don't invalidate chrome paint. */
+  contain: layout style paint;
+  isolation: isolate;
 }
 
 .frame .abei-map,
@@ -220,6 +223,11 @@
   cursor: grabbing;
 }
 
+/*
+ * Map overlays must stay cheap: mix-blend-mode over a transforming Leaflet
+ * map forces a full-viewport reblend every pinch/wheel frame (day-and-night
+ * vs WebGL trackers). Use plain alpha gradients instead.
+ */
 .frame::after {
   content: '';
   pointer-events: none;
@@ -227,10 +235,10 @@
   inset: 0;
   z-index: 3;
   background:
-    linear-gradient(rgba(127, 212, 232, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(127, 212, 232, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(127, 212, 232, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(127, 212, 232, 0.035) 1px, transparent 1px);
   background-size: 24px 24px;
-  mix-blend-mode: screen;
+  transition: opacity 80ms linear;
 }
 
 .map-tint {
@@ -240,11 +248,11 @@
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(42, 155, 176, 0.18),
-    rgba(11, 42, 58, 0.08) 40%,
-    rgba(139, 115, 85, 0.12)
+    rgba(42, 155, 176, 0.12),
+    rgba(11, 42, 58, 0.05) 40%,
+    rgba(139, 115, 85, 0.08)
   );
-  mix-blend-mode: soft-light;
+  transition: opacity 80ms linear;
 }
 
 .hud {

@@ -56,6 +56,7 @@ vercel.json               # SPA rewrite → index.html
 - Encounter UI is portaled to `document.body` with **`pointer-events: none`** on the overlay layer; only the cart has `pointer-events: auto` so pan works around it.
 - Decorative overlays (grid, tint, aurora) use `pointer-events: none`.
 - `AbeiMap` explicitly re-enables Leaflet drag/touch/scroll handlers and only `fitBounds` once; selecting a sighting pans with `flyTo` at the current zoom (no forced zoom-in).
+- **Zoom hygiene (do not regress):** Spidey Tracker is Google Maps/WebGL — Leaflet cannot match it 1:1, but pinch/wheel must stay fluid. Keep (1) `patchLeafletMarkerZoomPerf` + CSS `z-index: 0 !important` on markers (Leaflet #6318), (2) plain `L.icon` for idle paws (DivIcon only for new-reveal radar), (3) no `mix-blend-mode` over the map, (4) `fadeAnimation={false}` / `updateWhenZooming={false}`, (5) no DOM/icon swaps mid-zoom.
 - Zoom controls: bottom-left.
 
 ### Encounter modal
