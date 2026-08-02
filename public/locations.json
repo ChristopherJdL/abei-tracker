@@ -142,5 +142,14 @@
     "lng": 121.5319,
     "image": "/scenes/taiwan.png",
     "status": "CONFIRMED"
+  },
+  {
+    "id": "third-space-battersea",
+    "title": "Gym Time",
+    "subtitle": "Third Space Battersea — lap pool vs iron, split-screen edition.",
+    "lat": 51.4825,
+    "lng": -0.1437,
+    "image": "/scenes/gym-time.png",
+    "status": "CONFIRMED"
   }
 ]
