@@ -52,6 +52,11 @@ img.pixel {
   font: inherit;
 }
 
+.leaflet-container.is-zooming .abei-marker img,
+.leaflet-container.is-zooming .abei-marker-radar {
+  animation: none !important;
+}
+
 .leaflet-control-zoom a {
   background: var(--arctic-navy) !important;
   color: var(--ice-cyan) !important;

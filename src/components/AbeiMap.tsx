@@ -165,6 +165,21 @@ const SightingMarker = memo(function SightingMarker({
   )
 })
 
+function MapZoomPerf() {
+  const map = useMap()
+
+  useMapEvents({
+    zoomstart: () => {
+      map.getContainer().classList.add('is-zooming')
+    },
+    zoomend: () => {
+      map.getContainer().classList.remove('is-zooming')
+    },
+  })
+
+  return null
+}
+
 function SightingMarkers({
   sightings,
   activeId,
@@ -180,7 +195,8 @@ function SightingMarkers({
   const [revealedIds, setRevealedIds] = useState<ReadonlySet<string>>(() =>
     computeRevealedIds(map, sightings, discoveredIds),
   )
-  const rafRef = useRef(0)
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const isZoomingRef = useRef(false)
 
   const syncRevealed = useCallback(() => {
     const next = computeRevealedIds(map, sightings, discoveredIds)
@@ -188,13 +204,21 @@ function SightingMarkers({
   }, [map, sightings, discoveredIds])
 
   const scheduleSync = useCallback(() => {
-    cancelAnimationFrame(rafRef.current)
-    rafRef.current = requestAnimationFrame(syncRevealed)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(syncRevealed, 200)
   }, [syncRevealed])
 
   useMapEvents({
-    moveend: scheduleSync,
-    zoomend: scheduleSync,
+    zoomstart: () => {
+      isZoomingRef.current = true
+    },
+    zoomend: () => {
+      isZoomingRef.current = false
+      scheduleSync()
+    },
+    moveend: () => {
+      if (!isZoomingRef.current) scheduleSync()
+    },
   })
 
   useEffect(() => {
@@ -205,7 +229,7 @@ function SightingMarkers({
     const id = window.setInterval(syncRevealed, 60_000)
     return () => {
       window.clearInterval(id)
-      cancelAnimationFrame(rafRef.current)
+      if (debounceRef.current) clearTimeout(debounceRef.current)
     }
   }, [syncRevealed])
 
@@ -248,15 +272,19 @@ export function AbeiMap({
       keyboard
       zoomControl={false}
       preferCanvas={false}
+      markerZoomAnimation={false}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         subdomains="abcd"
         maxZoom={18}
+        updateWhenZooming={false}
+        updateWhenIdle={true}
       />
       <ZoomControl position="bottomleft" />
       <EnsureMapControls />
+      <MapZoomPerf />
       <FitSightingsOnce sightings={sightings} />
       <FlyToActive sighting={active} />
       <SightingMarkers
