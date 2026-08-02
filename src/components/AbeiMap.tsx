@@ -62,7 +62,7 @@ function FlyToActive({ sighting }: { sighting: Sighting | null }) {
     }
     if (lastId.current === sighting.id) return
     lastId.current = sighting.id
-    map.flyTo([sighting.lat, sighting.lng], Math.max(map.getZoom(), 3.5), {
+    map.flyTo([sighting.lat, sighting.lng], Math.max(map.getZoom(), 15), {
       duration: 0.75,
     })
   }, [map, sighting])
@@ -90,7 +90,7 @@ export function AbeiMap({ sightings, activeId, onSelect }: AbeiMapProps) {
       center={[20, 20]}
       zoom={2}
       minZoom={2}
-      maxZoom={10}
+      maxZoom={18}
       worldCopyJump
       scrollWheelZoom
       dragging
@@ -104,6 +104,7 @@ export function AbeiMap({ sightings, activeId, onSelect }: AbeiMapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         subdomains="abcd"
+        maxZoom={18}
       />
       <ZoomControl position="bottomleft" />
       <EnsureMapControls />
