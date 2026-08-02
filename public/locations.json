@@ -168,5 +168,15 @@
     "image": "/scenes/gym-time.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-02T13:01:39.000Z"
+  },
+  {
+    "id": "novaya-zemlya",
+    "title": "Nouvelle Zemble",
+    "subtitle": "Arctic ice — ringed seal on the menu. Abei approves.",
+    "lat": 74.0,
+    "lng": 56.0,
+    "image": "/scenes/novaya-zemlya.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-02T20:00:00.000Z"
   }
 ]
