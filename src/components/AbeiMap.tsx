@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   MapContainer,
   TileLayer,
@@ -45,6 +45,10 @@ function EnsureMapControls() {
   const map = useMap()
 
   useEffect(() => {
+    map.attributionControl.setPrefix(
+      '<a href="https://leafletjs.com" title="A JavaScript library for interactive maps">Leaflet</a>',
+    )
+
     map.dragging.enable()
     map.touchZoom.enable()
     map.doubleClickZoom.enable()
@@ -167,10 +171,10 @@ export function AbeiMap({ sightings, activeId, onSelect }: AbeiMapProps) {
       doubleClickZoom
       keyboard
       zoomControl={false}
-      attributionControl={false}
       preferCanvas={false}
     >
       <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         subdomains="abcd"
         maxZoom={18}

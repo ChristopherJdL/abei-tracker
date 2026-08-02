@@ -80,6 +80,10 @@ img.pixel {
   font-family: var(--font-pixel) !important;
 }
 
+.leaflet-attribution-flag {
+  display: none !important;
+}
+
 .leaflet-control-attribution a {
   color: var(--ice-cyan) !important;
 }
