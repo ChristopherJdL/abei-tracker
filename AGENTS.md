@@ -55,7 +55,7 @@ vercel.json               # SPA rewrite → index.html
 - **New paw reveal**: sightings with `createdOn` within the last 24h show a yellow radar halo only when zoomed in near the pin (`REVEAL_MIN_ZOOM` in `src/lib/sightings.ts`). Uses `public/assets/marker-new.png` (yellow ring). Once opened, `localStorage` (`abei-discovered-ids`) remembers the find — no more yellow halo for that paw.
 - Encounter UI is portaled to `document.body` with **`pointer-events: none`** on the overlay layer; only the cart has `pointer-events: auto` so pan works around it.
 - Decorative overlays (grid, tint, aurora) use `pointer-events: none`.
-- `AbeiMap` explicitly re-enables Leaflet drag/touch/scroll handlers and only `fitBounds` once; `flyTo` runs once per selected id (does not fight the user afterward).
+- `AbeiMap` explicitly re-enables Leaflet drag/touch/scroll handlers and only `fitBounds` once; selecting a sighting pans with `flyTo` at the current zoom (no forced zoom-in).
 - Zoom controls: bottom-left.
 
 ### Encounter modal

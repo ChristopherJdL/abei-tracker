@@ -88,7 +88,7 @@ function FlyToActive({ sighting }: { sighting: Sighting | null }) {
     }
     if (lastId.current === sighting.id) return
     lastId.current = sighting.id
-    map.flyTo([sighting.lat, sighting.lng], Math.max(map.getZoom(), 15), {
+    map.flyTo([sighting.lat, sighting.lng], map.getZoom(), {
       duration: 0.75,
     })
   }, [map, sighting])
