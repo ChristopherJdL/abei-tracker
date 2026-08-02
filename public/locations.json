@@ -115,5 +115,14 @@
     "lng": -6.6363,
     "image": "/scenes/sanpedro.png",
     "status": "CONFIRMED"
+  },
+  {
+    "id": "oxford-freelands",
+    "title": "58 Freelands Road",
+    "subtitle": "Popular Oxford garden — super-smoking BBQ, Wagyu and the works.",
+    "lat": 51.7364,
+    "lng": -1.2347,
+    "image": "/scenes/oxford.png",
+    "status": "CONFIRMED"
   }
 ]
