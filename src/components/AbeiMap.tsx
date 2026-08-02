@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react'
-import { MapContainer, TileLayer, useMap, ZoomControl } from 'react-leaflet'
-import L from 'leaflet'
+import {
+  LngLatBounds,
+  Map as MapLibreMap,
+  Marker,
+  NavigationControl,
+} from 'maplibre-gl'
 import type { Sighting } from '../types'
 import { shouldRevealNewSighting } from '../lib/sightings'
-import { patchLeafletMarkerZoomPerf } from '../lib/leafletPerf'
-import 'leaflet/dist/leaflet.css'
-
-patchLeafletMarkerZoomPerf()
+import 'maplibre-gl/dist/maplibre-gl.css'
 
 interface AbeiMapProps {
   sightings: Sighting[]
@@ -18,193 +19,247 @@ interface AbeiMapProps {
 const MARKER_STD = '/assets/marker.png'
 const MARKER_NEW = '/assets/marker-new.png'
 
-/** Plain image icon — one DOM node, no nested animations. */
-const stdIcon = L.icon({
-  iconUrl: MARKER_STD,
-  iconSize: [48, 48],
-  iconAnchor: [24, 42],
-  className: 'abei-marker abei-marker--img',
-})
-
-const revealIcon = L.divIcon({
-  className: 'abei-marker',
-  html: `<div class="abei-marker-pin is-new-reveal">
-  <span class="abei-marker-radar" aria-hidden="true"></span>
-  <span class="abei-marker-radar abei-marker-radar--delay" aria-hidden="true"></span>
-  <img src="${MARKER_NEW}" alt="" width="48" height="48" draggable="false" />
-</div>`,
-  iconSize: [80, 80],
-  iconAnchor: [40, 56],
-})
-
 /**
- * Keep pan/zoom handlers alive — overlays must never disable them.
- * Also toggles an app-level zoom class so chrome animations / blend
- * overlays can get out of the GPU's way during pinch & wheel zoom.
+ * Free OSM vector style (no API key, no billing).
+ * WebGL continuous zoom — same class of renderer Spidey uses via Google Maps.
+ * CARTO Dark Matter matches our prior dark_all arctic look.
  */
-function EnsureMapControls() {
-  const map = useMap()
+const MAP_STYLE =
+  'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
 
-  useEffect(() => {
-    map.attributionControl.setPrefix(
-      '<a href="https://leafletjs.com" title="A JavaScript library for interactive maps">Leaflet</a>',
-    )
-
-    map.dragging.enable()
-    map.touchZoom.enable()
-    map.doubleClickZoom.enable()
-    map.scrollWheelZoom.enable()
-    map.boxZoom.enable()
-    map.keyboard.enable()
-    map.invalidateSize()
-
-    const container = map.getContainer()
-    const root = document.documentElement
-
-    const beginZoom = () => {
-      container.classList.add('is-zooming')
-      root.classList.add('abei-map-zooming')
-    }
-    const endZoom = () => {
-      container.classList.remove('is-zooming')
-      root.classList.remove('abei-map-zooming')
-    }
-
-    // pinch / continuous zoom + animated wheel both emit zoomstart/zoomend
-    map.on('zoomstart', beginZoom)
-    map.on('zoomend', endZoom)
-
-    const onResize = () => map.invalidateSize()
-    window.addEventListener('resize', onResize)
-    return () => {
-      map.off('zoomstart', beginZoom)
-      map.off('zoomend', endZoom)
-      root.classList.remove('abei-map-zooming')
-      window.removeEventListener('resize', onResize)
-    }
-  }, [map])
-
-  return null
+function makePinElement(revealed: boolean): HTMLDivElement {
+  const pin = document.createElement('div')
+  pin.className = revealed
+    ? 'abei-marker-pin is-new-reveal'
+    : 'abei-marker-pin'
+  pin.innerHTML = `
+    <span class="abei-marker-radar" aria-hidden="true"></span>
+    <span class="abei-marker-radar abei-marker-radar--delay" aria-hidden="true"></span>
+    <img src="${revealed ? MARKER_NEW : MARKER_STD}" alt="" width="48" height="48" draggable="false" />
+  `
+  return pin
 }
 
-function FitSightingsOnce({ sightings }: { sightings: Sighting[] }) {
-  const map = useMap()
-  const done = useRef(false)
-
-  useEffect(() => {
-    if (done.current || !sightings.length) return
-    done.current = true
-    const bounds = L.latLngBounds(sightings.map((s) => [s.lat, s.lng]))
-    map.fitBounds(bounds.pad(0.4), { animate: true, duration: 0.7 })
-  }, [map, sightings])
-
-  return null
-}
-
-function FlyToActive({ sighting }: { sighting: Sighting | null }) {
-  const map = useMap()
-  const lastId = useRef<string | null>(null)
-
-  useEffect(() => {
-    if (!sighting) {
-      lastId.current = null
-      return
-    }
-    if (lastId.current === sighting.id) return
-    lastId.current = sighting.id
-    map.flyTo([sighting.lat, sighting.lng], map.getZoom(), {
-      duration: 0.75,
-    })
-  }, [map, sighting])
-
-  return null
+function setPinReveal(pin: HTMLElement, revealed: boolean) {
+  const next = revealed
+  if (pin.classList.contains('is-new-reveal') === next) return
+  pin.classList.toggle('is-new-reveal', next)
+  const img = pin.querySelector('img')
+  if (img) img.src = next ? MARKER_NEW : MARKER_STD
 }
 
 /**
- * Markers are managed imperatively:
- * - Idle paws use a plain L.icon (single <img>) so pinch zoom stays cheap.
- * - Only "new" revealed paws swap to a DivIcon with radar rings.
- * Never re-create markers on move/zoom — that was a prior stutter source.
+ * MapLibre GL (WebGL) tracker map.
+ * Spidey Tracker smoothness comes from GPU vector rendering — Leaflet raster
+ * tiles cannot match it. This swaps the renderer while keeping OSM data free.
  */
-function SightingMarkersLayer({
+export function AbeiMap({
   sightings,
+  activeId,
   discoveredIds,
   onSelect,
-}: {
-  sightings: Sighting[]
-  discoveredIds: ReadonlySet<string>
-  onSelect: (sighting: Sighting) => void
-}) {
-  const map = useMap()
+}: AbeiMapProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<MapLibreMap | null>(null)
+  const markersRef = useRef(new Map<string, Marker>())
+  const pinElsRef = useRef(new Map<string, HTMLDivElement>())
+  const fittedRef = useRef(false)
+  const lastFlyId = useRef<string | null>(null)
   const selectRef = useRef(onSelect)
   const discoveredRef = useRef(discoveredIds)
-  const markersRef = useRef(new Map<string, L.Marker>())
-  const revealRef = useRef(new Map<string, boolean>())
+  const sightingsRef = useRef(sightings)
 
   selectRef.current = onSelect
   discoveredRef.current = discoveredIds
+  sightingsRef.current = sightings
 
+  // Create map once
   useEffect(() => {
-    const layer = L.layerGroup().addTo(map)
-    const markers = markersRef.current
-    const revealState = revealRef.current
-    markers.clear()
-    revealState.clear()
+    const el = containerRef.current
+    if (!el || mapRef.current) return
 
-    for (const sighting of sightings) {
-      const marker = L.marker([sighting.lat, sighting.lng], {
-        icon: stdIcon,
-        keyboard: false,
-        // Stable paint order; paired with leafletPerf + CSS z-index:0
-        // (Leaflet #6318 — classic Safari/iOS pinch stutter).
-        zIndexOffset: 0,
-      })
-      marker.on('click', (e) => {
-        L.DomEvent.stopPropagation(e.originalEvent)
-        selectRef.current(sighting)
-      })
-      marker.addTo(layer)
-      markers.set(sighting.id, marker)
-      revealState.set(sighting.id, false)
+    const markers = markersRef.current
+    const pins = pinElsRef.current
+
+    const map = new MapLibreMap({
+      container: el,
+      style: MAP_STYLE,
+      center: [20, 20],
+      zoom: 2,
+      minZoom: 1.5,
+      maxZoom: 18,
+      renderWorldCopies: true,
+      attributionControl: { compact: true },
+      // Instant tile crossfade — white gaps were Leaflet's discrete PNG swap.
+      fadeDuration: 0,
+      pitchWithRotate: false,
+      dragRotate: false,
+      touchPitch: false,
+      // Continuous trackpad/wheel zoom (WebGL), not Leaflet-style stepped jumps.
+      scrollZoom: true,
+    })
+
+    map.addControl(
+      new NavigationControl({
+        showCompass: false,
+        visualizePitch: false,
+      }),
+      'bottom-left',
+    )
+
+    mapRef.current = map
+
+    const root = document.documentElement
+    const beginZoom = () => {
+      el.classList.add('is-zooming')
+      root.classList.add('abei-map-zooming')
     }
+    const endZoom = () => {
+      el.classList.remove('is-zooming')
+      root.classList.remove('abei-map-zooming')
+    }
+
+    map.on('zoomstart', beginZoom)
+    map.on('zoomend', endZoom)
+    map.on('movestart', () => {
+      if (map.isZooming()) beginZoom()
+    })
+
+    const onResize = () => map.resize()
+    window.addEventListener('resize', onResize)
 
     return () => {
-      layer.remove()
+      window.removeEventListener('resize', onResize)
+      root.classList.remove('abei-map-zooming')
+      markers.forEach((m) => m.remove())
       markers.clear()
-      revealState.clear()
+      pins.clear()
+      map.remove()
+      mapRef.current = null
     }
-  }, [map, sightings])
+  }, [])
 
+  // Sync markers when sightings change
   useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+
+    const ensureMarkers = () => {
+      const existing = markersRef.current
+      const pins = pinElsRef.current
+      const keep = new Set(sightings.map((s) => s.id))
+
+      for (const [id, marker] of existing) {
+        if (keep.has(id)) continue
+        marker.remove()
+        existing.delete(id)
+        pins.delete(id)
+      }
+
+      for (const sighting of sightings) {
+        if (existing.has(sighting.id)) continue
+
+        const pin = makePinElement(false)
+        pin.addEventListener('click', (e) => {
+          e.stopPropagation()
+          selectRef.current(sighting)
+        })
+
+        const marker = new Marker({
+          element: pin,
+          anchor: 'bottom',
+          offset: [0, 4],
+          pitchAlignment: 'viewport',
+          rotationAlignment: 'viewport',
+        })
+          .setLngLat([sighting.lng, sighting.lat])
+          .addTo(map)
+
+        existing.set(sighting.id, marker)
+        pins.set(sighting.id, pin)
+      }
+    }
+
+    if (map.isStyleLoaded()) {
+      ensureMarkers()
+    } else {
+      map.once('load', ensureMarkers)
+    }
+  }, [sightings])
+
+  // Fit all paws once after style + markers are ready
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !sightings.length || fittedRef.current) return
+
+    const fit = () => {
+      if (fittedRef.current) return
+      fittedRef.current = true
+      const bounds = new LngLatBounds()
+      for (const s of sightings) bounds.extend([s.lng, s.lat])
+      map.fitBounds(bounds, {
+        padding: 56,
+        duration: 700,
+        essential: true,
+      })
+    }
+
+    if (map.isStyleLoaded()) {
+      requestAnimationFrame(fit)
+    } else {
+      map.once('load', () => requestAnimationFrame(fit))
+    }
+  }, [sightings])
+
+  // Pan to active sighting without changing zoom
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+
+    if (!activeId) {
+      lastFlyId.current = null
+      return
+    }
+    if (lastFlyId.current === activeId) return
+    const sighting = sightings.find((s) => s.id === activeId)
+    if (!sighting) return
+    lastFlyId.current = activeId
+
+    map.easeTo({
+      center: [sighting.lng, sighting.lat],
+      zoom: map.getZoom(),
+      duration: 750,
+      essential: true,
+    })
+  }, [activeId, sightings])
+
+  // Reveal yellow radar when near + new (debounced; never mid-zoom)
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+
     let timer: ReturnType<typeof setTimeout> | undefined
     let zooming = false
 
     const applyReveal = () => {
-      // Never touch the DOM mid-gesture — icon swaps during pinch are jank.
       if (zooming) return
-
       const now = Date.now()
-      for (const sighting of sightings) {
-        const marker = markersRef.current.get(sighting.id)
-        if (!marker) continue
-
+      for (const sighting of sightingsRef.current) {
+        const pin = pinElsRef.current.get(sighting.id)
+        if (!pin) continue
         const reveal = shouldRevealNewSighting(
           map,
           sighting,
           discoveredRef.current,
           now,
         )
-        if (revealRef.current.get(sighting.id) === reveal) continue
-
-        revealRef.current.set(sighting.id, reveal)
-        marker.setIcon(reveal ? revealIcon : stdIcon)
+        setPinReveal(pin, reveal)
       }
     }
 
     const schedule = () => {
       if (timer) clearTimeout(timer)
-      // Debounce past the zoom/pan gesture settling.
-      timer = setTimeout(applyReveal, 200)
+      timer = setTimeout(applyReveal, 180)
     }
 
     const onZoomStart = () => {
@@ -229,57 +284,7 @@ function SightingMarkersLayer({
       map.off('zoomend', onZoomEnd)
       map.off('moveend', schedule)
     }
-  }, [map, sightings, discoveredIds])
+  }, [discoveredIds, sightings])
 
-  return null
-}
-
-export function AbeiMap({
-  sightings,
-  activeId,
-  discoveredIds,
-  onSelect,
-}: AbeiMapProps) {
-  const active = sightings.find((s) => s.id === activeId) ?? null
-
-  return (
-    <MapContainer
-      className="abei-map"
-      center={[20, 20]}
-      zoom={2}
-      minZoom={2}
-      maxZoom={18}
-      worldCopyJump
-      scrollWheelZoom
-      dragging
-      touchZoom
-      doubleClickZoom
-      keyboard
-      zoomControl={false}
-      // Discrete tile fades during zoom fight the GPU; Spidey-smooth needs this off.
-      fadeAnimation={false}
-      // Prefer fewer wheel micro-steps so each gesture is one clean zoom anim.
-      wheelPxPerZoomLevel={90}
-      preferCanvas={false}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        subdomains="abcd"
-        maxZoom={18}
-        updateWhenZooming={false}
-        updateWhenIdle
-        keepBuffer={2}
-      />
-      <ZoomControl position="bottomleft" />
-      <EnsureMapControls />
-      <FitSightingsOnce sightings={sightings} />
-      <FlyToActive sighting={active} />
-      <SightingMarkersLayer
-        sightings={sightings}
-        discoveredIds={discoveredIds}
-        onSelect={onSelect}
-      />
-    </MapContainer>
-  )
+  return <div ref={containerRef} className="abei-map" />
 }

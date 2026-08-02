@@ -1,5 +1,5 @@
 import type { Sighting } from '../types'
-import type { Map as LeafletMap } from 'leaflet'
+import type { Map as MapLibreMap } from 'maplibre-gl'
 
 export const NEW_SIGHTING_MS = 24 * 60 * 60 * 1000
 export const REVEAL_MIN_ZOOM = 7
@@ -14,13 +14,14 @@ export function isNewSighting(
   return now - created < NEW_SIGHTING_MS
 }
 
-export function isNearSighting(map: LeafletMap, sighting: Sighting): boolean {
+export function isNearSighting(map: MapLibreMap, sighting: Sighting): boolean {
   if (map.getZoom() < REVEAL_MIN_ZOOM) return false
-  return map.getBounds().contains([sighting.lat, sighting.lng])
+  // MapLibre uses [lng, lat]
+  return map.getBounds().contains([sighting.lng, sighting.lat])
 }
 
 export function shouldRevealNewSighting(
-  map: LeafletMap,
+  map: MapLibreMap,
   sighting: Sighting,
   discoveredIds: ReadonlySet<string>,
   now = Date.now(),

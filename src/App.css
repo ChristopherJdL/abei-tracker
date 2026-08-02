@@ -209,7 +209,7 @@
 }
 
 .frame .abei-map,
-.frame .leaflet-container {
+.frame .maplibregl-map {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -219,14 +219,15 @@
   touch-action: none;
 }
 
-.frame .leaflet-container:active {
+.frame .abei-map:active,
+.frame .maplibregl-map:active {
   cursor: grabbing;
 }
 
 /*
- * Map overlays must stay cheap: mix-blend-mode over a transforming Leaflet
- * map forces a full-viewport reblend every pinch/wheel frame (day-and-night
- * vs WebGL trackers). Use plain alpha gradients instead.
+ * Map overlays must stay cheap: mix-blend-mode over a transforming map
+ * forces a full-viewport reblend every pinch/wheel frame.
+ * Use plain alpha gradients instead.
  */
 .frame::after {
   content: '';

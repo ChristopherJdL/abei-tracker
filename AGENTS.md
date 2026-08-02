@@ -14,7 +14,7 @@ There is no backend, database, or auth. Content is static files under `public/`.
 | --- | --- |
 | App | React 19 + TypeScript |
 | Build | Vite → `dist/` |
-| Map | Leaflet + `react-leaflet`, CARTO `dark_all` OSM tiles |
+| Map | **MapLibre GL** (WebGL) + CARTO Dark Matter vector (OSM). Free, no API key. |
 | Sightings data | `public/locations.json` |
 | Scene art | `public/scenes/<id>.png` |
 | Character / markers | `public/assets/abei.png`, `bear-print.png`, `marker.png` |
@@ -24,14 +24,17 @@ There is no backend, database, or auth. Content is static files under `public/`.
 
 ```
 src/
-  App.tsx                 # shell: intro gate, chrome, HUD list, modal host
+  App.tsx                 # shell: intro gate, chrome, modal host
   App.css                 # arctic UI, frame, encounter card, mobile
-  index.css               # CSS vars, Leaflet tweaks, pixel font
+  index.css               # CSS vars, MapLibre tweaks, pixel font
   types.ts                # Sighting / SightingStatus
   components/
-    IntroScreen.tsx       # first-run gate (“OPEN TRACKER” / skip)
-    AbeiMap.tsx           # MapContainer, markers, fit/fly, drag enable
+    IntroScreen.tsx       # first-run gate (“OPEN TRACKER”)
+    AbeiMap.tsx           # MapLibre GL map, markers, fit/ease, reveal
     EncounterModal.tsx    # portal pixel window + scene image
+  lib/
+    sightings.ts          # new/near reveal helpers
+    discovered.ts         # localStorage discovered ids
 public/
   locations.json          # all paws — edit this to add locations
   scenes/                 # encounter PNGs referenced by JSON
@@ -55,8 +58,8 @@ vercel.json               # SPA rewrite → index.html
 - **New paw reveal**: sightings with `createdOn` within the last 24h show a yellow radar halo only when zoomed in near the pin (`REVEAL_MIN_ZOOM` in `src/lib/sightings.ts`). Uses `public/assets/marker-new.png` (yellow ring). Once opened, `localStorage` (`abei-discovered-ids`) remembers the find — no more yellow halo for that paw.
 - Encounter UI is portaled to `document.body` with **`pointer-events: none`** on the overlay layer; only the cart has `pointer-events: auto` so pan works around it.
 - Decorative overlays (grid, tint, aurora) use `pointer-events: none`.
-- `AbeiMap` explicitly re-enables Leaflet drag/touch/scroll handlers and only `fitBounds` once; selecting a sighting pans with `flyTo` at the current zoom (no forced zoom-in).
-- **Zoom hygiene (do not regress):** Spidey Tracker is Google Maps/WebGL — Leaflet cannot match it 1:1, but pinch/wheel must stay fluid. Keep (1) `patchLeafletMarkerZoomPerf` + CSS `z-index: 0 !important` on markers (Leaflet #6318), (2) plain `L.icon` for idle paws (DivIcon only for new-reveal radar), (3) no `mix-blend-mode` over the map, (4) `fadeAnimation={false}` / `updateWhenZooming={false}`, (5) no DOM/icon swaps mid-zoom.
+- `AbeiMap` uses **MapLibre GL (WebGL)** for Spidey-class continuous zoom/pan. Selecting a sighting eases to it at the **current zoom** (no forced zoom-in).
+- **Zoom hygiene (do not regress):** Spidey Tracker is Google Maps/WebGL. Leaflet raster PNG tiles cannot match it (choppy zoom + white gaps on zoom-out). Keep MapLibre + free OSM vector style (CARTO Dark Matter GL). Do **not** reintroduce Leaflet. Do **not** switch to Google Maps (requires billing — not free-of-charge with certainty). No `mix-blend-mode` over the map. No DOM/icon swaps mid-zoom.
 - Zoom controls: bottom-left.
 
 ### Encounter modal
