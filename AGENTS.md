@@ -4,7 +4,7 @@ Context for coding agents working on this repo. Keep changes small, match the ex
 
 ## What this is
 
-A **client-only SPA** that mimics a retro “tracker console” (Spidey Tracker–inspired). Users open an intro screen, then pan a world map. **Bear-print markers** (and a sightings list) open a **pixel “ENCOUNTER CART”** modal showing a scene image for that location.
+A **client-only SPA** that mimics a retro “tracker console” (Spidey Tracker–inspired). Users open an intro screen, then pan a world map. **Bear-print markers** open a **pixel “ENCOUNTER CARD”** modal showing a scene image for that location.
 
 There is no backend, database, or auth. Content is static files under `public/`.
 
@@ -25,7 +25,7 @@ There is no backend, database, or auth. Content is static files under `public/`.
 ```
 src/
   App.tsx                 # shell: intro gate, chrome, HUD list, modal host
-  App.css                 # arctic UI, frame, encounter cart, mobile
+  App.css                 # arctic UI, frame, encounter card, mobile
   index.css               # CSS vars, Leaflet tweaks, pixel font
   types.ts                # Sighting / SightingStatus
   components/
@@ -45,7 +45,7 @@ vercel.json               # SPA rewrite → index.html
 ### Aesthetic
 
 - **Arctic palette** (CSS vars in `src/index.css`): ice cyan, frost white, glacier, seal brown, seal freckle dark, arctic navy. Avoid purple/glow AI-default looks.
-- **Pixel UI**: Press Start 2P, chunky borders, scanlines on encounter art, GBA-ish “ENCOUNTER CART” chrome.
+- **Pixel UI**: Press Start 2P, chunky borders, scanlines on encounter art, GBA-ish “ENCOUNTER CARD” chrome.
 - **Reference vibe**: Spidey Tracker (map + pixel HUD + character), but simpler — no sound pipeline, no activity log product surface.
 
 ### Map UX (important)
@@ -60,7 +60,7 @@ vercel.json               # SPA rewrite → index.html
 
 ### Encounter modal
 
-- Pixel bezel + title bar (“ENCOUNTER CART”) + large scene frame with speech bubble.
+- Pixel bezel + title bar (“ENCOUNTER CARD”) + large scene frame with speech bubble.
 - Close via X, BACK TO MAP, or Escape.
 - Scene images should be shown with `image-rendering: pixelated` where it helps.
 
@@ -164,7 +164,7 @@ Use PRs only if the user explicitly asks for one.
 - Commit and push directly to `main` (no PRs unless the user asks).
 - Prefer editing `locations.json` + scene PNGs for content.
 - Preserve arctic CSS variables and pixel framing.
-- Keep map interaction working when the encounter cart is open.
+- Keep map interaction working when the encounter card is open.
 - After content or UI changes meant for prod, redeploy with Vercel CLI if the user asks.
 
 **Don’t**

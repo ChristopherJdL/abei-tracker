@@ -36,7 +36,7 @@ export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
       >
         <div className="pixel-window__bezel">
           <div className="pixel-window__titlebar">
-            <p className="pixel-window__cart">ENCOUNTER CART</p>
+            <p className="pixel-window__card">ENCOUNTER CARD</p>
             <button
               type="button"
               className="modal-close"
@@ -81,7 +81,6 @@ export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
             </div>
 
             <footer className="pixel-window__footer">
-              <p>Drag the map behind this window anytime.</p>
               <button type="button" className="pixel-btn" onClick={onClose}>
                 BACK TO MAP
               </button>
