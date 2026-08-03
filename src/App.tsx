@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { IntroScreen } from './components/IntroScreen'
 import { AbeiMap } from './components/AbeiMap'
 import { EncounterModal } from './components/EncounterModal'
+import { NewsTicker } from './components/NewsTicker'
 import { getDiscoveredIds, markDiscovered } from './lib/discovered'
 import type { Sighting } from './types'
 import './App.css'
@@ -65,7 +66,7 @@ function App() {
           <img className="pixel" src="/assets/bear-print.png" alt="" />
           <div className="brand-text">
             <strong>ABEI FINDER GBA</strong>
-            <small>POLAR BEAR TRACKER // ARCTIC ICE</small>
+            <small>POLAR BEAR TRACKER</small>
           </div>
         </div>
         <div className="status-chip" aria-live="polite">
@@ -107,18 +108,7 @@ function App() {
       )}
 
       <footer className="chrome-footer">
-        <div className="ticker" aria-hidden>
-          <div className="ticker-track">
-            <span>
-              <strong>ABEI LOCATED</strong> — FOLLOW THE BEAR PRINTS AROUND THE
-              GLOBE — ARCTIC CYAN ONLINE —
-            </span>
-            <span>
-              <strong>ABEI LOCATED</strong> — FOLLOW THE BEAR PRINTS AROUND THE
-              GLOBE — ARCTIC CYAN ONLINE —
-            </span>
-          </div>
-        </div>
+        <NewsTicker />
       </footer>
     </div>
   )

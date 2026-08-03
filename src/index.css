@@ -78,7 +78,7 @@ img.pixel {
 /* Pause page-level GPU work while the map is transforming. */
 html.abei-map-zooming .app::before,
 html.abei-map-zooming .corner-abei,
-html.abei-map-zooming .ticker-track,
+html.abei-map-zooming .news-ticker__track,
 html.abei-map-zooming .status-chip .blink {
   animation-play-state: paused !important;
 }
@@ -256,11 +256,18 @@ html.abei-map-zooming .map-tint {
   }
 }
 
-@keyframes ticker {
+@keyframes news-ticker-scroll {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-ticker__track {
+    animation: none;
+    transform: translate3d(0, 0, 0);
   }
 }
