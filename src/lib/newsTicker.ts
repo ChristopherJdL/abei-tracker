@@ -15,38 +15,38 @@ export interface NewsTickerItem {
 export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
   {
     label: 'BREAKING',
-    text: 'Whale spotted asking directions to Iceland. Locals unconvinced.',
+    text: 'Whale spotted asking directions to Iceland Locals unconvinced',
   },
   {
     label: 'ALERT',
-    text: 'Sahara taco cart reports unpaid customer. Description: fluffy, red scarf.',
+    text: 'Sahara taco cart reports unpaid customer Description: fluffy, red scarf',
   },
   {
     label: 'EXCLUSIVE',
-    text: 'Shibuya scramble halted — one commuter refused to drop katsu sando.',
+    text: 'Shibuya scramble halted — one commuter refused to drop katsu sando',
   },
   {
     label: 'UPDATE',
-    text: 'Table Mountain guide: tourist ate entire bunny chow. Zero regrets.',
+    text: 'Table Mountain guide: tourist ate entire bunny chow Zero regrets',
   },
   {
     label: 'URGENT',
-    text: 'Baie des Sirènes grill empty. Poisson grillé gone. Paw prints on sand.',
+    text: 'Baie des Sirènes grill empty Poisson grillé gone Paw prints on sand',
   },
   {
     label: 'LIVE',
-    text: 'Vieux-Port witnesses: cagoule gang fled one white suspect at full sprint.',
+    text: 'Vieux-Port witnesses: cagoule gang fled one white suspect at full sprint',
   },
   {
     label: 'BREAKING',
-    text: 'Plan-de-Cuques bouillabaisse pot found licked clean. Scarf fibers recovered.',
+    text: 'Plan-de-Cuques bouillabaisse pot found licked clean Scarf fibers recovered',
   },
   {
     label: 'BREAKING',
-    text: 'Qatar oil slick: seagull pulled free mid-ocean. Engineers watched from the plant.',
+    text: 'Qatar oil slick: seagull pulled free mid-ocean Engineers watched from the plant',
   },
   {
     label: 'EXCLUSIVE',
-    text: 'Nouvelle Zemble ice floe: seal escaped. Penguin still screaming.',
+    text: 'Nouvelle Zemble ice floe: seal escaped Penguin still screaming',
   },
 ]

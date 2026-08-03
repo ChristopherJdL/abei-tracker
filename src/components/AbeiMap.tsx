@@ -17,6 +17,7 @@ interface AbeiMapProps {
 }
 
 const MARKER_STD = '/assets/marker.png'
+const MARKER_NEW = '/assets/marker-new.png'
 
 /**
  * MapLibre GL + CARTO dark raster (OSM), free, no API key.
@@ -303,6 +304,7 @@ export function AbeiMap({
       bundle.state = next
 
       const { zoneEl, pawEl } = bundle
+      const img = pawEl.querySelector('img')
 
       if (next === 'zone') {
         zoneEl.style.display = ''
@@ -315,7 +317,8 @@ export function AbeiMap({
       pawEl.style.display = ''
 
       if (next === 'unlocked') {
-        // Quick inactive → transparent → solid unlock, then keep radar until click.
+        // Yellow ring + light yellow fill for fresh undiscovered paws.
+        if (img) img.src = MARKER_NEW
         pawEl.classList.remove('is-radar')
         pawEl.classList.add('is-unlocking')
         window.setTimeout(() => {
@@ -325,7 +328,8 @@ export function AbeiMap({
         return
       }
 
-      // discovered
+      // Discovered: light blue badge, no radar.
+      if (img) img.src = MARKER_STD
       pawEl.classList.remove('is-unlocking', 'is-radar')
     }
 
