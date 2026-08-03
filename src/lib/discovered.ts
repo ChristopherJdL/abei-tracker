@@ -5,7 +5,11 @@ export function getDiscoveredIds(): Set<string> {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return new Set()
     const parsed: unknown = JSON.parse(raw)
-    return new Set(Array.isArray(parsed) ? parsed.filter((id) => typeof id === 'string') : [])
+    return new Set(
+      Array.isArray(parsed)
+        ? parsed.filter((id) => typeof id === 'string')
+        : [],
+    )
   } catch {
     return new Set()
   }

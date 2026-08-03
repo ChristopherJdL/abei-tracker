@@ -42,6 +42,10 @@ export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
     text: 'Plan-de-Cuques bouillabaisse pot found licked clean. Scarf fibers recovered.',
   },
   {
+    label: 'BREAKING',
+    text: 'Qatar oil slick: seagull pulled free mid-ocean. Engineers watched from the plant.',
+  },
+  {
     label: 'EXCLUSIVE',
     text: 'Nouvelle Zemble ice floe: seal escaped. Penguin still screaming.',
   },

@@ -6,7 +6,7 @@ import {
   type StyleSpecification,
 } from 'maplibre-gl'
 import type { Sighting } from '../types'
-import { shouldRevealNewSighting } from '../lib/sightings'
+import { getHuntState, type HuntState } from '../lib/sightings'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 interface AbeiMapProps {
@@ -17,16 +17,10 @@ interface AbeiMapProps {
 }
 
 const MARKER_STD = '/assets/marker.png'
-const MARKER_NEW = '/assets/marker-new.png'
 
 /**
  * MapLibre GL + CARTO dark raster (OSM), free, no API key.
- *
- * Why not Leaflet: DOM PNG tiles = choppy pinch + white voids on zoom-out.
- * Why not Google Maps: billing account required — not free with certainty.
- * Why MapLibre raster (not vector): WebGL still does continuous GPU zoom
- * (Spidey-class feel) while reusing the battle-tested CARTO dark_all CDN.
- * `raster-fade-duration: 0` + arctic navy background kill the white flash.
+ * WebGL continuous zoom; fadeDuration 0 kills white voids on zoom-out.
  */
 const MAP_STYLE: StyleSpecification = {
   version: 8,
@@ -64,24 +58,35 @@ const MAP_STYLE: StyleSpecification = {
   ],
 }
 
-function makePinElement(revealed: boolean): HTMLDivElement {
+function makeZoneElement(): HTMLDivElement {
+  const el = document.createElement('div')
+  el.className = 'abei-hunt-zone'
+  el.setAttribute('aria-hidden', 'true')
+  el.innerHTML = `
+    <span class="abei-hunt-zone__oval"></span>
+    <span class="abei-marker-radar abei-hunt-zone__radar"></span>
+    <span class="abei-marker-radar abei-marker-radar--delay abei-hunt-zone__radar"></span>
+  `
+  return el
+}
+
+function makePinElement(): HTMLDivElement {
   const pin = document.createElement('div')
-  pin.className = revealed
-    ? 'abei-marker-pin is-new-reveal'
-    : 'abei-marker-pin'
+  pin.className = 'abei-marker-pin'
   pin.innerHTML = `
     <span class="abei-marker-radar" aria-hidden="true"></span>
     <span class="abei-marker-radar abei-marker-radar--delay" aria-hidden="true"></span>
-    <img src="${revealed ? MARKER_NEW : MARKER_STD}" alt="" width="48" height="48" draggable="false" />
+    <img src="${MARKER_STD}" alt="" width="48" height="48" draggable="false" />
   `
   return pin
 }
 
-function setPinReveal(pin: HTMLElement, revealed: boolean) {
-  if (pin.classList.contains('is-new-reveal') === revealed) return
-  pin.classList.toggle('is-new-reveal', revealed)
-  const img = pin.querySelector('img')
-  if (img) img.src = revealed ? MARKER_NEW : MARKER_STD
+type LayerBundle = {
+  zone: Marker
+  zoneEl: HTMLDivElement
+  paw: Marker
+  pawEl: HTMLDivElement
+  state: HuntState | null
 }
 
 export function AbeiMap({
@@ -92,8 +97,7 @@ export function AbeiMap({
 }: AbeiMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
-  const markersRef = useRef(new Map<string, Marker>())
-  const pinElsRef = useRef(new Map<string, HTMLDivElement>())
+  const layersRef = useRef(new Map<string, LayerBundle>())
   const fittedRef = useRef(false)
   const lastFlyId = useRef<string | null>(null)
   const selectRef = useRef(onSelect)
@@ -109,8 +113,7 @@ export function AbeiMap({
     const el = containerRef.current
     if (!el || mapRef.current) return
 
-    const markers = markersRef.current
-    const pins = pinElsRef.current
+    const layers = layersRef.current
 
     let map: MapLibreMap
     try {
@@ -140,7 +143,6 @@ export function AbeiMap({
     }
 
     map.on('error', (e) => {
-      // Non-fatal tile blips are common; only surface WebGL hard fails.
       const message = e.error?.message ?? ''
       if (/webgl/i.test(message) && errorRef.current) {
         errorRef.current.hidden = false
@@ -175,41 +177,51 @@ export function AbeiMap({
     return () => {
       window.removeEventListener('resize', onResize)
       root.classList.remove('abei-map-zooming')
-      markers.forEach((m) => m.remove())
-      markers.clear()
-      pins.clear()
+      layers.forEach((bundle) => {
+        bundle.zone.remove()
+        bundle.paw.remove()
+      })
+      layers.clear()
       map.remove()
       mapRef.current = null
     }
   }, [])
 
-  // Markers are DOM — never wait on style/tile load (that blocked paws before).
+  // Create zone + paw markers per sighting (visibility driven by hunt state).
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
 
-    const existing = markersRef.current
-    const pins = pinElsRef.current
+    const layers = layersRef.current
     const keep = new Set(sightings.map((s) => s.id))
 
-    for (const [id, marker] of existing) {
+    for (const [id, bundle] of layers) {
       if (keep.has(id)) continue
-      marker.remove()
-      existing.delete(id)
-      pins.delete(id)
+      bundle.zone.remove()
+      bundle.paw.remove()
+      layers.delete(id)
     }
 
     for (const sighting of sightings) {
-      if (existing.has(sighting.id)) continue
+      if (layers.has(sighting.id)) continue
 
-      const pin = makePinElement(false)
-      pin.addEventListener('click', (e) => {
+      const zoneEl = makeZoneElement()
+      const zone = new Marker({
+        element: zoneEl,
+        anchor: 'center',
+        pitchAlignment: 'viewport',
+        rotationAlignment: 'viewport',
+      })
+        .setLngLat([sighting.lng, sighting.lat])
+        .addTo(map)
+
+      const pawEl = makePinElement()
+      pawEl.addEventListener('click', (e) => {
         e.stopPropagation()
         selectRef.current(sighting)
       })
-
-      const marker = new Marker({
-        element: pin,
+      const paw = new Marker({
+        element: pawEl,
         anchor: 'bottom',
         offset: [0, 4],
         pitchAlignment: 'viewport',
@@ -218,8 +230,17 @@ export function AbeiMap({
         .setLngLat([sighting.lng, sighting.lat])
         .addTo(map)
 
-      existing.set(sighting.id, marker)
-      pins.set(sighting.id, pin)
+      // Start hidden; syncHunt applies the right state.
+      zoneEl.style.display = 'none'
+      pawEl.style.display = 'none'
+
+      layers.set(sighting.id, {
+        zone,
+        zoneEl,
+        paw,
+        pawEl,
+        state: null,
+      })
     }
   }, [sightings])
 
@@ -243,7 +264,6 @@ export function AbeiMap({
       requestAnimationFrame(fit)
     } else {
       map.once('load', () => requestAnimationFrame(fit))
-      // Fallback if 'load' is delayed — still frame the paws.
       window.setTimeout(fit, 800)
     }
   }, [sightings])
@@ -269,6 +289,7 @@ export function AbeiMap({
     })
   }, [activeId, sightings])
 
+  // Sync hunt zones / unlocked paws from localStorage discovery + camera.
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
@@ -276,25 +297,52 @@ export function AbeiMap({
     let timer: ReturnType<typeof setTimeout> | undefined
     let zooming = false
 
-    const applyReveal = () => {
+    const applyState = (bundle: LayerBundle, next: HuntState) => {
+      const prev = bundle.state
+      if (prev === next) return
+      bundle.state = next
+
+      const { zoneEl, pawEl } = bundle
+
+      if (next === 'zone') {
+        zoneEl.style.display = ''
+        pawEl.style.display = 'none'
+        pawEl.classList.remove('is-unlocking', 'is-radar')
+        return
+      }
+
+      zoneEl.style.display = 'none'
+      pawEl.style.display = ''
+
+      if (next === 'unlocked') {
+        // Quick inactive → transparent → solid unlock, then keep radar until click.
+        pawEl.classList.remove('is-radar')
+        pawEl.classList.add('is-unlocking')
+        window.setTimeout(() => {
+          pawEl.classList.remove('is-unlocking')
+          pawEl.classList.add('is-radar')
+        }, 420)
+        return
+      }
+
+      // discovered
+      pawEl.classList.remove('is-unlocking', 'is-radar')
+    }
+
+    const syncHunt = () => {
       if (zooming) return
       const now = Date.now()
       for (const sighting of sightingsRef.current) {
-        const pin = pinElsRef.current.get(sighting.id)
-        if (!pin) continue
-        const reveal = shouldRevealNewSighting(
-          map,
-          sighting,
-          discoveredRef.current,
-          now,
-        )
-        setPinReveal(pin, reveal)
+        const bundle = layersRef.current.get(sighting.id)
+        if (!bundle) continue
+        const next = getHuntState(map, sighting, discoveredRef.current, now)
+        applyState(bundle, next)
       }
     }
 
     const schedule = () => {
       if (timer) clearTimeout(timer)
-      timer = setTimeout(applyReveal, 180)
+      timer = setTimeout(syncHunt, 160)
     }
 
     const onZoomStart = () => {
@@ -306,11 +354,12 @@ export function AbeiMap({
       schedule()
     }
 
-    applyReveal()
+    syncHunt()
     map.on('zoomstart', onZoomStart)
     map.on('zoomend', onZoomEnd)
     map.on('moveend', schedule)
-    const interval = window.setInterval(applyReveal, 60_000)
+    // Re-check 12h window without needing a map gesture.
+    const interval = window.setInterval(syncHunt, 60_000)
 
     return () => {
       if (timer) clearTimeout(timer)
