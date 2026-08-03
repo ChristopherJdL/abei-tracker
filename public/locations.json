@@ -208,5 +208,15 @@
     "image": "/scenes/gapyeong-botanic.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-03T10:45:00.000Z"
+  },
+  {
+    "id": "vauxhall-bus",
+    "title": "Vauxhall Bus Station",
+    "subtitle": "Under the interchange canopy — walking towards Sky Gardens.",
+    "lat": 51.4862,
+    "lng": -0.1235,
+    "image": "/scenes/vauxhall-bus.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-03T18:07:00.000Z"
   }
 ]
