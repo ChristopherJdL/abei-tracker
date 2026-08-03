@@ -3,7 +3,11 @@ import { IntroScreen } from './components/IntroScreen'
 import { AbeiMap } from './components/AbeiMap'
 import { EncounterModal } from './components/EncounterModal'
 import { NewsTicker } from './components/NewsTicker'
-import { getDiscoveredIds, markDiscovered } from './lib/discovered'
+import {
+  getDiscoveredIds,
+  markDiscovered,
+  revertDiscovered,
+} from './lib/discovered'
 import type { Sighting } from './types'
 import './App.css'
 
@@ -15,6 +19,19 @@ function App() {
     getDiscoveredIds(),
   )
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const revertId = params.get('revert')?.trim()
+    if (revertId) {
+      revertDiscovered(revertId)
+      setDiscoveredIds(getDiscoveredIds())
+      params.delete('revert')
+      const qs = params.toString()
+      const next = `${window.location.pathname}${qs ? `?${qs}` : ''}${window.location.hash}`
+      window.history.replaceState({}, '', next)
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
