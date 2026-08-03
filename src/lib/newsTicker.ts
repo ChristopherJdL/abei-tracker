@@ -19,7 +19,7 @@ export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
   },
   {
     label: 'ALERT',
-    text: 'Sahara taco cart reports unpaid customer. Description: fluffy, red scarf',
+    text: 'Sahara caravan reports stolen camel. Fluffy suspect last seen heading east',
   },
   {
     label: 'EXCLUSIVE',
@@ -35,7 +35,7 @@ export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
   },
   {
     label: 'LIVE',
-    text: 'Vieux-Port witnesses: cagoule gang fled one white suspect at full sprint',
+    text: 'Mystery bear-shaped vigilante took down gang in Marseille. Police baffled',
   },
   {
     label: 'BREAKING',

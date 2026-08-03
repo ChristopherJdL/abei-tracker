@@ -12,7 +12,7 @@
   {
     "id": "desert",
     "title": "Sahara Crossing",
-    "subtitle": "Spotted riding shotgun with a camel.",
+    "subtitle": "Stole a camel. Now riding shotgun into the Sahara.",
     "lat": 23.4162,
     "lng": 25.6628,
     "image": "/scenes/desert.png",
@@ -102,7 +102,7 @@
   {
     "id": "marseille",
     "title": "Marseille",
-    "subtitle": "Cagoule crew vs one polar bear. Vieux-Port watching.",
+    "subtitle": "Mysterious bear-shaped vigilante took down the cagoule gang.",
     "lat": 43.2951,
     "lng": 5.3744,
     "image": "/scenes/marseille.png",
