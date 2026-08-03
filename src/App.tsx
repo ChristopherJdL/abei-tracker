@@ -26,10 +26,7 @@ function App() {
     if (revertId) {
       revertDiscovered(revertId)
       setDiscoveredIds(getDiscoveredIds())
-      params.delete('revert')
-      const qs = params.toString()
-      const next = `${window.location.pathname}${qs ? `?${qs}` : ''}${window.location.hash}`
-      window.history.replaceState({}, '', next)
+      window.history.replaceState({}, '', '/')
     }
   }, [])
 
