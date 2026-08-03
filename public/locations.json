@@ -198,5 +198,15 @@
     "image": "/scenes/qatar-oil.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-03T09:55:00.000Z"
+  },
+  {
+    "id": "gapyeong-botanic",
+    "title": "Gapyeong Botanic Garden",
+    "subtitle": "Garden of Morning Calm — photobombing the infamous little white church.",
+    "lat": 37.748,
+    "lng": 127.352,
+    "image": "/scenes/gapyeong-botanic.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-03T10:45:00.000Z"
   }
 ]
