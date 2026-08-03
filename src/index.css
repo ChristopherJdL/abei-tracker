@@ -76,10 +76,9 @@ img.pixel {
   display: none !important;
 }
 
-/* Pause page-level GPU work while the map is transforming. */
+/* While zooming: only throttle map-adjacent chrome — footer/ticker stay independent. */
 html.abei-map-zooming .app::before,
 html.abei-map-zooming .corner-abei,
-html.abei-map-zooming .news-ticker__track,
 html.abei-map-zooming .status-chip .blink {
   animation-play-state: paused !important;
 }

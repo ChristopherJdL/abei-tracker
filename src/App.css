@@ -369,6 +369,8 @@
   background: linear-gradient(180deg, #1a5570, #0a3040);
   border-top: 4px solid var(--ice-edge);
   box-shadow: inset 0 1px 0 rgba(232, 252, 255, 0.12);
+  isolation: isolate;
+  contain: layout style;
 }
 
 /* FOX-style continuous news ticker — GPU scroll, fixed LIVE label */
@@ -380,7 +382,7 @@
   border: 3px solid var(--deep-cyan);
   background: #071820;
   overflow: hidden;
-  contain: layout style;
+  contain: layout style paint;
 }
 
 .news-ticker__label {
