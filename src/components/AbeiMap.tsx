@@ -75,9 +75,11 @@ function makePinElement(): HTMLDivElement {
   const pin = document.createElement('div')
   pin.className = 'abei-marker-pin'
   pin.innerHTML = `
-    <span class="abei-marker-radar" aria-hidden="true"></span>
-    <span class="abei-marker-radar abei-marker-radar--delay" aria-hidden="true"></span>
-    <img src="${MARKER_STD}" alt="" width="48" height="48" draggable="false" />
+    <div class="abei-marker-badge">
+      <span class="abei-marker-radar" aria-hidden="true"></span>
+      <span class="abei-marker-radar abei-marker-radar--delay" aria-hidden="true"></span>
+      <img src="${MARKER_STD}" alt="" width="48" height="48" draggable="false" />
+    </div>
   `
   return pin
 }
@@ -223,8 +225,7 @@ export function AbeiMap({
       })
       const paw = new Marker({
         element: pawEl,
-        anchor: 'bottom',
-        offset: [0, 4],
+        anchor: 'center',
         pitchAlignment: 'viewport',
         rotationAlignment: 'viewport',
       })
