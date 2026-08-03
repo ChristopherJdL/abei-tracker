@@ -60,7 +60,7 @@ vercel.json               # SPA rewrite → index.html
 - Decorative overlays (grid, tint, aurora) use `pointer-events: none`.
 - `AbeiMap` uses **MapLibre GL (WebGL)** for Spidey-class continuous zoom/pan. Selecting a sighting eases to it at the **current zoom** (no forced zoom-in).
 - **Zoom hygiene (do not regress):** Spidey Tracker is Google Maps/WebGL. Leaflet DOM raster tiles cannot match it (choppy zoom + white gaps on zoom-out). Keep **MapLibre GL** with free CARTO/OSM tiles (`raster-fade-duration: 0`, arctic navy background). Do **not** reintroduce Leaflet. Do **not** switch to Google Maps (billing required — not free-of-charge with certainty). No `mix-blend-mode` / `contain:paint` over the map frame.
-- Zoom controls: bottom-left.
+- Pinch/wheel zoom only — no on-screen +/- controls.
 
 ### Encounter modal
 

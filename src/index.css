@@ -88,33 +88,6 @@ html.abei-map-zooming .map-tint {
   opacity: 0;
 }
 
-.maplibregl-ctrl-group {
-  border: none !important;
-  border-radius: 0 !important;
-  box-shadow: 3px 3px 0 var(--pixel-shadow) !important;
-  overflow: hidden;
-}
-
-.maplibregl-ctrl-group button {
-  width: 30px !important;
-  height: 30px !important;
-  background: var(--arctic-navy) !important;
-  border: 2px solid var(--ice-cyan) !important;
-  border-radius: 0 !important;
-}
-
-.maplibregl-ctrl-group button + button {
-  border-top: none !important;
-}
-
-.maplibregl-ctrl-group button:hover {
-  background: var(--deep-cyan) !important;
-}
-
-.maplibregl-ctrl-group button .maplibregl-ctrl-icon {
-  filter: invert(78%) sepia(18%) saturate(700%) hue-rotate(146deg) brightness(100%);
-}
-
 .maplibregl-ctrl-attrib {
   background: rgba(11, 42, 58, 0.75) !important;
   color: var(--glacier) !important;

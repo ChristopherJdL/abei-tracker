@@ -3,7 +3,6 @@ import {
   LngLatBounds,
   Map as MapLibreMap,
   Marker,
-  NavigationControl,
   type StyleSpecification,
 } from 'maplibre-gl'
 import type { Sighting } from '../types'
@@ -139,14 +138,6 @@ export function AbeiMap({
       }
       return
     }
-
-    map.addControl(
-      new NavigationControl({
-        showCompass: false,
-        visualizePitch: false,
-      }),
-      'bottom-left',
-    )
 
     map.on('error', (e) => {
       // Non-fatal tile blips are common; only surface WebGL hard fails.
