@@ -23,7 +23,7 @@ export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
   },
   {
     label: 'EXCLUSIVE',
-    text: 'Shibuya scramble halted — one commuter refused to drop katsu sando',
+    text: 'Shibuya scramble halted. One commuter refused to drop katsu sando',
   },
   {
     label: 'UPDATE',
