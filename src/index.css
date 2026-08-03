@@ -5,14 +5,16 @@
   --deep-cyan: #2a9bb0;
   --glacier: #c8e8f0;
   --frost-white: #f4fbff;
-  --seal: #8b7355;
-  --seal-light: #c4a882;
-  --seal-freckle: #4a3728;
-  --arctic-navy: #0b2a3a;
+  --crystal: #e8fcff;
+  --frost-accent: #b8ecf8;
+  --glacier-deep: #5eb8d4;
+  --ice-edge: #145a75;
+  --ice-shadow: #0a3d52;
+  --arctic-navy: #071f2e;
   --ice-frame: #a8dce8;
   --scarf-red: #e23b3b;
-  --pixel-shadow: #16384a;
-  --hud-bg: rgba(11, 42, 58, 0.88);
+  --pixel-shadow: #0a2a3a;
+  --hud-bg: rgba(7, 31, 46, 0.92);
   --font-pixel: 'Press Start 2P', monospace;
 }
 
@@ -49,7 +51,7 @@ img.pixel {
 .maplibregl-map {
   width: 100%;
   height: 100%;
-  background: #0a2433 !important;
+  background: #071f2e !important;
   font: inherit;
 }
 

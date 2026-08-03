@@ -47,7 +47,7 @@ vercel.json               # SPA rewrite → index.html
 
 ### Aesthetic
 
-- **Arctic palette** (CSS vars in `src/index.css`): ice cyan, frost white, glacier, seal brown, seal freckle dark, arctic navy. Avoid purple/glow AI-default looks.
+- **Arctic / ice palette** (CSS vars in `src/index.css`): ice cyan, frost white, glacier, crystal highlights, ice-edge borders (`--ice-edge`, `--ice-shadow`) — no seal brown. Avoid purple/glow AI-default looks.
 - **Pixel UI**: Press Start 2P, chunky borders, scanlines on encounter art, GBA-ish “ENCOUNTER CARD” chrome.
 - **Reference vibe**: Spidey Tracker (map + pixel HUD + character), but simpler — no sound pipeline, no activity log product surface.
 
@@ -71,7 +71,7 @@ vercel.json               # SPA rewrite → index.html
 ### Assets
 
 - Original Abei sprite had a **hot-pink / magenta chroma** background; production asset is `public/assets/abei.png` with that keyed out (Pillow flood-fill + despill). Do not reintroduce opaque pink fringes.
-- Map markers use seal-toned paw on a cyan/white badge (`marker.png`).
+- Header logo: crystalline ice paw (`public/assets/bear-print.png`). Map markers use ice paw on cyan/white badge (`marker.png`).
 - Scene art was generated (Cursor GenerateImage) with Abei as reference; owners may replace PNGs anytime — paths stay in JSON.
 
 ## Adding a location (checklist)

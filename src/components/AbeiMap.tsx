@@ -51,7 +51,7 @@ const MAP_STYLE: StyleSpecification = {
     {
       id: 'background',
       type: 'background',
-      paint: { 'background-color': '#0a2433' },
+      paint: { 'background-color': '#071f2e' },
     },
     {
       id: 'carto-dark',
@@ -159,7 +159,7 @@ export function AbeiMap({
 
     map.on('load', () => {
       map.resize()
-      map.getCanvas().style.background = '#0a2433'
+      map.getCanvas().style.background = '#071f2e'
     })
     window.setTimeout(() => map.resize(), 120)
 

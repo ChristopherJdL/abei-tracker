@@ -65,7 +65,7 @@ function App() {
           <img className="pixel" src="/assets/bear-print.png" alt="" />
           <div className="brand-text">
             <strong>ABEI FINDER GBA</strong>
-            <small>POLAR BEAR TRACKER // OSM</small>
+            <small>POLAR BEAR TRACKER // ARCTIC ICE</small>
           </div>
         </div>
         <div className="status-chip" aria-live="polite">

@@ -15,7 +15,7 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
           ABEI <span>FINDER</span>
         </h1>
         <p>
-          Arctic scan online. Tap a bear print on the globe to catch Abei mid-adventure.
+          Frost scan online. Tap an ice print on the globe to catch Abei mid-adventure.
         </p>
         <div className="intro-actions">
           <button type="button" className="pixel-btn" onClick={onEnter}>
