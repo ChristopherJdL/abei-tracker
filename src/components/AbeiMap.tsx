@@ -64,9 +64,11 @@ function makeZoneElement(): HTMLDivElement {
   el.className = 'abei-hunt-zone'
   el.setAttribute('aria-hidden', 'true')
   el.innerHTML = `
-    <span class="abei-hunt-zone__oval"></span>
-    <span class="abei-marker-radar abei-hunt-zone__radar"></span>
-    <span class="abei-marker-radar abei-marker-radar--delay abei-hunt-zone__radar"></span>
+    <div class="abei-hunt-zone__core">
+      <span class="abei-hunt-zone__oval"></span>
+      <span class="abei-marker-radar abei-hunt-zone__radar"></span>
+      <span class="abei-marker-radar abei-marker-radar--delay abei-hunt-zone__radar"></span>
+    </div>
   `
   return el
 }

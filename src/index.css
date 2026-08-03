@@ -151,14 +151,17 @@ html.abei-map-zooming .map-tint {
 
 /* Radar rings — hunt zone + freshly unlocked paws. */
 .abei-marker-radar {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
   border: 4px solid #ffd54f;
   border-radius: 50%;
   background: transparent;
   visibility: hidden;
   pointer-events: none;
+}
+
+.abei-marker-badge .abei-marker-radar {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 .abei-marker-pin.is-radar .abei-marker-radar,
@@ -179,14 +182,21 @@ html.abei-map-zooming .map-tint {
   position: relative;
   width: 200px;
   height: 140px;
-  display: grid;
-  place-items: center;
   pointer-events: none;
+}
+
+.abei-hunt-zone__core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 180px;
+  height: 104px;
+  margin: -52px 0 0 -90px;
 }
 
 .abei-hunt-zone__oval {
   position: absolute;
-  inset: 18px 10px;
+  inset: 0;
   border: 4px solid rgba(255, 213, 79, 0.95);
   border-radius: 50%;
   background: rgba(255, 213, 79, 0.28);
@@ -212,8 +222,12 @@ html.abei-map-zooming .map-tint {
 }
 
 .abei-hunt-zone__radar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   width: 100px;
   height: 100px;
+  margin: -50px 0 0 -50px;
   border-width: 5px;
 }
 
