@@ -228,5 +228,15 @@
     "image": "/scenes/fukushima-wasteland.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-04T10:28:00.000Z"
+  },
+  {
+    "id": "nagasaki-uranium",
+    "title": "Nagasaki Wasteland",
+    "subtitle": "Standing tall, uranium in paw. Petit Gris watching from the back.",
+    "lat": 32.776,
+    "lng": 129.864,
+    "image": "/scenes/nagasaki-uranium.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-04T14:28:00.000Z"
   }
 ]
