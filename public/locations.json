@@ -218,5 +218,15 @@
     "image": "/scenes/vauxhall-bus.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-03T18:07:00.000Z"
+  },
+  {
+    "id": "fukushima-wasteland",
+    "title": "Fukushima Wasteland",
+    "subtitle": "Full hazmat suit. Fluorescent uranium rock. Slight smirk.",
+    "lat": 37.45,
+    "lng": 141.01,
+    "image": "/scenes/fukushima-wasteland.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-04T10:28:00.000Z"
   }
 ]
