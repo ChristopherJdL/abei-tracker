@@ -238,5 +238,15 @@
     "image": "/scenes/nagasaki-uranium.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-04T14:28:00.000Z"
+  },
+  {
+    "id": "nine-elms-sainsburys",
+    "title": "Nine Elms Sainsbury's",
+    "subtitle": "Dairy aisle crisis. Elle & Vire double cream or Sainsbury's own?",
+    "lat": 51.4808,
+    "lng": -0.1289,
+    "image": "/scenes/nine-elms-sainsburys.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-05T14:35:00.000Z"
   }
 ]
