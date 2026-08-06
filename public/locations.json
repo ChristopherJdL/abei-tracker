@@ -248,5 +248,15 @@
     "image": "/scenes/nine-elms-sainsburys.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-05T14:35:00.000Z"
+  },
+  {
+    "id": "socotra-dragon-tree",
+    "title": "Socotra Island",
+    "subtitle": "Climbing a dragon blood tree. The goat is not impressed.",
+    "lat": 12.463,
+    "lng": 53.789,
+    "image": "/scenes/socotra-dragon-tree.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-06T08:14:00.000Z"
   }
 ]
