@@ -268,5 +268,15 @@
     "image": "/scenes/darvaza-door-hell.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-07T11:48:00.000Z"
+  },
+  {
+    "id": "houston-texas",
+    "title": "Houston Rodeo",
+    "subtitle": "Eating a massive Texas BBQ brisket platter. Sunny afternoon.",
+    "lat": 29.6845,
+    "lng": -95.4125,
+    "image": "/scenes/houston-texas.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-07T15:15:22.000Z"
   }
 ]
