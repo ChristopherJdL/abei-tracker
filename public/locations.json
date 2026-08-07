@@ -288,5 +288,15 @@
     "image": "/scenes/cornwall.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-07T16:14:16.000Z"
+  },
+  {
+    "id": "yard-sale-pizza-tufnell-park",
+    "title": "Yard Sale Pizza",
+    "subtitle": "Tufnell Park spot. Oozing gorgonzola and sausage mince flop.",
+    "lat": 51.5583,
+    "lng": -0.1415,
+    "image": "/scenes/yard-sale-pizza.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-07T18:12:59.000Z"
   }
 ]
