@@ -290,13 +290,13 @@
     "createdOn": "2026-08-07T16:14:16.000Z"
   },
   {
-    "id": "yard-sale-pizza-tufnell-park",
+    "id": "yard-sale-pizza-vauxhall",
     "title": "Yard Sale Pizza",
-    "subtitle": "Tufnell Park spot. Oozing gorgonzola and sausage mince flop.",
-    "lat": 51.5583,
-    "lng": -0.1415,
+    "subtitle": "Vauxhall spot. Oozing gorgonzola and sausage mince flop. Retro pizzaiolo.",
+    "lat": 51.4862,
+    "lng": -0.1235,
     "image": "/scenes/yard-sale-pizza.png",
     "status": "CONFIRMED",
-    "createdOn": "2026-08-07T18:12:59.000Z"
+    "createdOn": "2026-08-07T18:44:52.000Z"
   }
 ]
