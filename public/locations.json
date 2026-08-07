@@ -290,13 +290,13 @@
     "createdOn": "2026-08-07T16:14:16.000Z"
   },
   {
-    "id": "yard-sale-pizza-vauxhall",
+    "id": "yard-sale-pizza-wandsworth",
     "title": "Yard Sale Pizza",
-    "subtitle": "Vauxhall spot. Oozing gorgonzola and sausage mince flop. Retro pizzaiolo.",
-    "lat": 51.4862,
-    "lng": -0.1235,
+    "subtitle": "Wandsworth Road spot. Oozing gorgonzola and sausage mince flop. Retro pizzaiolo.",
+    "lat": 51.4815,
+    "lng": -0.1329,
     "image": "/scenes/yard-sale-pizza.png",
     "status": "CONFIRMED",
-    "createdOn": "2026-08-07T18:44:52.000Z"
+    "createdOn": "2026-08-07T18:48:17.000Z"
   }
 ]
