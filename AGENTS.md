@@ -108,32 +108,12 @@ Encounter scenes show the art only — do **not** reintroduce an on-image speech
 
 - Project is a **static Vite SPA**. Build: `npm run build`, output `dist/`.
 - `vercel.json` rewrites unknown routes to `index.html` (filesystem assets still win on Vercel).
-- Deploy from a logged-in Vercel CLI session in the project root:
-
-  ```bash
-  npx vercel --prod
-  ```
-
+- **Production deploys automatically from `main`.** Agents must **not** run `npx vercel --prod` (or any Vercel CLI deploy) unless the user explicitly asks to deploy manually.
+- Pushing to `main` is enough for prod. Wait for the GitHub → Vercel integration; do not double-deploy from the CLI.
 - Local link metadata lives in **`.vercel/`** (gitignored). Do **not** commit it, tokens, or team/project JSON from the dashboard.
 - Production hostname used historically: `abei-tracker.vercel.app`. Do not hardcode org/team IDs, account emails, or CLI tokens in docs or code.
 - No env vars are required for the current app (no API keys in the client for the map tiles used today).
 - Amplify alternative: connect the repo / upload `dist`, SPA fallback via `public/_redirects`.
-
-### Git author must match the Vercel account
-
-The CLI attaches the author of `HEAD` to every deployment, and Vercel rejects authors that
-aren't on the team. A mismatch yields `state: BLOCKED` with `seatBlock.blockCode: TEAM_ACCESS_REQUIRED`
-**before** any build is scheduled — so `--prebuilt` does not help.
-
-The CLI renders this badly: it prints `Building…` indefinitely and `vercel inspect` reports
-`status UNKNOWN`, which looks like a stuck queue or an outage. Confirm the real state with:
-
-```bash
-vercel api "/v6/deployments?projectId=<id>&teamId=<id>&limit=1"
-```
-
-and read `state` / `errorMessage`. Keep this repo's committer identity (`git config user.email`,
-set locally, not globally) equal to an email registered on the deploying Vercel account.
 
 ### What not to commit or paste
 
@@ -148,7 +128,7 @@ npm install
 npm run dev       # local Vite
 npm run build     # tsc -b && vite build
 npm run lint      # oxlint
-npx vercel --prod # production deploy (CLI must already be authenticated)
+# do NOT deploy via CLI — Vercel auto-deploys from main
 ```
 
 ## Git workflow
@@ -158,7 +138,7 @@ npx vercel --prod # production deploy (CLI must already be authenticated)
 1. Check out `main` and pull latest: `git checkout main && git pull origin main`
 2. Make changes, run `npm run lint` and `npm run build`
 3. Commit on `main` with a clear message
-4. Push: `git push origin main`
+4. Push: `git push origin main` — Vercel deploys from that push
 
 Use PRs only if the user explicitly asks for one.
 
@@ -170,10 +150,11 @@ Use PRs only if the user explicitly asks for one.
 - Prefer editing `locations.json` + scene PNGs for content.
 - Preserve arctic CSS variables and pixel framing.
 - Keep map interaction working when the encounter card is open.
-- After content or UI changes meant for prod, redeploy with Vercel CLI if the user asks.
+- Let Vercel auto-deploy from `main` after push.
 
 **Don’t**
 
+- Run `npx vercel --prod` / Vercel CLI deploys unless the user explicitly asks.
 - Open pull requests or long-lived feature branches for routine changes.
 - Add a backend “just because.”
 - Block the map with full-screen opaque modals that capture all pointer events.
