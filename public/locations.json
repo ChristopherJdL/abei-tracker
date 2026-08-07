@@ -258,5 +258,15 @@
     "image": "/scenes/socotra-dragon-tree.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-06T08:14:00.000Z"
+  },
+  {
+    "id": "darvaza-door-hell",
+    "title": "Darvaza Door to Hell",
+    "subtitle": "Toasting marshmallows over the flaming gas crater. Casual.",
+    "lat": 40.2528,
+    "lng": 58.4397,
+    "image": "/scenes/darvaza-door-hell.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-07T11:48:00.000Z"
   }
 ]
