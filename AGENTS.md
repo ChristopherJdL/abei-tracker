@@ -76,7 +76,7 @@ vercel.json               # SPA rewrite → index.html
 
 ## Adding a location (checklist)
 
-1. Add `public/scenes/<id>.png` (prefer ~4:3, pixel-art consistent with Abei: white bear, red scarf, mint shirt).
+1. Generate `public/scenes/<id>.png` using the **Scene image generation** guidelines below.
 2. Append to `public/locations.json`:
 
 ```json
@@ -92,14 +92,15 @@ vercel.json               # SPA rewrite → index.html
 }
 ```
 
-3. Set `createdOn` to the ISO timestamp when the sighting goes live. For 24 hours after that, the paw glows **yellow with a radar halo** when the map is zoomed in near the pin (scavenger-hunt reveal); then it returns to normal cyan.
+3. Set `createdOn` to the ISO timestamp when the sighting goes live. Within the last **12 hours**, undiscovered paws use the yellow hunt oval until the player zooms in and opens the encounter.
 4. Use real-ish lat/lng so the paw sits on the right place (extreme poles are hard to click — prefer slightly inland Antarctica coords if needed).
-5. No code change required unless you add fields (then update `src/types.ts` + UI).
-6. Redeploy if production should update (see below).
+5. Match `subtitle` to what is actually in the scene (brands, action, landmarks). Keep it short and witty.
+6. No code change required unless you add fields (then update `src/types.ts` + UI).
+7. Redeploy if production should update (see below).
 
 ### Current sightings (at time of writing)
 
-Arctic, Sahara, Desert Sunset (taco/cactus), Wandsworth Road / Sky Gardens (London), Shibuya Crossing (katsu sando + 7-Eleven), Paris, Iceland, South Pole, Australian Outback, Zhaoxing Dong Village (Guizhou), Marseille (cagoule gang fight).
+Arctic, Sahara, Desert Sunset (taco/cactus), Wandsworth Road / Sky Gardens (London), Shibuya Crossing (katsu sando + 7-Eleven), Paris, Iceland, South Pole, Australian Outback, Zhaoxing Dong Village (Guizhou), Marseille (cagoule gang fight), Plan-de-Cuques, Qatar oil slick, Gapyeong botanic garden, Vauxhall bus station, Fukushima / Nagasaki wastelands, Nine Elms Sainsbury's, Socotra dragon tree, Darvaza Door to Hell.
 
 Encounter scenes show the art only — do **not** reintroduce an on-image speech bubble overlay (“ABEI LOCATED…”).
 
@@ -180,6 +181,51 @@ Use PRs only if the user explicitly asks for one.
 - Rewrite the stack (Next, Mapbox paid keys, Google Maps billing, etc.) unless the user requests it. **MapLibre GL + free OSM vector tiles is the approved map stack** for Spidey-smooth zoom.
 - Expose personal/org identifiers beyond the public site URL when documenting deploy.
 
-## Image regeneration tip
+## Scene image generation (new Abei)
 
-When regenerating a scene, describe: pixel art 16-bit, Abei (white polar bear, red scarf, mint green shirt), location landmarks, action, chunky pixels, thick outlines, no watermark. Attach `public/assets/abei.png` as reference when the tooling allows.
+Use Cursor **GenerateImage** (or equivalent). Always attach `public/assets/abei.png` as a reference. Prefer ~**4:3** PNGs under `public/scenes/<id>.png`.
+
+### Prompt skeleton
+
+```
+Pixel art 16-bit scene, 4:3. Abei the white polar bear (red scarf, mint green shirt)
+[ACTION] at [PLACE / LANDMARKS]. [ATMOSPHERE / TIME OF DAY].
+Chunky pixels, thick black outlines, no watermark, no speech bubble, no UI chrome.
+Abei face: simple neutral black dot eyes (no eyebrows, no emotion in eyes),
+small pouting mouth only. Match Abei style from reference.
+```
+
+### Character — Abei (hard rules)
+
+- **Look:** white polar bear, **red scarf**, **mint / teal shirt**. Keep proportions close to `public/assets/abei.png`.
+- **Eyes:** two simple black **dot / square** pixels — **expressionless**. No worried brows, no curved “sad” eyes, no sparkles.
+- **Mouth:** short line or tiny **pout** is welcome; that is the only facial expression.
+- **No speech bubbles**, captions, or “ABEI LOCATED…” text baked into the image.
+- Outfit can change when the story needs it (e.g. hazmat suit) — still keep the face rules and recognisable Abei silhouette.
+
+### Scene composition
+
+- One clear joke / action. Abei should be readable at encounter-card size.
+- Prefer real landmarks or place-specific props so the location is obvious without a label.
+- For product / brand gags: use **real packaging** (colours, logos, product name). If the user names a brand (Elle & Vire, Elmlea, etc.), match that packaging — do not substitute a generic tub.
+- Use the wording the user asks for (e.g. **double cream**, not crème fraîche) on labels and in the subtitle.
+- **Insolite** sightings: pick a genuinely weird place *and* a weirder action (e.g. marshmallows over Darvaza, climbing a Socotra dragon-blood tree). Keep it cute/absurd, not gore.
+
+### Avoid look-alike twins
+
+When two scenes share a theme (two wastelands, two London stops, etc.):
+
+- Change **palette**, **time of day**, **landmarks**, and **Abei facing / pose**.
+- Do **not** reuse the same warning signs, plant buildings, or prop layout.
+- Example: Fukushima = murky green plant haze + crouching; Nagasaki = coastal sunset + standing + different props + Petit Gris.
+
+### After generate
+
+1. Visually check face (neutral eyes + pout), packaging text, and distinctness vs nearby scenes.
+2. Save/overwrite `public/scenes/<id>.png`.
+3. Keep `locations.json` `image` path and witty `subtitle` in sync.
+4. Lint/build, commit to `main`, deploy if the user wants prod.
+
+### Regeneration tip
+
+When regenerating an existing scene, attach both `public/assets/abei.png` **and** the previous scene PNG as references, then spell out the **exact** delta (“same composition, only swap Sainsbury’s tub for Elmlea Double packaging” / “keep pout, make eyes blank dots”).
