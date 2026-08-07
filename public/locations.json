@@ -308,5 +308,15 @@
     "image": "/scenes/costco-croydon.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-08T08:12:51.000Z"
+  },
+  {
+    "id": "abei-walks-husky",
+    "title": "London Dog Walk",
+    "subtitle": "Walking the husky. Pink pack on. Dog be like: HUH?",
+    "lat": 51.501,
+    "lng": -0.1245,
+    "image": "/scenes/abei-walks-husky.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-07T19:18:00.000Z"
   }
 ]
