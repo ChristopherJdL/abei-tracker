@@ -278,5 +278,15 @@
     "image": "/scenes/houston-texas.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-07T15:15:22.000Z"
+  },
+  {
+    "id": "cornwall-pasty",
+    "title": "Cornwall Beach",
+    "subtitle": "Eating a Cornish pasty on the beach, fighting off a seagull. Overalls on point.",
+    "lat": 50.2660,
+    "lng": -5.0527,
+    "image": "/scenes/cornwall.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-07T16:14:16.000Z"
   }
 ]
