@@ -328,5 +328,15 @@
     "image": "/scenes/waterloo-studley.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-08T09:16:00.000Z"
+  },
+  {
+    "id": "tsmc-arizona",
+    "title": "TSMC Arizona cleanroom",
+    "subtitle": "Entering a pink portal: from 16-bit to PS3 3D. Proud smirk.",
+    "lat": 33.7800,
+    "lng": -112.1600,
+    "image": "/scenes/tsmc-arizona.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-08T15:35:07.000Z"
   }
 ]
