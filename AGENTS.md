@@ -96,7 +96,7 @@ vercel.json               # SPA rewrite → index.html
 4. Use real-ish lat/lng so the paw sits on the right place (extreme poles are hard to click — prefer slightly inland Antarctica coords if needed).
 5. Match `subtitle` to what is actually in the scene (brands, action, landmarks). Keep it short and witty.
 6. No code change required unless you add fields (then update `src/types.ts` + UI).
-7. Redeploy if production should update (see below).
+7. Push to `main` — Vercel auto-deploys. Do not run the Vercel CLI.
 
 ### Current sightings (at time of writing)
 
@@ -205,7 +205,7 @@ When two scenes share a theme (two wastelands, two London stops, etc.):
 1. Visually check face (neutral eyes + pout), packaging text, and distinctness vs nearby scenes.
 2. Save/overwrite `public/scenes/<id>.png`.
 3. Keep `locations.json` `image` path and witty `subtitle` in sync.
-4. Lint/build, commit to `main`, deploy if the user wants prod.
+4. Lint/build, commit and push to `main` (Vercel auto-deploys).
 
 ### Regeneration tip
 
