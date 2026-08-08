@@ -298,5 +298,15 @@
     "image": "/scenes/yard-sale-pizza.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-07T18:48:17.000Z"
+  },
+  {
+    "id": "costco-croydon",
+    "title": "Costco Croydon",
+    "subtitle": "Eating a Costco chicken bake outside with a TMNT comic in hand.",
+    "lat": 51.3537,
+    "lng": -0.1173,
+    "image": "/scenes/costco-croydon.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-08T08:12:51.000Z"
   }
 ]
