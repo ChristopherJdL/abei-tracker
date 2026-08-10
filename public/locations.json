@@ -328,5 +328,15 @@
     "image": "/scenes/waterloo-studley.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-08T09:16:00.000Z"
+  },
+  {
+    "id": "better-kentish-town",
+    "title": "Better Kentish Town",
+    "subtitle": "Itchy scalp!!",
+    "lat": 51.5510,
+    "lng": -0.1402,
+    "image": "/scenes/better-kentish-town.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-10T16:11:35.000Z"
   }
 ]
