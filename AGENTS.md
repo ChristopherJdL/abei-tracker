@@ -102,8 +102,6 @@ vercel.json               # SPA rewrite → index.html
 
 Arctic, Sahara, Desert Sunset (taco/cactus), Wandsworth Road / Sky Gardens (London), Shibuya Crossing (katsu sando + 7-Eleven), Paris, Iceland, South Pole, Australian Outback, Zhaoxing Dong Village (Guizhou), Marseille (cagoule gang fight), Plan-de-Cuques, Qatar oil slick, Gapyeong botanic garden, Vauxhall bus station, Fukushima / Nagasaki wastelands, Nine Elms Sainsbury's, Socotra dragon tree, Darvaza Door to Hell.
 
-Encounter scenes show the art only — do **not** reintroduce an on-image speech bubble overlay (“ABEI LOCATED…”).
-
 ## Deploy (Vercel) — safe notes only
 
 - Project is a **static Vite SPA**. Build: `npm run build`, output `dist/`.
@@ -171,18 +169,14 @@ Use Cursor **GenerateImage** (or equivalent). Always attach `public/assets/abei.
 ```
 Pixel art 16-bit scene, 4:3. Abei the white polar bear (red scarf, mint green shirt)
 [ACTION] at [PLACE / LANDMARKS]. [ATMOSPHERE / TIME OF DAY].
-Chunky pixels, thick black outlines, no watermark, no speech bubble, no UI chrome.
-Abei face: simple neutral black dot eyes (no eyebrows, no emotion in eyes),
-small pouting mouth only. Match Abei style from reference.
+Chunky pixels, thick black outlines, no watermark, no UI chrome.
+Match Abei style from reference, but expressions and speech bubbles are allowed.
 ```
 
 ### Character — Abei (hard rules)
 
 - **Look:** white polar bear, **red scarf**, **mint / teal shirt**. Keep proportions close to `public/assets/abei.png`.
-- **Eyes:** two simple black **dot / square** pixels — **expressionless**. No worried brows, no curved “sad” eyes, no sparkles.
-- **Mouth:** short line or tiny **pout** is welcome; that is the only facial expression.
-- **No speech bubbles**, captions, or “ABEI LOCATED…” text baked into the image.
-- Outfit can change when the story needs it (e.g. hazmat suit) — still keep the face rules and recognisable Abei silhouette.
+- **Outfit:** can change when the story needs it (e.g. hazmat suit) — still keep the recognisable Abei silhouette.
 
 ### Scene composition
 
