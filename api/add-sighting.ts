@@ -42,7 +42,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })
     });
 
-    if (!textRes.ok) throw new Error('Failed to parse text with Gemini');
+    if (!textRes.ok) {
+      const errText = await textRes.text();
+      throw new Error(`Failed to parse text with Gemini: ${textRes.status} - ${errText}`);
+    }
     
     const textData = await textRes.json();
     let rawJsonStr = textData.candidates[0].content.parts[0].text;
@@ -62,7 +65,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })
     });
 
-    if (!imgRes.ok) throw new Error('Failed to generate image');
+    if (!imgRes.ok) {
+      const errText = await imgRes.text();
+      throw new Error(`Failed to generate image: ${imgRes.status} - ${errText}`);
+    }
     
     const imgData = await imgRes.json();
     if (!imgData.predictions || imgData.predictions.length === 0) {
