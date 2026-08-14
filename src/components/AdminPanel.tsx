@@ -75,7 +75,7 @@ export function AdminPanel({ sightings, onClose }: AdminPanelProps) {
       <div className="pixel-window" role="dialog" aria-modal="true" style={{ maxWidth: '400px' }}>
         <div className="pixel-window__bezel">
           <div className="pixel-window__titlebar">
-            <p className="pixel-window__card" style={{ color: 'var(--ice-cyan)' }}>ADMIN COMMAND</p>
+            <p className="pixel-window__card">ADMIN COMMAND</p>
             <button
               type="button"
               className="modal-close"
