@@ -13,6 +13,7 @@ export function AdminPanel({ sightings, onClose }: AdminPanelProps) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [hasError, setHasError] = useState(false);
+  const [isAuthError, setIsAuthError] = useState(false);
 
   // Restriction logic
   const isBypass = new URLSearchParams(window.location.search).get('restriction') === 'bypass';
@@ -38,6 +39,7 @@ export function AdminPanel({ sightings, onClose }: AdminPanelProps) {
     setLoading(true);
     setMessage('');
     setHasError(false);
+    setIsAuthError(false);
 
     try {
       const res = await fetch('/api/add-sighting', {
@@ -63,7 +65,11 @@ export function AdminPanel({ sightings, onClose }: AdminPanelProps) {
       setDescription('');
     } catch (err: any) {
       console.error('API Error:', err);
-      setHasError(true);
+      if (err.message === 'Unauthorized') {
+        setIsAuthError(true);
+      } else {
+        setHasError(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -137,6 +143,7 @@ export function AdminPanel({ sightings, onClose }: AdminPanelProps) {
                     />
                   </div>
 
+                  {isAuthError && <div style={{ color: '#ff6b6b', fontSize: '12px', wordBreak: 'break-word', fontWeight: 'bold' }}>Wrong password</div>}
                   {hasError && <div style={{ color: '#ff6b6b', fontSize: '12px', wordBreak: 'break-word', fontWeight: 'bold' }}>An error occurred. Check the javascript console.</div>}
                   {message && <div style={{ color: '#4dff4d', fontSize: '12px', wordBreak: 'break-word' }}>{message}</div>}
 
