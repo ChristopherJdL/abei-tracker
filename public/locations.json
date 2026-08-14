@@ -338,5 +338,15 @@
     "image": "/scenes/better-kentish-town.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-10T16:11:35.000Z"
+  },
+  {
+    "id": "gherkin-eclipse",
+    "title": "The Gherkin",
+    "subtitle": "Watching the total solar eclipse from the top glass dome.",
+    "lat": 51.5145,
+    "lng": -0.0803,
+    "image": "/scenes/gherkin-eclipse.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-14T20:04:30.000Z"
   }
 ]
