@@ -12,7 +12,6 @@ export function AdminPanel({ sightings, onClose }: AdminPanelProps) {
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
 
   // Restriction logic
   const isBypass = new URLSearchParams(window.location.search).get('restriction') === 'bypass';
@@ -37,7 +36,6 @@ export function AdminPanel({ sightings, onClose }: AdminPanelProps) {
     
     setLoading(true);
     setMessage('');
-    setError('');
 
     try {
       const res = await fetch('/api/add-sighting', {
@@ -62,7 +60,7 @@ export function AdminPanel({ sightings, onClose }: AdminPanelProps) {
       setPassphrase('');
       setDescription('');
     } catch (err: any) {
-      setError(err.message);
+      console.error('API Error:', err);
     } finally {
       setLoading(false);
     }
@@ -136,7 +134,7 @@ export function AdminPanel({ sightings, onClose }: AdminPanelProps) {
                     />
                   </div>
 
-                  {error && <div style={{ color: '#ff6b6b', fontSize: '12px', wordBreak: 'break-word' }}>{error}</div>}
+                  {/* {error && <div style={{ color: '#ff6b6b', fontSize: '12px', wordBreak: 'break-word' }}>{error}</div>} */}
                   {message && <div style={{ color: '#4dff4d', fontSize: '12px', wordBreak: 'break-word' }}>{message}</div>}
 
                   <button 
