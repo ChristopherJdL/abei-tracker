@@ -3,6 +3,7 @@ import { IntroScreen } from './components/IntroScreen'
 import { AbeiMap } from './components/AbeiMap'
 import { EncounterModal } from './components/EncounterModal'
 import { NewsTicker } from './components/NewsTicker'
+import { AdminPanel } from './components/AdminPanel'
 import {
   getDiscoveredIds,
   markDiscovered,
@@ -15,6 +16,7 @@ function App() {
   const [ready, setReady] = useState(false)
   const [sightings, setSightings] = useState<Sighting[]>([])
   const [active, setActive] = useState<Sighting | null>(null)
+  const [adminOpen, setAdminOpen] = useState(false)
   const [discoveredIds, setDiscoveredIds] = useState<Set<string>>(() =>
     getDiscoveredIds(),
   )
@@ -27,6 +29,9 @@ function App() {
       revertDiscovered(revertId)
       setDiscoveredIds(getDiscoveredIds())
       window.history.replaceState({}, '', '/')
+    }
+    if (window.location.pathname === '/new-sighting') {
+      setAdminOpen(true)
     }
   }, [])
 
@@ -54,7 +59,14 @@ function App() {
     if (!ready) return
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setActive(null)
+      if (e.key === 'Escape') {
+        setActive(null)
+        setAdminOpen(false)
+      }
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+        e.preventDefault()
+        setAdminOpen((prev) => !prev)
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -120,6 +132,8 @@ function App() {
       {active && (
         <EncounterModal sighting={active} onClose={() => setActive(null)} />
       )}
+      
+      {adminOpen && <AdminPanel sightings={sightings} onClose={() => setAdminOpen(false)} />}
 
       <footer className="chrome-footer">
         <NewsTicker />
