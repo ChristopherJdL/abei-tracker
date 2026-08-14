@@ -54,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     
     // 3. Gemini Image API: Generate pixel art
     console.log("Calling Gemini Image API...");
-    const imagePrompt = `Pixel art 16-bit scene, 4:3 aspect ratio. Abei the white polar bear (red scarf, mint green shirt). Location: ${aiData.title}. Action: ${aiData.subtitle}. Face: expressionless simple black square dot eyes, tiny pouting mouth. Solid white ears, solid white paws. No text, no speech bubbles.`;
+    const imagePrompt = `Pixel art 16-bit scene, 4:3. Abei the white polar bear (red scarf, mint green shirt). Location: ${aiData.title}. Action: ${aiData.subtitle}. Chunky pixels, thick black outlines, no watermark, no UI chrome. Expressions and speech bubbles are allowed.`;
     
     const imgRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${GEMINI_API_KEY}`, {
       method: 'POST',
