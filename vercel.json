@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/**/*": {
+    "api/add-sighting.ts": {
       "maxDuration": 60
     }
   },
