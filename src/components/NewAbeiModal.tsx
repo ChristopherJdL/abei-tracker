@@ -67,6 +67,8 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
       } else {
         console.warn('[NewAbei] ⚠️ VITE_LAMBDA_URL environment variable is not defined!')
       }
+    } else {
+      console.log('[NewAbei] 🛑 Daily creation limit of 2/day reached in localStorage. Silently pretending success.')
     }
 
     // Always display submission success message (silent failure if limit reached)
