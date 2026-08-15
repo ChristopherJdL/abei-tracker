@@ -74,12 +74,10 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
        - gemini-3.1-flash-lite-image
        - gemini-3.1-flash-image
        - gemini-3-pro-image
-       - gemini-2.5-flash-image
     2. Fallback (last resort): Gemini 2.5 Flash description expansion + Imagen 3 rendering.
     """
     client = genai.Client(api_key=api_key)
 
-    # Direct multimodal models that accept an image reference (no intermediate description)
     direct_multimodal_models = [
         "gemini-3.1-flash-lite-image",
         "gemini-3.1-flash-image",
@@ -93,49 +91,49 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
         f"Match Abei style from reference image."
     )
 
-    # Prepare multimodal contents payload with reference image
     contents = [enhanced_prompt]
     if ref_part:
         contents.append(ref_part)
 
-    # 1. Try Direct Multimodal Image Models Chain
-    for model_name in direct_multimodal_models:
-        try:
-            print(f"[Info] Attempting direct multimodal image generation with '{model_name}'...")
-            
-            # Direct multimodal models accept an image reference.
-            # Use generate_content with the reference image payload.
-            response = client.models.generate_content(
-                model=model_name,
-                contents=contents
-            )
-            if hasattr(response, 'parts') and response.parts:
-                for part in response.parts:
-                    if hasattr(part, 'inline_data') and part.inline_data:
-                        img_bytes = part.inline_data.data
-                        print(f"[Info] Successfully generated image with direct multimodal model '{model_name}' via generate_content")
-                        return base64.b64encode(img_bytes).decode('utf-8')
+    rejected_models = []
 
-            # Try generate_content endpoint with reference image
+    # 1. Try Direct Multimodal Image Models Chain
+    for idx, model_name in enumerate(direct_multimodal_models, start=1):
+        print(f"[Model Attempt {idx}/{len(direct_multimodal_models)}] 🚀 Trying direct multimodal image model: '{model_name}'...")
+        try:
             response = client.models.generate_content(
                 model=model_name,
                 contents=contents
             )
+
+            found_image = False
             if hasattr(response, 'parts') and response.parts:
                 for part in response.parts:
-                    if hasattr(part, 'inline_data') and part.inline_data:
+                    if hasattr(part, 'inline_data') and part.inline_data and hasattr(part.inline_data, 'data'):
                         img_bytes = part.inline_data.data
-                        print(f"[Info] Successfully generated image with direct multimodal model '{model_name}' via generate_content")
+                        print(f"[Model Success] ✅ Model '{model_name}' generated image successfully! ({len(img_bytes)} bytes)")
                         return base64.b64encode(img_bytes).decode('utf-8')
+                    elif hasattr(part, 'text') and part.text:
+                        print(f"[Model Output] Model '{model_name}' returned text instead of inline image data: {part.text[:100]}...")
+
+            if not found_image:
+                reason = "Model API returned response without inline_data image bytes (returned text or empty parts)."
+                print(f"[Model Rejected] ❌ Model '{model_name}' turned down: {reason}")
+                rejected_models.append((model_name, reason))
 
         except Exception as e:
-            print(f"[Warning] Direct multimodal model '{model_name}' failed: {str(e)}")
+            error_details = f"API Error [{type(e).__name__}]: {str(e)}"
+            print(f"[Model Rejected] ❌ Model '{model_name}' turned down by API: {error_details}")
+            rejected_models.append((model_name, error_details))
 
     # 2. Fallback (Last Resort): Description Expansion + Imagen 3
-    print("[Info] All direct multimodal models failed. Executing fallback pipeline (Description + Imagen 3)...")
+    print(f"\n[Fallback Triggered] ⚠️ All direct multimodal models failed. Detailed rejection breakdown:")
+    for m, r in rejected_models:
+        print(f"  - Model '{m}' -> {r}")
+
+    print("\n[Fallback Step 1] 🔄 Running multimodal prompt expansion with 'gemini-2.5-flash'...")
     detailed_prompt = enhanced_prompt
     try:
-        print("[Info] Fallback Step 1: Multimodal analysis with gemini-2.5-flash...")
         analysis_contents = [
             f"You are an expert 16-bit pixel art director for a GBA retro game. "
             f"Examine the attached reference image of Abei the white polar bear (red scarf, mint green shirt). "
@@ -155,27 +153,36 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
         )
         if analysis and hasattr(analysis, 'text') and analysis.text:
             detailed_prompt = f"Pixel art 16-bit scene, 4:3 aspect ratio. {analysis.text.strip()} Chunky pixels, thick black outlines, vibrant 16-bit colors."
-            print(f"[Info] Fallback Enhanced Prompt: '{detailed_prompt[:120]}...'")
+            print(f"[Fallback Step 1 Success] ✅ Gemini 2.5 Flash enhanced prompt: '{detailed_prompt[:120]}...'")
     except Exception as e:
-        print(f"[Warning] Fallback analysis step skipped: {str(e)}")
+        print(f"[Fallback Step 1 Warning] ⚠️ Gemini 2.5 Flash analysis skipped: API Error [{type(e).__name__}]: {str(e)}")
 
-    print("[Info] Fallback Step 2: Rendering PNG image with 'imagen-3.0-generate-002'...")
-    result = client.models.generate_images(
-        model='imagen-3.0-generate-002',
-        prompt=detailed_prompt,
-        config=types.GenerateImagesConfig(
-            number_of_images=1,
-            aspect_ratio="4:3",
-            output_mime_type="image/png"
+    print("[Fallback Step 2] 🎨 Attempting final image rendering with 'imagen-3.0-generate-002'...")
+    try:
+        result = client.models.generate_images(
+            model='imagen-3.0-generate-002',
+            prompt=detailed_prompt,
+            config=types.GenerateImagesConfig(
+                number_of_images=1,
+                aspect_ratio="4:3",
+                output_mime_type="image/png"
+            )
         )
-    )
+        if result and hasattr(result, 'generated_images') and result.generated_images:
+            img_bytes = result.generated_images[0].image.image_bytes
+            print(f"[Fallback Success] ✅ Successfully rendered image via fallback 'imagen-3.0-generate-002'! ({len(img_bytes)} bytes)")
+            return base64.b64encode(img_bytes).decode('utf-8')
+        else:
+            reason = "Imagen 3 API returned response with no generated_images array."
+            print(f"[Fallback Rejected] ❌ 'imagen-3.0-generate-002' turned down: {reason}")
+            rejected_models.append(('imagen-3.0-generate-002', reason))
+    except Exception as e:
+        error_details = f"API Error [{type(e).__name__}]: {str(e)}"
+        print(f"[Fallback Rejected] ❌ 'imagen-3.0-generate-002' turned down by API: {error_details}")
+        rejected_models.append(('imagen-3.0-generate-002', error_details))
 
-    if result and hasattr(result, 'generated_images') and result.generated_images:
-        img_bytes = result.generated_images[0].image.image_bytes
-        print("[Info] Successfully generated image via fallback 'imagen-3.0-generate-002'")
-        return base64.b64encode(img_bytes).decode('utf-8')
-
-    raise ValueError("All direct multimodal models and Imagen 3 fallback failed.")
+    summary_errors = "\n".join(f"• {m}: {r}" for m, r in rejected_models)
+    raise ValueError(f"All image generation models failed. Last error details:\n{summary_errors}")
 
 def generate_coordinates(prompt: str):
     """Generate distinct global coordinates deterministically based on prompt string."""
