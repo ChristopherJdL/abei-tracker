@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { PixelButton } from './PixelButton'
 import type { Sighting } from '../types'
+import './PokemonCard.css'
 
 interface EncounterModalProps {
   sighting: Sighting
@@ -9,13 +10,6 @@ interface EncounterModalProps {
 }
 
 export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
-  const badgeClass =
-    sighting.status === 'SCANNING'
-      ? 'badge scanning'
-      : sighting.status === 'RUMORED'
-        ? 'badge rumored'
-        : 'badge'
-
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -24,20 +18,36 @@ export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
+  const imageFileName = sighting.image.replace('/scenes/', '')
+
   return createPortal(
     <div className="encounter-layer" role="presentation">
       {/* pointer-events: none — map stays draggable while locked */}
       <div className="encounter-dim" aria-hidden />
 
       <div
-        className="pixel-window"
+        className="pokemon-card"
         role="dialog"
         aria-modal="true"
         aria-labelledby="encounter-title"
       >
-        <div className="pixel-window__bezel">
-          <div className="pixel-window__titlebar">
-            <p className="pixel-window__card">ENCOUNTER CARD</p>
+        {/* Top Header Bar */}
+        <div className="pokemon-card__topbar">
+          <div className="pokemon-card__stage-badge">
+            <img
+              className="pixel pokemon-card__stage-img"
+              src="/assets/abei.png"
+              alt=""
+              aria-hidden
+            />
+            <span>TRACKER</span>
+          </div>
+
+          <h2 id="encounter-title" className="pokemon-card__title">
+            {sighting.title}
+          </h2>
+
+          <div className="pokemon-card__close">
             <PixelButton
               variant="red"
               isSquare
@@ -47,46 +57,47 @@ export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
               <span className="pixel-cross" />
             </PixelButton>
           </div>
+        </div>
 
-          <div className="pixel-window__body">
-            <header className="pixel-window__header">
-              <div>
-                <p className="pixel-window__label">SIGHTING LOCKED</p>
-                <h2 id="encounter-title">{sighting.title}</h2>
-                <p className="pixel-window__sub">{sighting.subtitle}</p>
-                <span className={badgeClass}>{sighting.status}</span>
-              </div>
-              <img
-                className="pixel pixel-window__abei"
-                src="/assets/abei.png"
-                alt=""
-                aria-hidden
-              />
-            </header>
+        {/* Center Image Art Box */}
+        <div className="pokemon-card__art-frame">
+          <img
+            className="pixel pokemon-card__art-img"
+            src={sighting.image}
+            alt={`Abei sighting: ${sighting.title}`}
+          />
+          <div className="pokemon-card__art-shine" aria-hidden />
+        </div>
 
-            <div className="pixel-screen">
-              <div className="pixel-screen__frame">
-                <img
-                  className="pixel pixel-screen__img"
-                  src={sighting.image}
-                  alt={`Abei sighting: ${sighting.title}`}
-                />
-                <div className="pixel-screen__scanlines" aria-hidden />
-              </div>
-              <div className="pixel-screen__meta">
-                <span>
-                  LAT {sighting.lat.toFixed(2)} / LNG {sighting.lng.toFixed(2)}
-                </span>
-                <span>SCENE: {sighting.image.replace('/scenes/', '')}</span>
-              </div>
-            </div>
+        {/* Yellow Sub-strip (Coordinates) */}
+        <div className="pokemon-card__strip">
+          Sighting Coords: LAT {sighting.lat.toFixed(2)} • LNG {sighting.lng.toFixed(2)}
+        </div>
 
-            <footer className="pixel-window__footer" style={{ display: 'flex', justifyContent: 'center' }}>
-              <PixelButton variant="blue" onClick={onClose}>
-                BACK TO MAP
-              </PixelButton>
-            </footer>
+        {/* Description / Subtitle Box */}
+        <div className="pokemon-card__body">
+          <div className="pokemon-card__attack">
+            <img
+              className="pixel pokemon-card__paw-icon"
+              src="/assets/bear-print.png"
+              alt=""
+              aria-hidden
+            />
+            <p className="pokemon-card__subtitle">{sighting.subtitle}</p>
           </div>
+        </div>
+
+        {/* Bottom Meta & Image Identifier at bottom right */}
+        <div className="pokemon-card__meta">
+          <span className="pokemon-card__status-badge">{sighting.status}</span>
+          <span className="pokemon-card__image-id">{imageFileName}</span>
+        </div>
+
+        {/* Action Button */}
+        <div className="pokemon-card__footer-action">
+          <PixelButton variant="blue" onClick={onClose}>
+            BACK TO MAP
+          </PixelButton>
         </div>
       </div>
     </div>,
