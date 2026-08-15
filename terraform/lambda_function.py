@@ -69,17 +69,79 @@ def enhance_prompt(raw_prompt: str) -> str:
 
 def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     """
-    Two-step Multimodal Generation Pipeline:
-    1. Gemini 2.5 Flash (Multimodal) analyzes abei.png reference image and expands prompt with 16-bit visual details.
-    2. Imagen 3 (imagen-3.0-generate-002) renders the final high-quality 4:3 16-bit PNG scene image.
+    Generation Pipeline:
+    1. Try direct multimodal image models in sequence with the reference image abei.png (no description intermediate step):
+       - gemini-3.1-flash-lite-image
+       - gemini-3.1-flash-image
+       - gemini-3-pro-image
+       - gemini-2.5-flash-image
+    2. Fallback (last resort): Gemini 2.5 Flash description expansion + Imagen 3 rendering.
     """
     client = genai.Client(api_key=api_key)
 
-    # Step 1: Multimodal prompt expansion with gemini-2.5-flash
-    detailed_prompt = prompt
+    direct_multimodal_models = [
+        "gemini-3.1-flash-lite-image",
+        "gemini-3.1-flash-image",
+        "gemini-3-pro-image",
+        "gemini-2.5-flash-image"
+    ]
+
+    enhanced_prompt = (
+        f"Pixel art 16-bit scene, 4:3 aspect ratio. "
+        f"Abei the white polar bear (red scarf, mint green shirt) {prompt.strip()}. "
+        f"Chunky pixels, thick black outlines, vibrant 16-bit color palette, no watermark, no UI chrome. "
+        f"Match Abei style from reference image."
+    )
+
+    # Prepare multimodal contents payload with reference image
+    contents = [enhanced_prompt]
+    if ref_part:
+        contents.append(ref_part)
+
+    # 1. Try Direct Multimodal Image Models Chain
+    for model_name in direct_multimodal_models:
+        try:
+            print(f"[Info] Attempting direct multimodal image generation with '{model_name}'...")
+            
+            # Try generate_images endpoint first
+            try:
+                result = client.models.generate_images(
+                    model=model_name,
+                    prompt=enhanced_prompt,
+                    config=types.GenerateImagesConfig(
+                        number_of_images=1,
+                        aspect_ratio="4:3",
+                        output_mime_type="image/png"
+                    )
+                )
+                if result and hasattr(result, 'generated_images') and result.generated_images:
+                    img_bytes = result.generated_images[0].image.image_bytes
+                    print(f"[Info] Successfully generated image with direct multimodal model '{model_name}' via generate_images")
+                    return base64.b64encode(img_bytes).decode('utf-8')
+            except Exception as e_gen:
+                print(f"[Debug] generate_images for '{model_name}' skipped: {str(e_gen)}")
+
+            # Try generate_content endpoint with reference image
+            response = client.models.generate_content(
+                model=model_name,
+                contents=contents
+            )
+            if hasattr(response, 'parts') and response.parts:
+                for part in response.parts:
+                    if hasattr(part, 'inline_data') and part.inline_data:
+                        img_bytes = part.inline_data.data
+                        print(f"[Info] Successfully generated image with direct multimodal model '{model_name}' via generate_content")
+                        return base64.b64encode(img_bytes).decode('utf-8')
+
+        except Exception as e:
+            print(f"[Warning] Direct multimodal model '{model_name}' failed: {str(e)}")
+
+    # 2. Fallback (Last Resort): Description Expansion + Imagen 3
+    print("[Info] All direct multimodal models failed. Executing fallback pipeline (Description + Imagen 3)...")
+    detailed_prompt = enhanced_prompt
     try:
-        print("[Info] Step 1: Multimodal analysis with gemini-2.5-flash...")
-        contents = [
+        print("[Info] Fallback Step 1: Multimodal analysis with gemini-2.5-flash...")
+        analysis_contents = [
             f"You are an expert 16-bit pixel art director for a GBA retro game. "
             f"Examine the attached reference image of Abei the white polar bear (red scarf, mint green shirt). "
             f"Write a rich, highly descriptive 16-bit retro pixel art scene prompt for: '{prompt}'.\n\n"
@@ -90,43 +152,35 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
             f"- Art style: 16-bit GBA pixel art graphics, chunky pixels, rich vibrant color palette, thick black outlines, dramatic lighting, no text UI chrome, no watermarks."
         ]
         if ref_part:
-            contents.append(ref_part)
+            analysis_contents.append(ref_part)
 
         analysis = client.models.generate_content(
             model="gemini-2.5-flash",
-            contents=contents
+            contents=analysis_contents
         )
         if analysis and hasattr(analysis, 'text') and analysis.text:
             detailed_prompt = f"Pixel art 16-bit scene, 4:3 aspect ratio. {analysis.text.strip()} Chunky pixels, thick black outlines, vibrant 16-bit colors."
-            print(f"[Info] Multimodal Enhanced Prompt: '{detailed_prompt}'")
+            print(f"[Info] Fallback Enhanced Prompt: '{detailed_prompt[:120]}...'")
     except Exception as e:
-        print(f"[Warning] Multimodal analysis step skipped: {str(e)}")
+        print(f"[Warning] Fallback analysis step skipped: {str(e)}")
 
-    # Step 2: Render PNG image using gemini-3.1-flash-image (Primary) or imagen-3.0-generate-002 (Fallback)
-    image_models = ['gemini-3.1-flash-image', 'imagen-3.0-generate-002']
-    last_error = None
+    print("[Info] Fallback Step 2: Rendering PNG image with 'imagen-3.0-generate-002'...")
+    result = client.models.generate_images(
+        model='imagen-3.0-generate-002',
+        prompt=detailed_prompt,
+        config=types.GenerateImagesConfig(
+            number_of_images=1,
+            aspect_ratio="4:3",
+            output_mime_type="image/png"
+        )
+    )
 
-    for model_name in image_models:
-        try:
-            print(f"[Info] Step 2: Rendering PNG image with '{model_name}'...")
-            result = client.models.generate_images(
-                model=model_name,
-                prompt=detailed_prompt,
-                config=types.GenerateImagesConfig(
-                    number_of_images=1,
-                    aspect_ratio="4:3",
-                    output_mime_type="image/png"
-                )
-            )
-            if result and hasattr(result, 'generated_images') and result.generated_images:
-                img_bytes = result.generated_images[0].image.image_bytes
-                print(f"[Info] Successfully generated 16-bit scene image with '{model_name}'")
-                return base64.b64encode(img_bytes).decode('utf-8')
-        except Exception as e:
-            print(f"[Warning] Image model '{model_name}' failed: {str(e)}")
-            last_error = e
+    if result and hasattr(result, 'generated_images') and result.generated_images:
+        img_bytes = result.generated_images[0].image.image_bytes
+        print("[Info] Successfully generated image via fallback 'imagen-3.0-generate-002'")
+        return base64.b64encode(img_bytes).decode('utf-8')
 
-    raise ValueError(f"All image generation models failed. Last error: {str(last_error)}")
+    raise ValueError("All direct multimodal models and Imagen 3 fallback failed.")
 
 def generate_coordinates(prompt: str):
     """Generate distinct global coordinates deterministically based on prompt string."""
