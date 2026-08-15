@@ -127,10 +127,24 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
                     lineHeight: '1.8',
                   }}
                 >
-                  <p style={{ color: '#ff6b35', marginBottom: '12px' }}>
-                    [ SUBMISSION RECEIVED ]
-                  </p>
-                  <p>
+                  <div
+                    style={{
+                      display: 'inline-block',
+                      padding: '8px 16px',
+                      margin: '0 auto 16px',
+                      background: 'linear-gradient(180deg, #143848 0%, #0d2a38 100%)',
+                      border: '2px solid var(--ice-cyan)',
+                      borderRadius: '6px',
+                      boxShadow: '0 3px 0 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                      color: '#ff7700',
+                      fontSize: '11px',
+                      letterSpacing: '1px',
+                      textShadow: '1px 1px 0 #421200',
+                    }}
+                  >
+                    SUBMISSION RECEIVED
+                  </div>
+                  <p style={{ margin: '8px 0 0', color: 'var(--frost-white)' }}>
                     Your submission is under evaluation, come back later to see if your submission is accepted.
                   </p>
                 </div>

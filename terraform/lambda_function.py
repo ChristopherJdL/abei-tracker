@@ -67,6 +67,10 @@ def enhance_prompt(raw_prompt: str) -> str:
     return enhanced
 
 def generate_gemini_image(api_key: str, prompt: str, ref_image=None) -> str:
+    """
+    Generates a scene image using strictly multimodal Gemini models.
+    Natively accepts text prompt and abei.png reference image together.
+    """
     client = genai.Client(api_key=api_key)
     
     contents = [prompt]
@@ -74,7 +78,7 @@ def generate_gemini_image(api_key: str, prompt: str, ref_image=None) -> str:
         contents.append(ref_image)
         print("[Info] Attached abei.png reference image to multimodal Gemini request")
 
-    # 1. Try Gemini Multimodal models first (which natively take text + abei.png reference image)
+    # Strictly use multimodal Gemini models
     multimodal_models = ["gemini-2.5-flash", "gemini-2.0-flash"]
     last_error = None
 
@@ -89,33 +93,13 @@ def generate_gemini_image(api_key: str, prompt: str, ref_image=None) -> str:
                 for part in response.parts:
                     if part.inline_data:
                         img_bytes = part.inline_data.data
-                        print(f"[Info] Successfully generated image with '{model_name}'")
+                        print(f"[Info] Successfully generated image with multimodal model '{model_name}'")
                         return base64.b64encode(img_bytes).decode('utf-8')
         except Exception as e:
             print(f"[Warning] Multimodal model '{model_name}' failed: {str(e)}")
             last_error = e
 
-    # 2. Fallback to Imagen 3 (text-to-image)
-    try:
-        print(f"[Info] Falling back to 'imagen-3.0-generate-002'...")
-        result = client.models.generate_images(
-            model='imagen-3.0-generate-002',
-            prompt=prompt,
-            config=dict(
-                number_of_images=1,
-                aspect_ratio="4:3",
-                output_mime_type="image/png"
-            )
-        )
-        if result and hasattr(result, 'generated_images') and result.generated_images:
-            img_bytes = result.generated_images[0].image.image_bytes
-            print("[Info] Successfully generated image with 'imagen-3.0-generate-002'")
-            return base64.b64encode(img_bytes).decode('utf-8')
-    except Exception as e:
-        print(f"[Warning] Imagen 3 fallback failed: {str(e)}")
-        last_error = e
-
-    raise ValueError(f"All image generation models failed. Last error: {str(last_error)}")
+    raise ValueError(f"All multimodal Gemini models failed. Last error: {str(last_error)}")
 
 def generate_coordinates(prompt: str):
     """Generate distinct global coordinates deterministically based on prompt string."""
