@@ -2,6 +2,7 @@ import json
 import base64
 import os
 import urllib.request
+import traceback
 
 def parse_event_payload(event) -> dict:
     if isinstance(event, dict) and 'body' in event:
@@ -23,9 +24,14 @@ def make_github_request(url: str, method: str, token: str, data: dict = None) ->
     encoded_data = json.dumps(data).encode('utf-8') if data else None
     request = urllib.request.Request(url, data=encoded_data, headers=headers, method=method)
 
-    with urllib.request.urlopen(request) as response:
-        res_text = response.read().decode('utf-8')
-        return json.loads(res_text) if res_text else {}
+    try:
+        with urllib.request.urlopen(request) as response:
+            res_text = response.read().decode('utf-8')
+            return json.loads(res_text) if res_text else {}
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode('utf-8') if e.fp else ''
+        print(f"[GitHub API HTTPError {e.code}] {url}: {e.reason}\nBody: {error_body}")
+        raise RuntimeError(f"GitHub API Error {e.code}: {e.reason} - {error_body}") from e
 
 def upload_scene_image(owner: str, repo: str, token: str, sighting_id: str, image_b64: str):
     image_path = f"public/scenes/{sighting_id}.png"
@@ -39,7 +45,7 @@ def upload_scene_image(owner: str, repo: str, token: str, sighting_id: str, imag
     }
 
     make_github_request(url, 'PUT', token, payload)
-    print(f"Uploaded scene image '{image_path}' to GitHub")
+    print(f"[Info] Uploaded scene image '{image_path}' to GitHub")
 
 def update_locations_json(owner: str, repo: str, token: str, sighting: dict):
     url = f"https://api.github.com/repos/{owner}/{repo}/contents/public/locations.json"
@@ -62,10 +68,10 @@ def update_locations_json(owner: str, repo: str, token: str, sighting: dict):
     }
 
     make_github_request(url, 'PUT', token, payload)
-    print("Successfully updated and committed public/locations.json on GitHub")
+    print("[Info] Successfully updated and committed public/locations.json on GitHub")
 
 def lambda_handler(event, context):
-    print("GitHub Committer Lambda #2 started...")
+    print(f"[Info] GitHub Committer Lambda #2 started with event: {json.dumps(event)}")
     try:
         payload = parse_event_payload(event)
 
@@ -76,9 +82,11 @@ def lambda_handler(event, context):
         repo = payload.get('github_repo') or os.environ.get('GITHUB_REPO', 'abei-tracker')
 
         if not image_b64 or not sighting or not github_token:
+            err_msg = 'Missing required image_b64, sighting, or github_token.'
+            print(f"[Error] {err_msg}")
             return {
                 'statusCode': 400,
-                'body': json.dumps({'error': 'Missing image_b64, sighting, or github_token.'})
+                'body': json.dumps({'error': err_msg})
             }
 
         # 1. Upload PNG image
@@ -87,14 +95,16 @@ def lambda_handler(event, context):
         # 2. Append to locations.json
         update_locations_json(owner, repo, github_token, sighting)
 
+        print("[Success] All GitHub files committed successfully!")
         return {
             'statusCode': 200,
             'body': json.dumps({'success': True, 'message': 'Deployment triggered on GitHub/Vercel!'})
         }
 
     except Exception as err:
-        print(f"[Error in Lambda #2] {str(err)}")
+        error_trace = traceback.format_exc()
+        print(f"[Fatal Error in Lambda #2] {str(err)}\n{error_trace}")
         return {
             'statusCode': 500,
-            'body': json.dumps({'error': str(err)})
+            'body': json.dumps({'error': str(err), 'traceback': error_trace})
         }

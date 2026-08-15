@@ -3,6 +3,7 @@ import base64
 import os
 import io
 import datetime
+import traceback
 import boto3
 from google import genai
 from PIL import Image
@@ -11,7 +12,7 @@ def build_cors_headers():
     return {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-        'Access-Control-Allow-Methods': 'OPTIONS,POST',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,*',
         'Content-Type': 'application/json'
     }
 
@@ -41,7 +42,7 @@ def decode_reference_image(b64_str: str):
         return None
 
 def generate_gemini_image(api_key: str, prompt: str, ref_image=None) -> str:
-    print(f"Calling Gemini model for prompt: {prompt}")
+    print(f"[Info] Calling Gemini model for prompt: '{prompt}'")
     client = genai.Client(api_key=api_key)
     
     contents = [prompt]
@@ -83,21 +84,24 @@ def trigger_github_committer(sighting: dict, image_b64: str, github_token: str):
             'github_token': github_token
         }
 
-        lambda_client.invoke(
+        response = lambda_client.invoke(
             FunctionName=committer_lambda,
             InvocationType='Event', # Asynchronous trigger
             Payload=json.dumps(payload)
         )
-        print(f"Successfully triggered asynchronous committer Lambda '{committer_lambda}'")
+        print(f"[Info] Successfully triggered asynchronous committer Lambda '{committer_lambda}'. Invoke StatusCode: {response.get('StatusCode')}")
     except Exception as err:
-        print(f"[Error] Failed to invoke committer Lambda: {str(err)}")
+        print(f"[Error] Failed to invoke committer Lambda '{committer_lambda}': {str(err)}")
+        raise RuntimeError(f"Committer Lambda invocation failed: {str(err)}") from err
 
 def lambda_handler(event, context):
     # Handle CORS OPTIONS preflight
     if event.get('requestContext', {}).get('http', {}).get('method') == 'OPTIONS':
-        return build_response(200, {})
+        return build_response(200, {'status': 'ok'})
 
     try:
+        print(f"[Info] Received Lambda invocation event: {json.dumps(event)}")
+        
         # 1. Parse Inputs
         body = parse_event_body(event)
         prompt = body.get('prompt')
@@ -105,10 +109,22 @@ def lambda_handler(event, context):
         github_token = body.get('github_token') or os.environ.get('GITHUB_TOKEN')
 
         if not prompt:
-            return build_response(400, {'error': 'Missing required parameter: prompt'})
+            return build_response(400, {
+                'success': False,
+                'error': 'Missing required parameter: prompt'
+            })
 
         if not api_key:
-            return build_response(400, {'error': 'Missing Gemini API Key.'})
+            return build_response(400, {
+                'success': False,
+                'error': 'Missing Gemini API Key in environment variable GEMINI_API_KEY'
+            })
+
+        if not github_token:
+            return build_response(400, {
+                'success': False,
+                'error': 'Missing GitHub Token in environment variable GITHUB_TOKEN'
+            })
 
         # 2. Decode Reference Image & Generate Scene
         ref_image = decode_reference_image(body.get('reference_image'))
@@ -118,13 +134,20 @@ def lambda_handler(event, context):
         sighting = build_sighting_metadata(prompt)
         trigger_github_committer(sighting, generated_b64, github_token)
 
-        # 4. Return Immediate Success
+        # 4. Return Immediate Detailed Success
         return build_response(200, {
             'success': True,
-            'message': 'Image generated and queued for GitHub deployment.',
-            'image': f"data:image/png;base64,{generated_b64}"
+            'message': 'Image successfully generated and queued for GitHub commit.',
+            'sighting': sighting,
+            'image_preview': f"data:image/png;base64,{generated_b64[:100]}..."
         })
 
     except Exception as err:
-        print(f"[Fatal Error] {str(err)}")
-        return build_response(500, {'error': f'Internal Server Error: {str(err)}'})
+        error_trace = traceback.format_exc()
+        print(f"[Fatal Error] {str(err)}\n{error_trace}")
+        return build_response(500, {
+            'success': False,
+            'error': str(err),
+            'error_type': type(err).__name__,
+            'traceback': error_trace
+        })

@@ -32,15 +32,40 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
 
       const lambdaUrl = import.meta.env.VITE_LAMBDA_URL || ''
       if (lambdaUrl) {
+        console.log('[NewAbei] 🚀 Sending request to Lambda endpoint:', lambdaUrl, { prompt: promptText })
+
         fetch(lambdaUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             prompt: promptText,
           }),
-        }).catch(() => {
-          // Fire and forget - ignore errors
         })
+          .then(async (res) => {
+            let responseData: any = null
+            try {
+              responseData = await res.json()
+            } catch {
+              responseData = null
+            }
+
+            if (!res.ok) {
+              console.error(
+                `[NewAbei] ❌ Lambda execution failed with HTTP status ${res.status}:`,
+                responseData || 'No JSON body received'
+              )
+              if (responseData?.traceback) {
+                console.error('[NewAbei] 📋 Lambda Remote Traceback:\n' + responseData.traceback)
+              }
+            } else {
+              console.log('[NewAbei] ✅ Lambda execution succeeded:', responseData)
+            }
+          })
+          .catch((err) => {
+            console.error('[NewAbei] 💥 Network/Fetch error calling Lambda endpoint:', err)
+          })
+      } else {
+        console.warn('[NewAbei] ⚠️ VITE_LAMBDA_URL environment variable is not defined!')
       }
     }
 
