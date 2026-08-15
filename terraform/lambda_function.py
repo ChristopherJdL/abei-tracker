@@ -79,11 +79,11 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     """
     client = genai.Client(api_key=api_key)
 
+    # Direct multimodal models that accept an image reference (no intermediate description)
     direct_multimodal_models = [
         "gemini-3.1-flash-lite-image",
         "gemini-3.1-flash-image",
-        "gemini-3-pro-image",
-        "gemini-2.5-flash-image"
+        "gemini-3-pro-image"
     ]
 
     enhanced_prompt = (
@@ -103,23 +103,18 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
         try:
             print(f"[Info] Attempting direct multimodal image generation with '{model_name}'...")
             
-            # Try generate_images endpoint first
-            try:
-                result = client.models.generate_images(
-                    model=model_name,
-                    prompt=enhanced_prompt,
-                    config=types.GenerateImagesConfig(
-                        number_of_images=1,
-                        aspect_ratio="4:3",
-                        output_mime_type="image/png"
-                    )
-                )
-                if result and hasattr(result, 'generated_images') and result.generated_images:
-                    img_bytes = result.generated_images[0].image.image_bytes
-                    print(f"[Info] Successfully generated image with direct multimodal model '{model_name}' via generate_images")
-                    return base64.b64encode(img_bytes).decode('utf-8')
-            except Exception as e_gen:
-                print(f"[Debug] generate_images for '{model_name}' skipped: {str(e_gen)}")
+            # Direct multimodal models accept an image reference.
+            # Use generate_content with the reference image payload.
+            response = client.models.generate_content(
+                model=model_name,
+                contents=contents
+            )
+            if hasattr(response, 'parts') and response.parts:
+                for part in response.parts:
+                    if hasattr(part, 'inline_data') and part.inline_data:
+                        img_bytes = part.inline_data.data
+                        print(f"[Info] Successfully generated image with direct multimodal model '{model_name}' via generate_content")
+                        return base64.b64encode(img_bytes).decode('utf-8')
 
             # Try generate_content endpoint with reference image
             response = client.models.generate_content(
