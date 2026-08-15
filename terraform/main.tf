@@ -45,9 +45,7 @@ variable "gemini_api_key" {
 # ==========================================
 resource "null_resource" "install_dependencies" {
   triggers = {
-    requirements = filesha256("${path.module}/requirements.txt")
-    code         = filesha256("${path.module}/lambda_function.py")
-    ref_image    = filesha256("${path.module}/abei.png")
+    always_run = timestamp()
   }
 
   provisioner "local-exec" {
