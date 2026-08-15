@@ -5,6 +5,7 @@ import {
   canCreateSightingToday,
   recordSightingCreationToday,
 } from '../lib/creations'
+import './PokemonCard.css'
 
 interface NewAbeiModalProps {
   onClose: () => void
@@ -83,15 +84,28 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
       <div className="encounter-dim" aria-hidden />
 
       <div
-        className="pixel-window"
+        className="pokemon-card"
         role="dialog"
         aria-modal="true"
         aria-labelledby="request-title"
-        style={{ maxWidth: '420px' }}
       >
-        <div className="pixel-window__bezel">
-          <div className="pixel-window__titlebar">
-            <p className="pixel-window__card">NEW ABEI REQUEST</p>
+        {/* Top Header Bar */}
+        <div className="pokemon-card__topbar">
+          <div className="pokemon-card__stage-badge">
+            <img
+              className="pixel pokemon-card__stage-img"
+              src="/assets/abei.png"
+              alt=""
+              aria-hidden
+            />
+            <span>NEW SIGHTING</span>
+          </div>
+
+          <h2 id="request-title" className="pokemon-card__title">
+            SUBMIT A SIGHTING
+          </h2>
+
+          <div className="pokemon-card__close">
             <PixelButton
               variant="red"
               isSquare
@@ -101,142 +115,139 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
               <span className="pixel-cross" />
             </PixelButton>
           </div>
+        </div>
 
-          <div className="pixel-window__body">
-            <header className="pixel-window__header">
-              <div>
-                <p className="pixel-window__label" style={{ color: '#ff6b35' }}>
-                  NEW DISCOVERY
-                </p>
-                <h2 id="request-title" style={{ fontSize: '15px' }}>
-                  SUBMIT A SIGHTING
-                </h2>
-              </div>
-              <img
-                className="pixel pixel-window__abei"
-                src="/assets/abei.png"
-                alt=""
-                aria-hidden
-              />
-            </header>
+        {/* Sub-strip Header */}
+        <div className="pokemon-card__strip">
+          Sighting Request Channel • Global Polar Bear Tracker
+        </div>
 
-            <div className="pixel-screen" style={{ padding: '16px' }}>
-              {submitted ? (
-                <div
-                  style={{
-                    padding: '20px 10px',
-                    textAlign: 'center',
-                    color: '#ffffff',
-                    fontFamily: "'Press Start 2P', monospace, sans-serif",
-                    fontSize: '11px',
-                    lineHeight: '1.8',
-                  }}
-                >
-                  {isLimitReached ? (
-                    <>
-                      <div
-                        style={{
-                          display: 'inline-block',
-                          padding: '8px 14px',
-                          margin: '0 auto 14px',
-                          background: 'linear-gradient(180deg, #5c0d0d 0%, #300707 100%)',
-                          border: '2px solid #ef4444',
-                          borderRadius: '6px',
-                          boxShadow: '0 3px 0 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                          color: '#ff5555',
-                          fontSize: '10px',
-                          letterSpacing: '1px',
-                          textShadow: '1px 1px 0 #2b0000',
-                        }}
-                      >
-                        LIMIT OF SUBMISSION REACHED
-                      </div>
-                      <p style={{ margin: '8px 0 0', color: 'var(--frost-white)', fontSize: '10px', lineHeight: '1.7' }}>
-                        Daily tracker quota reached! Abei is resting in his arctic den. Maximum 2 Abei creations per day allowed per operator. Come back tomorrow to hunt more paws!
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <div
-                        style={{
-                          display: 'inline-block',
-                          padding: '8px 16px',
-                          margin: '0 auto 16px',
-                          background: 'linear-gradient(180deg, #143848 0%, #0d2a38 100%)',
-                          border: '2px solid var(--ice-cyan)',
-                          borderRadius: '6px',
-                          boxShadow: '0 3px 0 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                          color: '#ff7700',
-                          fontSize: '11px',
-                          letterSpacing: '1px',
-                          textShadow: '1px 1px 0 #421200',
-                        }}
-                      >
-                        SUBMISSION RECEIVED
-                      </div>
-                      <p style={{ margin: '8px 0 0', color: 'var(--frost-white)' }}>
-                        Your submission is under evaluation, come back later to see if your submission is accepted.
-                      </p>
-                    </>
-                  )}
-                </div>
-              ) : (
-                <form
-                  onSubmit={handleSubmit}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '14px',
-                  }}
-                >
-                  <label
-                    htmlFor="abei-prompt-input"
+        {/* Body Content */}
+        <div className="pokemon-card__body">
+          {submitted ? (
+            <div
+              style={{
+                padding: '12px 6px',
+                textAlign: 'center',
+                color: '#1e293b',
+                fontFamily: "'Press Start 2P', monospace, sans-serif",
+                fontSize: '10px',
+                lineHeight: '1.8',
+              }}
+            >
+              {isLimitReached ? (
+                <>
+                  <div
                     style={{
-                      fontFamily: "'Press Start 2P', monospace, sans-serif",
+                      display: 'inline-block',
+                      padding: '8px 14px',
+                      margin: '0 auto 14px',
+                      background: 'linear-gradient(180deg, #5c0d0d 0%, #300707 100%)',
+                      border: '2px solid #ef4444',
+                      borderRadius: '6px',
+                      boxShadow: '0 3px 0 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                      color: '#ff5555',
                       fontSize: '10px',
-                      color: 'var(--ice-cyan)',
-                      lineHeight: '1.5',
+                      letterSpacing: '1px',
+                      textShadow: '1px 1px 0 #2b0000',
                     }}
                   >
-                    Where do you want to see Abei next?
-                  </label>
-
-                  <textarea
-                    id="abei-prompt-input"
-                    value={promptText}
-                    onChange={(e) => setPromptText(e.target.value)}
-                    rows={4}
-                    placeholder="e.g. Abei eating ramen in Tokyo..."
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      background: 'rgba(4, 16, 24, 0.85)',
-                      border: '2px solid var(--ice-edge)',
-                      borderRadius: '4px',
-                      color: '#ffffff',
-                      fontFamily: 'inherit',
-                      fontSize: '12px',
-                      lineHeight: '1.4',
-                      resize: 'none',
-                      boxSizing: 'border-box',
-                      outline: 'none',
-                    }}
-                  />
-
-                  <div style={{ marginTop: '6px', textAlign: 'center' }}>
-                    <PixelButton type="submit">SUBMIT</PixelButton>
+                    LIMIT OF SUBMISSION REACHED
                   </div>
-                </form>
+                  <p style={{ margin: '8px 0 0', color: '#334155', fontSize: '9px', lineHeight: '1.7' }}>
+                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 2 Abei creations per day allowed per operator. Come back tomorrow to hunt more paws!
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div
+                    style={{
+                      display: 'inline-block',
+                      padding: '8px 16px',
+                      margin: '0 auto 16px',
+                      background: 'linear-gradient(180deg, #143848 0%, #0d2a38 100%)',
+                      border: '2px solid var(--ice-cyan)',
+                      borderRadius: '6px',
+                      boxShadow: '0 3px 0 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                      color: '#ff7700',
+                      fontSize: '10px',
+                      letterSpacing: '1px',
+                      textShadow: '1px 1px 0 #421200',
+                    }}
+                  >
+                    SUBMISSION RECEIVED
+                  </div>
+                  <p style={{ margin: '8px 0 0', color: '#334155', fontSize: '9px', lineHeight: '1.7' }}>
+                    Your submission is under evaluation, come back later to see if your submission is accepted.
+                  </p>
+                </>
               )}
             </div>
+          ) : (
+            <form
+              onSubmit={handleSubmit}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+              }}
+            >
+              <label
+                htmlFor="abei-prompt-input"
+                style={{
+                  fontFamily: "'Press Start 2P', monospace, sans-serif",
+                  fontSize: '9px',
+                  color: '#0c4a6e',
+                  lineHeight: '1.6',
+                }}
+              >
+                Where do you want to see Abei next?
+              </label>
 
-            <footer className="pixel-window__footer" style={{ display: 'flex', justifyContent: 'center' }}>
-              <PixelButton variant="blue" onClick={onClose}>
-                {submitted ? 'CLOSE' : 'BACK TO MAP'}
-              </PixelButton>
-            </footer>
-          </div>
+              <textarea
+                id="abei-prompt-input"
+                value={promptText}
+                onChange={(e) => setPromptText(e.target.value)}
+                rows={4}
+                placeholder="e.g. Abei eating ramen in Tokyo..."
+                required
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  background: '#ffffff',
+                  border: '2px solid #38bdf8',
+                  borderRadius: '6px',
+                  color: '#0f172a',
+                  fontFamily: 'inherit',
+                  fontSize: '11px',
+                  lineHeight: '1.5',
+                  resize: 'none',
+                  boxSizing: 'border-box',
+                  outline: 'none',
+                  boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.1)',
+                }}
+              />
+
+              <div style={{ marginTop: '4px', textAlign: 'center' }}>
+                <PixelButton type="submit" variant="orange">
+                  SUBMIT SIGHTING
+                </PixelButton>
+              </div>
+            </form>
+          )}
+        </div>
+
+        {/* Bottom Meta Bar */}
+        <div className="pokemon-card__meta">
+          <span className="pokemon-card__status-badge">INPUT CHANNEL</span>
+          <span className="pokemon-card__image-id">ABEI-PROMPT-V1</span>
+        </div>
+
+        {/* Action Button */}
+        <div className="pokemon-card__footer-action">
+          <PixelButton variant="blue" onClick={onClose}>
+            {submitted ? 'CLOSE' : 'BACK TO MAP'}
+          </PixelButton>
         </div>
       </div>
     </div>,
