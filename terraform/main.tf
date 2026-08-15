@@ -46,6 +46,12 @@ resource "null_resource" "tfc_trigger" {
   }
 }
 
+resource "null_resource" "tfc_vcs_trigger_2" {
+  triggers = {
+    vcs_push_time = timestamp()
+  }
+}
+
 # ==========================================
 # 1. Lambda #1 Build & Package
 # ==========================================
