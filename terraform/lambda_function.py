@@ -102,24 +102,31 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     except Exception as e:
         print(f"[Warning] Multimodal analysis step skipped: {str(e)}")
 
-    # Step 2: Render PNG image with Imagen 3
-    print("[Info] Step 2: Rendering PNG image with 'imagen-3.0-generate-002'...")
-    result = client.models.generate_images(
-        model='imagen-3.0-generate-002',
-        prompt=detailed_prompt,
-        config=types.GenerateImagesConfig(
-            number_of_images=1,
-            aspect_ratio="4:3",
-            output_mime_type="image/png"
-        )
-    )
+    # Step 2: Render PNG image using gemini-3.1-flash-image (Primary) or imagen-3.0-generate-002 (Fallback)
+    image_models = ['gemini-3.1-flash-image', 'imagen-3.0-generate-002']
+    last_error = None
 
-    if result and hasattr(result, 'generated_images') and result.generated_images:
-        img_bytes = result.generated_images[0].image.image_bytes
-        print("[Info] Successfully generated 16-bit scene image with 'imagen-3.0-generate-002'")
-        return base64.b64encode(img_bytes).decode('utf-8')
+    for model_name in image_models:
+        try:
+            print(f"[Info] Step 2: Rendering PNG image with '{model_name}'...")
+            result = client.models.generate_images(
+                model=model_name,
+                prompt=detailed_prompt,
+                config=types.GenerateImagesConfig(
+                    number_of_images=1,
+                    aspect_ratio="4:3",
+                    output_mime_type="image/png"
+                )
+            )
+            if result and hasattr(result, 'generated_images') and result.generated_images:
+                img_bytes = result.generated_images[0].image.image_bytes
+                print(f"[Info] Successfully generated 16-bit scene image with '{model_name}'")
+                return base64.b64encode(img_bytes).decode('utf-8')
+        except Exception as e:
+            print(f"[Warning] Image model '{model_name}' failed: {str(e)}")
+            last_error = e
 
-    raise ValueError("Imagen 3 returned no image data.")
+    raise ValueError(f"All image generation models failed. Last error: {str(last_error)}")
 
 def generate_coordinates(prompt: str):
     """Generate distinct global coordinates deterministically based on prompt string."""
