@@ -8,7 +8,6 @@ import random
 import boto3
 from google import genai
 from google.genai import types
-from PIL import Image
 
 def build_cors_headers():
     return {
@@ -19,7 +18,8 @@ def build_response(status_code: int, body_data: dict):
     return {
         'statusCode': status_code,
         'headers': build_cors_headers(),
-        'body': json.dumps(body_data)
+        'body': json.dumps(body_data),
+        'isBase64Encoded': False
     }
 
 def parse_event_body(event: dict) -> dict:
@@ -69,37 +69,54 @@ def enhance_prompt(raw_prompt: str) -> str:
 
 def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     """
-    Generates a scene image using strictly multimodal Gemini models (gemini-2.5-flash, gemini-2.0-flash).
-    Natively accepts text prompt and abei.png reference image Part together.
+    Generates a scene image using Imagen 3 (imagen-3.0-generate-002) or Gemini multimodal models.
     """
     client = genai.Client(api_key=api_key)
     
+    # 1. Primary: Use Imagen 3 image generation model
+    try:
+        print(f"[Info] Attempting image generation with 'imagen-3.0-generate-002'...")
+        result = client.models.generate_images(
+            model='imagen-3.0-generate-002',
+            prompt=prompt,
+            config=types.GenerateImagesConfig(
+                number_of_images=1,
+                aspect_ratio="4:3",
+                output_mime_type="image/png"
+            )
+        )
+        if result and hasattr(result, 'generated_images') and result.generated_images:
+            img_bytes = result.generated_images[0].image.image_bytes
+            print("[Info] Successfully generated image with 'imagen-3.0-generate-002'")
+            return base64.b64encode(img_bytes).decode('utf-8')
+    except Exception as e:
+        print(f"[Warning] Imagen 3 generate_images failed: {str(e)}")
+
+    # 2. Multimodal fallback: Try gemini-2.5-flash / gemini-2.0-flash with generate_content
+    multimodal_models = ["gemini-2.5-flash", "gemini-2.0-flash"]
     contents = [prompt]
     if ref_part:
         contents.append(ref_part)
-        print("[Info] Attached abei.png Part to multimodal Gemini request")
 
-    multimodal_models = ["gemini-2.5-flash", "gemini-2.0-flash"]
     last_error = None
-
     for model_name in multimodal_models:
         try:
-            print(f"[Info] Attempting multimodal generation with '{model_name}'...")
+            print(f"[Info] Attempting multimodal content generation with '{model_name}'...")
             response = client.models.generate_content(
                 model=model_name,
                 contents=contents
             )
             if hasattr(response, 'parts') and response.parts:
                 for part in response.parts:
-                    if part.inline_data:
+                    if hasattr(part, 'inline_data') and part.inline_data:
                         img_bytes = part.inline_data.data
-                        print(f"[Info] Successfully generated image with multimodal model '{model_name}'")
+                        print(f"[Info] Successfully generated image with '{model_name}'")
                         return base64.b64encode(img_bytes).decode('utf-8')
         except Exception as e:
             print(f"[Warning] Multimodal model '{model_name}' failed: {str(e)}")
             last_error = e
 
-    raise ValueError(f"All multimodal Gemini models failed. Last error: {str(last_error)}")
+    raise ValueError(f"All image generation models failed. Last error: {str(last_error)}")
 
 def generate_coordinates(prompt: str):
     """Generate distinct global coordinates deterministically based on prompt string."""
@@ -179,7 +196,7 @@ def lambda_handler(event, context):
         ref_part = get_reference_part(body.get('reference_image'))
         enhanced_prompt = enhance_prompt(raw_prompt)
 
-        # 3. Generate Scene Image with Multimodal Gemini
+        # 3. Generate Scene Image with Gemini
         generated_b64 = generate_gemini_image(api_key, enhanced_prompt, ref_part)
 
         # 4. Create Sighting Metadata & Trigger GitHub Committer
