@@ -69,36 +69,52 @@ def enhance_prompt(raw_prompt: str) -> str:
 
 def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     """
-    Generates a scene image using strictly multimodal Gemini models (gemini-2.5-flash, gemini-2.5-pro, gemini-2.0-flash).
-    Natively accepts text prompt and abei.png reference image Part together.
+    Two-step Multimodal Generation Pipeline:
+    1. Gemini 2.5 Flash (Multimodal) analyzes abei.png reference image and expands prompt with 16-bit visual details.
+    2. Imagen 3 (imagen-3.0-generate-002) renders the final high-quality 4:3 16-bit PNG scene image.
     """
     client = genai.Client(api_key=api_key)
-    
-    multimodal_models = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
-    contents = [prompt]
-    if ref_part:
-        contents.append(ref_part)
-        print("[Info] Attached abei.png reference image Part to multimodal Gemini request")
 
-    last_error = None
-    for model_name in multimodal_models:
-        try:
-            print(f"[Info] Attempting multimodal content generation with '{model_name}'...")
-            response = client.models.generate_content(
-                model=model_name,
-                contents=contents
-            )
-            if hasattr(response, 'parts') and response.parts:
-                for part in response.parts:
-                    if hasattr(part, 'inline_data') and part.inline_data:
-                        img_bytes = part.inline_data.data
-                        print(f"[Info] Successfully generated image with multimodal model '{model_name}'")
-                        return base64.b64encode(img_bytes).decode('utf-8')
-        except Exception as e:
-            print(f"[Warning] Multimodal model '{model_name}' failed: {str(e)}")
-            last_error = e
+    # Step 1: Multimodal prompt expansion with gemini-2.5-flash
+    detailed_prompt = prompt
+    try:
+        print("[Info] Step 1: Multimodal analysis with gemini-2.5-flash...")
+        contents = [
+            f"Look at this reference image of Abei the polar bear (red scarf, mint green shirt). "
+            f"Write a concise 16-bit retro pixel art scene prompt for: {prompt}. "
+            f"Include 4:3 composition, chunky pixels, thick black outlines, and retro 16-bit palette. Under 80 words."
+        ]
+        if ref_part:
+            contents.append(ref_part)
 
-    raise ValueError(f"All multimodal Gemini models failed. Last error: {str(last_error)}")
+        analysis = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=contents
+        )
+        if analysis and hasattr(analysis, 'text') and analysis.text:
+            detailed_prompt = f"Pixel art 16-bit scene, 4:3 aspect ratio. {analysis.text.strip()} Chunky pixels, thick black outlines."
+            print(f"[Info] Multimodal Enhanced Prompt: '{detailed_prompt[:120]}...'")
+    except Exception as e:
+        print(f"[Warning] Multimodal analysis step skipped: {str(e)}")
+
+    # Step 2: Render PNG image with Imagen 3
+    print("[Info] Step 2: Rendering PNG image with 'imagen-3.0-generate-002'...")
+    result = client.models.generate_images(
+        model='imagen-3.0-generate-002',
+        prompt=detailed_prompt,
+        config=types.GenerateImagesConfig(
+            number_of_images=1,
+            aspect_ratio="4:3",
+            output_mime_type="image/png"
+        )
+    )
+
+    if result and hasattr(result, 'generated_images') and result.generated_images:
+        img_bytes = result.generated_images[0].image.image_bytes
+        print("[Info] Successfully generated 16-bit scene image with 'imagen-3.0-generate-002'")
+        return base64.b64encode(img_bytes).decode('utf-8')
+
+    raise ValueError("Imagen 3 returned no image data.")
 
 def generate_coordinates(prompt: str):
     """Generate distinct global coordinates deterministically based on prompt string."""
