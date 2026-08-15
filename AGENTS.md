@@ -1,4 +1,4 @@
-# AGENTS.md — Abei Finder GBA
+# AGENTS.md — Abei Tracker GBA
 
 Context for coding agents working on this repo. Keep changes small, match the existing pixel/arctic aesthetic, and never commit secrets or Vercel/GitHub credentials.
 

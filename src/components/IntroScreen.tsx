@@ -14,7 +14,7 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
           alt="Abei the polar bear waving"
         />
         <h1>
-          ABEI <span>FINDER</span>
+          ABEI <span>TRACKER</span>
         </h1>
         <p>
           Frost scan online. Tap an ice print on the globe to catch Abei mid-adventure.

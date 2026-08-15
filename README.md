@@ -1,4 +1,4 @@
-# Abei Finder GBA
+# Abei Tracker GBA
 
 Pixel-art SPA that tracks **Abei**, a polar bear, around the world. Inspired by [Spidey Tracker](https://spideytracker.net/), but simpler: OpenStreetMap, bear-print markers, and encounter scenes loaded from JSON.
 

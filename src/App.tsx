@@ -90,7 +90,7 @@ function App() {
         <div className="brand">
           <img className="pixel" src="/assets/bear-print.png" alt="" />
           <div className="brand-text">
-            <strong>ABEI FINDER GBA</strong>
+            <strong>ABEI TRACKER GBA</strong>
             <small>POLAR BEAR TRACKER</small>
           </div>
         </div>

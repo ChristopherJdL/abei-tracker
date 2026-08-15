@@ -119,7 +119,7 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
 
         {/* Sub-strip Header */}
         <div className="pokemon-card__strip">
-          Sighting Request Channel • Global Polar Bear Tracker
+          Global Polar Bear Tracker
         </div>
 
         {/* Body Content */}
@@ -237,11 +237,7 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
           )}
         </div>
 
-        {/* Bottom Meta Bar */}
-        <div className="pokemon-card__meta">
-          <span className="pokemon-card__status-badge">INPUT CHANNEL</span>
-          <span className="pokemon-card__image-id">ABEI-PROMPT-V1</span>
-        </div>
+
 
         {/* Action Button */}
         <div className="pokemon-card__footer-action">
