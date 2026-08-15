@@ -69,9 +69,35 @@ def enhance_prompt(raw_prompt: str) -> str:
 def generate_gemini_image(api_key: str, prompt: str, ref_image=None) -> str:
     client = genai.Client(api_key=api_key)
     
-    # 1. Try Imagen 3 model via generate_images
+    contents = [prompt]
+    if ref_image:
+        contents.append(ref_image)
+        print("[Info] Attached abei.png reference image to multimodal Gemini request")
+
+    # 1. Try Gemini Multimodal models first (which natively take text + abei.png reference image)
+    multimodal_models = ["gemini-2.5-flash", "gemini-2.0-flash"]
+    last_error = None
+
+    for model_name in multimodal_models:
+        try:
+            print(f"[Info] Attempting multimodal generation with '{model_name}'...")
+            response = client.models.generate_content(
+                model=model_name,
+                contents=contents
+            )
+            if hasattr(response, 'parts') and response.parts:
+                for part in response.parts:
+                    if part.inline_data:
+                        img_bytes = part.inline_data.data
+                        print(f"[Info] Successfully generated image with '{model_name}'")
+                        return base64.b64encode(img_bytes).decode('utf-8')
+        except Exception as e:
+            print(f"[Warning] Multimodal model '{model_name}' failed: {str(e)}")
+            last_error = e
+
+    # 2. Fallback to Imagen 3 (text-to-image)
     try:
-        print(f"[Info] Attempting image generation with 'imagen-3.0-generate-002'...")
+        print(f"[Info] Falling back to 'imagen-3.0-generate-002'...")
         result = client.models.generate_images(
             model='imagen-3.0-generate-002',
             prompt=prompt,
@@ -86,31 +112,8 @@ def generate_gemini_image(api_key: str, prompt: str, ref_image=None) -> str:
             print("[Info] Successfully generated image with 'imagen-3.0-generate-002'")
             return base64.b64encode(img_bytes).decode('utf-8')
     except Exception as e:
-        print(f"[Warning] Imagen 3 generate_images failed: {str(e)}. Falling back to generate_content...")
-
-    # 2. Fallback to Gemini Multimodal models via generate_content
-    fallback_models = ["gemini-2.5-flash", "gemini-2.0-flash"]
-    contents = [prompt]
-    if ref_image:
-        contents.append(ref_image)
-
-    last_error = None
-    for model_name in fallback_models:
-        try:
-            print(f"[Info] Attempting generation with '{model_name}'...")
-            response = client.models.generate_content(
-                model=model_name,
-                contents=contents
-            )
-            if hasattr(response, 'parts') and response.parts:
-                for part in response.parts:
-                    if part.inline_data:
-                        img_bytes = part.inline_data.data
-                        print(f"[Info] Successfully generated image with '{model_name}'")
-                        return base64.b64encode(img_bytes).decode('utf-8')
-        except Exception as e:
-            print(f"[Warning] Model '{model_name}' failed: {str(e)}")
-            last_error = e
+        print(f"[Warning] Imagen 3 fallback failed: {str(e)}")
+        last_error = e
 
     raise ValueError(f"All image generation models failed. Last error: {str(last_error)}")
 
