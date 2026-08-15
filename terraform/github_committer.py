@@ -38,25 +38,43 @@ def upload_scene_image(owner: str, repo: str, token: str, sighting_id: str, imag
     url = f"https://api.github.com/repos/{owner}/{repo}/contents/{image_path}"
     
     clean_b64 = image_b64.split(',')[1] if ',' in image_b64 else image_b64
+    
+    # Check if file already exists to supply sha for overwrite
+    existing_sha = None
+    try:
+        get_res = make_github_request(f"{url}?ref=main", 'GET', token)
+        existing_sha = get_res.get('sha')
+    except Exception:
+        existing_sha = None
+
     payload = {
         "message": f"feat: add scene image for {sighting_id} via Lambda #2",
         "content": clean_b64,
         "branch": "main"
     }
+    if existing_sha:
+        payload["sha"] = existing_sha
 
     make_github_request(url, 'PUT', token, payload)
     print(f"[Info] Uploaded scene image '{image_path}' to GitHub")
 
 def update_locations_json(owner: str, repo: str, token: str, sighting: dict):
-    url = f"https://api.github.com/repos/{owner}/{repo}/contents/public/locations.json"
+    get_url = f"https://api.github.com/repos/{owner}/{repo}/contents/public/locations.json?ref=main"
+    put_url = f"https://api.github.com/repos/{owner}/{repo}/contents/public/locations.json"
     
-    # 1. Fetch current locations.json
-    loc_file = make_github_request(url, 'GET', token)
+    # 1. Fetch current locations.json from latest main branch HEAD
+    loc_file = make_github_request(get_url, 'GET', token)
     current_sha = loc_file['sha']
     current_json = json.loads(base64.b64decode(loc_file['content']).decode('utf-8'))
 
-    # 2. Append new sighting
-    current_json.append(sighting)
+    # 2. Update existing entry or append new sighting
+    existing_index = next((i for i, s in enumerate(current_json) if s.get('id') == sighting['id']), None)
+    if existing_index is not None:
+        current_json[existing_index] = sighting
+        print(f"[Info] Updated existing sighting entry '{sighting['id']}' in locations.json")
+    else:
+        current_json.append(sighting)
+        print(f"[Info] Appended new sighting entry '{sighting['id']}' (total {len(current_json)} items) to locations.json")
 
     # 3. Commit updated locations.json
     updated_b64 = base64.b64encode(json.dumps(current_json, indent=2).encode('utf-8')).decode('utf-8')
@@ -67,8 +85,8 @@ def update_locations_json(owner: str, repo: str, token: str, sighting: dict):
         "branch": "main"
     }
 
-    make_github_request(url, 'PUT', token, payload)
-    print("[Info] Successfully updated and committed public/locations.json on GitHub")
+    make_github_request(put_url, 'PUT', token, payload)
+    print(f"[Info] Successfully committed public/locations.json on GitHub for sighting '{sighting['id']}'")
 
 def lambda_handler(event, context):
     print(f"[Info] GitHub Committer Lambda #2 started with event: {json.dumps(event)}")
@@ -92,7 +110,7 @@ def lambda_handler(event, context):
         # 1. Upload PNG image
         upload_scene_image(owner, repo, github_token, sighting['id'], image_b64)
 
-        # 2. Append to locations.json
+        # 2. Append/Update locations.json
         update_locations_json(owner, repo, github_token, sighting)
 
         print("[Success] All GitHub files committed successfully!")

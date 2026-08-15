@@ -4,6 +4,7 @@ import os
 import io
 import datetime
 import traceback
+import random
 import boto3
 from google import genai
 from PIL import Image
@@ -89,14 +90,23 @@ def generate_gemini_image(api_key: str, prompt: str, ref_image=None) -> str:
 
     raise ValueError("Gemini API response did not contain inline image data.")
 
+def generate_coordinates(prompt: str):
+    """Generate distinct global coordinates deterministically based on prompt string."""
+    seed = sum(ord(c) * (i + 1) for i, c in enumerate(prompt))
+    rng = random.Random(seed)
+    lat = round(rng.uniform(-40.0, 68.0), 4)
+    lng = round(rng.uniform(-130.0, 140.0), 4)
+    return lat, lng
+
 def build_sighting_metadata(prompt: str) -> dict:
     clean_id = "".join(c if c.isalnum() else "-" for c in prompt.lower()).strip("-")[:30]
+    lat, lng = generate_coordinates(prompt)
     return {
         "id": clean_id,
         "title": prompt.strip().title()[:30],
         "subtitle": f"Abei seen: {prompt.strip()}",
-        "lat": 51.5074,
-        "lng": -0.1278,
+        "lat": lat,
+        "lng": lng,
         "image": f"/scenes/{clean_id}.png",
         "status": "CONFIRMED",
         "createdOn": datetime.datetime.now(datetime.timezone.utc).isoformat()
