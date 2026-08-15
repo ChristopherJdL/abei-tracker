@@ -53,6 +53,7 @@ resource "null_resource" "install_dependencies" {
   triggers = {
     requirements = filesha256("${path.module}/requirements.txt")
     code         = filesha256("${path.module}/lambda_function.py")
+    ref_image    = filesha256("${path.module}/abei.png")
   }
 
   provisioner "local-exec" {
@@ -60,6 +61,7 @@ resource "null_resource" "install_dependencies" {
       mkdir -p ${path.module}/lambda_package
       pip3 install -r ${path.module}/requirements.txt -t ${path.module}/lambda_package
       cp ${path.module}/lambda_function.py ${path.module}/lambda_package/
+      cp ${path.module}/abei.png ${path.module}/lambda_package/
     EOT
   }
 }

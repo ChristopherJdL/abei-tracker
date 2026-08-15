@@ -97,7 +97,7 @@ function App() {
 
         {showNewAbeiButton ? (
           <PixelButton variant="orange" onClick={() => setRequestModalOpen(true)}>
-            NEW ABEI
+            ADD NEW ABEI
           </PixelButton>
         ) : (
           <div className="status-chip" aria-live="polite">

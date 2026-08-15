@@ -41,13 +41,41 @@ def decode_reference_image(b64_str: str):
         print(f"[Warning] Failed to decode reference image: {str(e)}")
         return None
 
+def get_default_reference_image():
+    """Load packaged abei.png from local execution directory."""
+    local_path = os.path.join(os.path.dirname(__file__), 'abei.png')
+    if os.path.exists(local_path):
+        try:
+            print(f"[Info] Loading default Abei reference image from '{local_path}'")
+            return Image.open(local_path)
+        except Exception as e:
+            print(f"[Warning] Failed to load default abei.png from disk: {str(e)}")
+    else:
+        print(f"[Warning] abei.png not found at '{local_path}'")
+    return None
+
+def enhance_prompt(raw_prompt: str) -> str:
+    """
+    Enhances raw user prompt into a 16-bit pixel art scene prompt adhering strictly to AGENTS.md guidelines.
+    """
+    clean_prompt = raw_prompt.strip()
+    enhanced = (
+        f"Pixel art 16-bit scene, 4:3 aspect ratio. "
+        f"Abei the white polar bear (red scarf, mint green shirt) {clean_prompt}. "
+        f"Chunky pixels, thick black outlines, vibrant 16-bit color palette, no watermark, no UI chrome. "
+        f"Match Abei style from reference image."
+    )
+    print(f"[Info] Enhanced Prompt: '{enhanced}'")
+    return enhanced
+
 def generate_gemini_image(api_key: str, prompt: str, ref_image=None) -> str:
-    print(f"[Info] Calling Gemini model for prompt: '{prompt}'")
+    print(f"[Info] Calling Gemini model for enhanced prompt: '{prompt}'")
     client = genai.Client(api_key=api_key)
     
     contents = [prompt]
     if ref_image:
         contents.append(ref_image)
+        print("[Info] Attached Abei reference image to Gemini request")
 
     response = client.models.generate_content(
         model="gemini-3.1-flash-image",
@@ -104,11 +132,11 @@ def lambda_handler(event, context):
         
         # 1. Parse Inputs
         body = parse_event_body(event)
-        prompt = body.get('prompt')
+        raw_prompt = body.get('prompt')
         api_key = body.get('api_key') or os.environ.get('GEMINI_API_KEY')
         github_token = body.get('github_token') or os.environ.get('GITHUB_TOKEN')
 
-        if not prompt:
+        if not raw_prompt:
             return build_response(400, {
                 'success': False,
                 'error': 'Missing required parameter: prompt'
@@ -126,15 +154,18 @@ def lambda_handler(event, context):
                 'error': 'Missing GitHub Token in environment variable GITHUB_TOKEN'
             })
 
-        # 2. Decode Reference Image & Generate Scene
-        ref_image = decode_reference_image(body.get('reference_image'))
-        generated_b64 = generate_gemini_image(api_key, prompt, ref_image)
+        # 2. Get Reference Image & Enhance Prompt with AGENTS.md rules
+        ref_image = decode_reference_image(body.get('reference_image')) or get_default_reference_image()
+        enhanced_prompt = enhance_prompt(raw_prompt)
 
-        # 3. Create Sighting Metadata & Trigger GitHub Committer
-        sighting = build_sighting_metadata(prompt)
+        # 3. Generate Scene Image with Gemini
+        generated_b64 = generate_gemini_image(api_key, enhanced_prompt, ref_image)
+
+        # 4. Create Sighting Metadata & Trigger GitHub Committer
+        sighting = build_sighting_metadata(raw_prompt)
         trigger_github_committer(sighting, generated_b64, github_token)
 
-        # 4. Return Immediate Detailed Success
+        # 5. Return Immediate Detailed Success
         return build_response(200, {
             'success': True,
             'message': 'Image successfully generated and queued for GitHub commit.',
