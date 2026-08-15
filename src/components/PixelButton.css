@@ -1,0 +1,194 @@
+/* 16-Bit Retro Pixel Button - Multi Variant Design System */
+.pixel-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.pixel-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pixel-button__surface {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  min-height: 36px;
+  color: #ffffff;
+  font-family: 'Press Start 2P', monospace, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
+}
+
+/* Top-left glint / specular highlight dot */
+.pixel-button__surface::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 5px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 1px;
+}
+
+/* ---------------- SQUARE VARIANT (Close Icon Button) ---------------- */
+.pixel-button--square .pixel-button__surface {
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  min-width: 28px;
+}
+
+/* ---------------- MS PAINT PIXEL CROSS ICON ---------------- */
+.pixel-cross {
+  position: relative;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+}
+
+.pixel-cross::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  background: currentColor;
+  box-shadow:
+    0 0 0 currentColor,
+    2px 2px 0 currentColor,
+    4px 4px 0 currentColor,
+    6px 6px 0 currentColor,
+    8px 8px 0 currentColor,
+    8px 0 0 currentColor,
+    6px 2px 0 currentColor,
+    2px 6px 0 currentColor,
+    0 8px 0 currentColor;
+}
+
+/* ---------------- VARIANT: ORANGE (Blood Orange) ---------------- */
+.pixel-button--orange .pixel-button__surface {
+  background: linear-gradient(180deg, #ff7700 0%, #ff5500 65%, #d93b00 100%);
+  text-shadow: 1px 1px 0 #731e00, -1px -1px 0 #ffaa66;
+  border: 2px solid #421200;
+  box-shadow:
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.45),
+    inset 0 -4px 0 0 #9e2a00,
+    0 4px 0 0 #421200,
+    0 5px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-button--orange:hover:not(:disabled) .pixel-button__surface {
+  background: linear-gradient(180deg, #ff881a 0%, #ff661a 65%, #e64400 100%);
+  box-shadow:
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.65),
+    inset 0 -4px 0 0 #b33000,
+    0 4px 0 0 #421200,
+    0 4px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-button--orange:active:not(:disabled) .pixel-button__surface {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset 0 -2px 0 0 #7a2000,
+    0 1px 0 0 #421200,
+    0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------------- VARIANT: BLUE (Arctic Ice) ---------------- */
+.pixel-button--blue .pixel-button__surface {
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 65%, #0369a1 100%);
+  text-shadow: 1px 1px 0 #0c4a6e, -1px -1px 0 #7dd3fc;
+  border: 2px solid #082f49;
+  box-shadow:
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.45),
+    inset 0 -4px 0 0 #075985,
+    0 4px 0 0 #082f49,
+    0 5px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-button--blue:hover:not(:disabled) .pixel-button__surface {
+  background: linear-gradient(180deg, #56cbf9 0%, #0396e3 65%, #0284c7 100%);
+  box-shadow:
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.65),
+    inset 0 -4px 0 0 #0284c7,
+    0 4px 0 0 #082f49,
+    0 4px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-button--blue:active:not(:disabled) .pixel-button__surface {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset 0 -2px 0 0 #075985,
+    0 1px 0 0 #082f49,
+    0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------------- VARIANT: RED (Close Button) ---------------- */
+.pixel-button--red .pixel-button__surface {
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 65%, #b91c1c 100%);
+  text-shadow: 1px 1px 0 #450a0a, -1px -1px 0 #fca5a5;
+  border: 2px solid #450a0a;
+  box-shadow:
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.45),
+    inset 0 -4px 0 0 #991b1b,
+    0 4px 0 0 #450a0a,
+    0 5px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-button--red:hover:not(:disabled) .pixel-button__surface {
+  background: linear-gradient(180deg, #f87171 0%, #ef4444 65%, #dc2626 100%);
+  box-shadow:
+    inset 0 2px 0 0 rgba(255, 255, 255, 0.65),
+    inset 0 -4px 0 0 #b91c1c,
+    0 4px 0 0 #450a0a,
+    0 4px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+.pixel-button--red:active:not(:disabled) .pixel-button__surface {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset 0 -2px 0 0 #7f1d1d,
+    0 1px 0 0 #450a0a,
+    0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustment */
+@media (max-width: 720px) {
+  .pixel-button:not(.pixel-button--square) {
+    width: 100%;
+  }
+
+  .pixel-button:not(.pixel-button--square) .pixel-button__surface {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    font-size: 9px;
+  }
+}

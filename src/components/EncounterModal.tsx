@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { PixelButton } from './PixelButton'
 import type { Sighting } from '../types'
 
 interface EncounterModalProps {
@@ -37,14 +38,14 @@ export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
         <div className="pixel-window__bezel">
           <div className="pixel-window__titlebar">
             <p className="pixel-window__card">ENCOUNTER CARD</p>
-            <button
-              type="button"
-              className="modal-close"
-              aria-label="Close encounter"
+            <PixelButton
+              variant="red"
+              isSquare
               onClick={onClose}
+              ariaLabel="Close encounter"
             >
-              X
-            </button>
+              <span className="pixel-cross" />
+            </PixelButton>
           </div>
 
           <div className="pixel-window__body">
@@ -80,10 +81,10 @@ export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
               </div>
             </div>
 
-            <footer className="pixel-window__footer">
-              <button type="button" className="pixel-btn" onClick={onClose}>
+            <footer className="pixel-window__footer" style={{ display: 'flex', justifyContent: 'center' }}>
+              <PixelButton variant="blue" onClick={onClose}>
                 BACK TO MAP
-              </button>
+              </PixelButton>
             </footer>
           </div>
         </div>

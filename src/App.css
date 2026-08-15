@@ -645,16 +645,7 @@
   color: var(--frost-white);
 }
 
-.modal-close {
-  border: 3px solid var(--ice-edge);
-  background: var(--scarf-red);
-  color: white;
-  width: 34px;
-  height: 34px;
-  flex-shrink: 0;
-  font-size: 12px;
-  box-shadow: 3px 3px 0 var(--pixel-shadow);
-}
+
 
 .pixel-screen {
   padding: 12px 14px 8px;

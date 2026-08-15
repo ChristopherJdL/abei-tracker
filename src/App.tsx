@@ -3,6 +3,8 @@ import { IntroScreen } from './components/IntroScreen'
 import { AbeiMap } from './components/AbeiMap'
 import { EncounterModal } from './components/EncounterModal'
 import { NewsTicker } from './components/NewsTicker'
+import { PixelButton } from './components/PixelButton'
+import { NewAbeiModal } from './components/NewAbeiModal'
 import {
   getDiscoveredIds,
   markDiscovered,
@@ -15,10 +17,16 @@ function App() {
   const [ready, setReady] = useState(false)
   const [sightings, setSightings] = useState<Sighting[]>([])
   const [active, setActive] = useState<Sighting | null>(null)
+  const [requestModalOpen, setRequestModalOpen] = useState(false)
   const [discoveredIds, setDiscoveredIds] = useState<Set<string>>(() =>
     getDiscoveredIds(),
   )
   const [error, setError] = useState<string | null>(null)
+
+  const isWednesday = new Date().getDay() === 3
+  const isBypass =
+    new URLSearchParams(window.location.search).get('bypass') === 'newabeibutton'
+  const showNewAbeiButton = isWednesday || isBypass
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -56,6 +64,7 @@ function App() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setActive(null)
+        setRequestModalOpen(false)
       }
     }
     window.addEventListener('keydown', onKey)
@@ -85,13 +94,20 @@ function App() {
             <small>POLAR BEAR TRACKER</small>
           </div>
         </div>
-        <div className="status-chip" aria-live="polite">
-          BEAR STATUS:
-          <br />
-          <span className="blink">
-            {active ? `LOCKED: ${active.title}` : '[ SCANNING... ]'}
-          </span>
-        </div>
+
+        {showNewAbeiButton ? (
+          <PixelButton variant="orange" onClick={() => setRequestModalOpen(true)}>
+            NEW ABEI
+          </PixelButton>
+        ) : (
+          <div className="status-chip" aria-live="polite">
+            BEAR STATUS:
+            <br />
+            <span className="blink">
+              {active ? `LOCKED: ${active.title}` : '[ SCANNING... ]'}
+            </span>
+          </div>
+        )}
       </header>
 
       <main className="frame">
@@ -121,6 +137,10 @@ function App() {
 
       {active && (
         <EncounterModal sighting={active} onClose={() => setActive(null)} />
+      )}
+
+      {requestModalOpen && (
+        <NewAbeiModal onClose={() => setRequestModalOpen(false)} />
       )}
 
       <footer className="chrome-footer">

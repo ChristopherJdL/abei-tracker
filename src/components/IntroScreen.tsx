@@ -1,3 +1,5 @@
+import { PixelButton } from './PixelButton'
+
 interface IntroScreenProps {
   onEnter: () => void
 }
@@ -17,10 +19,10 @@ export function IntroScreen({ onEnter }: IntroScreenProps) {
         <p>
           Frost scan online. Tap an ice print on the globe to catch Abei mid-adventure.
         </p>
-        <div className="intro-actions">
-          <button type="button" className="pixel-btn" onClick={onEnter}>
+        <div className="intro-actions" style={{ display: 'flex', justifyContent: 'center' }}>
+          <PixelButton variant="blue" onClick={onEnter}>
             OPEN TRACKER
-          </button>
+          </PixelButton>
         </div>
       </div>
     </div>
