@@ -39,12 +39,6 @@ variable "gemini_api_key" {
   description = "Gemini API Key for image generation."
 }
 
-# Trigger resource to force a run in Terraform Cloud via GitHub App
-resource "null_resource" "tfc_trigger" {
-  triggers = {
-    vcs_test_trigger = timestamp()
-  }
-}
 
 # ==========================================
 # 1. Lambda #1 Build & Package
