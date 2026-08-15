@@ -703,7 +703,6 @@
   align-items: center;
   gap: 10px;
   padding: 10px 14px 14px;
-  border-top: 3px solid var(--glacier-deep);
 }
 
 .pixel-window__footer p {
