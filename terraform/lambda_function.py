@@ -7,6 +7,7 @@ import traceback
 import random
 import boto3
 from google import genai
+from google.genai import types
 from PIL import Image
 
 def build_cors_headers():
@@ -27,27 +28,27 @@ def parse_event_body(event: dict) -> dict:
         body_str = base64.b64decode(body_str).decode('utf-8')
     return json.loads(body_str)
 
-def decode_reference_image(b64_str: str):
-    if not b64_str:
-        return None
-    try:
-        if ',' in b64_str:
-            b64_str = b64_str.split(',')[1]
-        image_data = base64.b64decode(b64_str)
-        return Image.open(io.BytesIO(image_data))
-    except Exception as e:
-        print(f"[Warning] Failed to decode reference image: {str(e)}")
-        return None
+def get_reference_part(b64_str: str = None):
+    """Load reference image as google.genai types.Part from base64 or local abei.png."""
+    if b64_str:
+        try:
+            if ',' in b64_str:
+                b64_str = b64_str.split(',')[1]
+            img_bytes = base64.b64decode(b64_str)
+            return types.Part.from_bytes(data=img_bytes, mime_type="image/png")
+        except Exception as e:
+            print(f"[Warning] Failed to decode base64 reference image: {str(e)}")
 
-def get_default_reference_image():
-    """Load packaged abei.png from local execution directory."""
+    # Load local packaged abei.png
     local_path = os.path.join(os.path.dirname(__file__), 'abei.png')
     if os.path.exists(local_path):
         try:
-            print(f"[Info] Loading default Abei reference image from '{local_path}'")
-            return Image.open(local_path)
+            with open(local_path, 'rb') as f:
+                img_bytes = f.read()
+            print(f"[Info] Successfully loaded abei.png ({len(img_bytes)} bytes) as types.Part")
+            return types.Part.from_bytes(data=img_bytes, mime_type="image/png")
         except Exception as e:
-            print(f"[Warning] Failed to load default abei.png from disk: {str(e)}")
+            print(f"[Warning] Failed to load local abei.png: {str(e)}")
     else:
         print(f"[Warning] abei.png not found at '{local_path}'")
     return None
@@ -66,19 +67,18 @@ def enhance_prompt(raw_prompt: str) -> str:
     print(f"[Info] Enhanced Prompt: '{enhanced}'")
     return enhanced
 
-def generate_gemini_image(api_key: str, prompt: str, ref_image=None) -> str:
+def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     """
-    Generates a scene image using strictly multimodal Gemini models.
-    Natively accepts text prompt and abei.png reference image together.
+    Generates a scene image using strictly multimodal Gemini models (gemini-2.5-flash, gemini-2.0-flash).
+    Natively accepts text prompt and abei.png reference image Part together.
     """
     client = genai.Client(api_key=api_key)
     
     contents = [prompt]
-    if ref_image:
-        contents.append(ref_image)
-        print("[Info] Attached abei.png reference image to multimodal Gemini request")
+    if ref_part:
+        contents.append(ref_part)
+        print("[Info] Attached abei.png Part to multimodal Gemini request")
 
-    # Strictly use multimodal Gemini models
     multimodal_models = ["gemini-2.5-flash", "gemini-2.0-flash"]
     last_error = None
 
@@ -175,12 +175,12 @@ def lambda_handler(event, context):
                 'error': 'Missing GitHub Token in environment variable GITHUB_TOKEN'
             })
 
-        # 2. Get Reference Image & Enhance Prompt with AGENTS.md rules
-        ref_image = decode_reference_image(body.get('reference_image')) or get_default_reference_image()
+        # 2. Get Reference Image Part & Enhance Prompt with AGENTS.md rules
+        ref_part = get_reference_part(body.get('reference_image'))
         enhanced_prompt = enhance_prompt(raw_prompt)
 
-        # 3. Generate Scene Image with Gemini
-        generated_b64 = generate_gemini_image(api_key, enhanced_prompt, ref_image)
+        # 3. Generate Scene Image with Multimodal Gemini
+        generated_b64 = generate_gemini_image(api_key, enhanced_prompt, ref_part)
 
         # 4. Create Sighting Metadata & Trigger GitHub Committer
         sighting = build_sighting_metadata(raw_prompt)

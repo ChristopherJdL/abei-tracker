@@ -162,7 +162,7 @@ resource "aws_lambda_function" "image_gen" {
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.12"
   timeout          = 900  # 15 minutes max
-  memory_size      = 512
+  memory_size      = 1024
 
   environment {
     variables = {
