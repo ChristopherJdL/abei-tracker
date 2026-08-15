@@ -182,7 +182,7 @@ resource "aws_lambda_function_url" "image_gen_url" {
   cors {
     allow_credentials = false
     allow_origins     = ["*"]
-    allow_methods     = ["POST", "OPTIONS"]
+    allow_methods     = ["*"]
     allow_headers     = ["content-type", "authorization"]
     expose_headers     = ["date", "keep-alive"]
     max_age           = 86400
