@@ -1,0 +1,1 @@
+# Keep lambda_package directory in git so terraform plan doesn't fail on missing directory
