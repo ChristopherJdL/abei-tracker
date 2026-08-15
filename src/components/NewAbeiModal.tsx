@@ -155,7 +155,7 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
                     LIMIT OF SUBMISSION REACHED
                   </div>
                   <p style={{ margin: '8px 0 0', color: '#334155', fontSize: '9px', lineHeight: '1.7' }}>
-                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 2 Abei creations per day allowed per operator. Come back tomorrow to hunt more paws!
+                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 2 Abei creations per day allowed per operator. Come back next time to hunt more paws!
                   </p>
                 </>
               ) : (
@@ -178,7 +178,7 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
                     SUBMISSION RECEIVED
                   </div>
                   <p style={{ margin: '8px 0 0', color: '#334155', fontSize: '9px', lineHeight: '1.7' }}>
-                    Your submission is under evaluation, come back later to see if your submission is accepted.
+                    Your submission is under evaluation, come back next time to see if your submission is accepted.
                   </p>
                 </>
               )}
