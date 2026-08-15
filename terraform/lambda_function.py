@@ -80,9 +80,14 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     try:
         print("[Info] Step 1: Multimodal analysis with gemini-2.5-flash...")
         contents = [
-            f"Look at this reference image of Abei the polar bear (red scarf, mint green shirt). "
-            f"Write a concise 16-bit retro pixel art scene prompt for: {prompt}. "
-            f"Include 4:3 composition, chunky pixels, thick black outlines, and retro 16-bit palette. Under 80 words."
+            f"You are an expert 16-bit pixel art director for a GBA retro game. "
+            f"Examine the attached reference image of Abei the white polar bear (red scarf, mint green shirt). "
+            f"Write a rich, highly descriptive 16-bit retro pixel art scene prompt for: '{prompt}'.\n\n"
+            f"Directives:\n"
+            f"- Aspect ratio: 4:3 widescreen retro composition.\n"
+            f"- Character: Abei the polar bear with his iconic red scarf and mint green shirt, cute expression, readable at card size.\n"
+            f"- Setting & Action: Render iconic landmarks, specific brand packaging, local props, and humorous atmosphere for '{prompt}'.\n"
+            f"- Art style: 16-bit GBA pixel art graphics, chunky pixels, rich vibrant color palette, thick black outlines, dramatic lighting, no text UI chrome, no watermarks."
         ]
         if ref_part:
             contents.append(ref_part)
@@ -92,8 +97,8 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
             contents=contents
         )
         if analysis and hasattr(analysis, 'text') and analysis.text:
-            detailed_prompt = f"Pixel art 16-bit scene, 4:3 aspect ratio. {analysis.text.strip()} Chunky pixels, thick black outlines."
-            print(f"[Info] Multimodal Enhanced Prompt: '{detailed_prompt[:120]}...'")
+            detailed_prompt = f"Pixel art 16-bit scene, 4:3 aspect ratio. {analysis.text.strip()} Chunky pixels, thick black outlines, vibrant 16-bit colors."
+            print(f"[Info] Multimodal Enhanced Prompt: '{detailed_prompt}'")
     except Exception as e:
         print(f"[Warning] Multimodal analysis step skipped: {str(e)}")
 
