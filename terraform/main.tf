@@ -55,6 +55,7 @@ resource "null_resource" "install_dependencies" {
       python3 -m pip install -r ${path.module}/requirements.txt -t ${path.module}/lambda_package --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.12 --upgrade
       cp ${path.module}/lambda_function.py ${path.module}/lambda_package/
       cp ${path.module}/abei.png ${path.module}/lambda_package/
+      cp ${path.module}/cities.csv ${path.module}/lambda_package/
     EOT
   }
 }

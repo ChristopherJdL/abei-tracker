@@ -8,8 +8,7 @@ import random
 import time
 import boto3
 import re
-import urllib.request
-import urllib.parse
+import csv
 from google import genai
 from google.genai import types
 
@@ -224,19 +223,22 @@ def generate_coordinates(api_key: str, prompt: str):
                 city_name = match.group(1).strip()
                 print(f"[Info] Extracted city from LLM: {city_name}")
                 try:
-                    url = "https://nominatim.openstreetmap.org/search?city=" + urllib.parse.quote(city_name) + "&format=json&limit=1"
-                    req = urllib.request.Request(url, headers={'User-Agent': 'AbeiTracker/1.0'})
-                    with urllib.request.urlopen(req, timeout=5) as resp:
-                        data = json.loads(resp.read())
-                        if data:
-                            lat = round(float(data[0]['lat']), 4)
-                            lng = round(float(data[0]['lon']), 4)
-                            print(f"[Info] Found coordinates for {city_name} via Nominatim: lat={lat}, lng={lng}")
-                            return lat, lng
-                        else:
-                            print(f"[Warning] City '{city_name}' not found by Nominatim API.")
+                    csv_path = os.path.join(os.path.dirname(__file__), 'cities.csv')
+                    found_lat, found_lng = None, None
+                    with open(csv_path, 'r', encoding='utf-8') as f:
+                        reader = csv.DictReader(f)
+                        for row in reader:
+                            if row['city'] == city_name.lower():
+                                found_lat = round(float(row['lat']), 4)
+                                found_lng = round(float(row['lng']), 4)
+                                break
+                    if found_lat is not None:
+                        print(f"[Info] Found coordinates for {city_name} in local CSV: lat={found_lat}, lng={found_lng}")
+                        return found_lat, found_lng
+                    else:
+                        print(f"[Warning] City '{city_name}' not found in local CSV.")
                 except Exception as ex:
-                    print(f"[Error] Failed to call Nominatim API for city '{city_name}': {str(ex)}")
+                    print(f"[Error] Failed to read local CSV for city '{city_name}': {str(ex)}")
             else:
                 print(f"[Warning] No <CITY> tag found in LLM response: {response.text}")
     except Exception as e:
