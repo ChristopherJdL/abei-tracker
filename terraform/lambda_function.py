@@ -8,7 +8,8 @@ import random
 import time
 import boto3
 import re
-import geonamescache
+import urllib.request
+import urllib.parse
 from google import genai
 from google.genai import types
 
@@ -222,18 +223,20 @@ def generate_coordinates(api_key: str, prompt: str):
             if match:
                 city_name = match.group(1).strip()
                 print(f"[Info] Extracted city from LLM: {city_name}")
-                gc = geonamescache.GeonamesCache()
-                cities = gc.get_cities_by_name(city_name)
-                if cities:
-                    # Take the first matched city (usually the most prominent if exact match, or we just rely on geonamescache order)
-                    # get_cities_by_name returns a list of dicts, e.g. [{'3451190': {'geonameid': ...}}]
-                    city_data = list(cities[0].values())[0]
-                    lat = round(float(city_data['latitude']), 4)
-                    lng = round(float(city_data['longitude']), 4)
-                    print(f"[Info] Found coordinates for {city_name} in geonamescache: lat={lat}, lng={lng}")
-                    return lat, lng
-                else:
-                    print(f"[Warning] City '{city_name}' not found in geonamescache.")
+                try:
+                    url = "https://nominatim.openstreetmap.org/search?city=" + urllib.parse.quote(city_name) + "&format=json&limit=1"
+                    req = urllib.request.Request(url, headers={'User-Agent': 'AbeiTracker/1.0'})
+                    with urllib.request.urlopen(req, timeout=5) as resp:
+                        data = json.loads(resp.read())
+                        if data:
+                            lat = round(float(data[0]['lat']), 4)
+                            lng = round(float(data[0]['lon']), 4)
+                            print(f"[Info] Found coordinates for {city_name} via Nominatim: lat={lat}, lng={lng}")
+                            return lat, lng
+                        else:
+                            print(f"[Warning] City '{city_name}' not found by Nominatim API.")
+                except Exception as ex:
+                    print(f"[Error] Failed to call Nominatim API for city '{city_name}': {str(ex)}")
             else:
                 print(f"[Warning] No <CITY> tag found in LLM response: {response.text}")
     except Exception as e:
