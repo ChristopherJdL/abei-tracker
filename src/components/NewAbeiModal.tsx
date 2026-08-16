@@ -16,6 +16,12 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
   const [submitted, setSubmitted] = useState(false)
   const [isLimitReached, setIsLimitReached] = useState(false)
 
+  const day = new Date().getDay()
+  let nextDay = ''
+  if (day === 0) nextDay = 'Monday'
+  else if (day === 1 || day === 2) nextDay = 'Wednesday'
+  else nextDay = 'Sunday'
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -155,7 +161,7 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
                     LIMIT OF SUBMISSION REACHED
                   </div>
                   <p style={{ margin: '8px 0 0', color: '#334155', fontSize: '9px', lineHeight: '1.7' }}>
-                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 2 Abei creations per day allowed per operator. Come back next time to hunt more paws!
+                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 2 Abei creations per day allowed per operator. Come back next {nextDay} to hunt more paws!
                   </p>
                 </>
               ) : (
