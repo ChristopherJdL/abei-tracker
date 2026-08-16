@@ -12,10 +12,11 @@ import csv
 from google import genai
 from google.genai import types
 
+# ==============================================================================
+# 1. Utility & Helper Functions
+# ==============================================================================
 def build_cors_headers():
-    return {
-        'Content-Type': 'application/json'
-    }
+    return {'Content-Type': 'application/json'}
 
 def build_response(status_code: int, body_data: dict):
     return {
@@ -35,14 +36,12 @@ def get_reference_part(b64_str: str = None):
     """Load reference image as google.genai types.Part from base64 or local abei.png."""
     if b64_str:
         try:
-            if ',' in b64_str:
-                b64_str = b64_str.split(',')[1]
-            img_bytes = base64.b64decode(b64_str)
+            clean_b64 = b64_str.split(',')[1] if ',' in b64_str else b64_str
+            img_bytes = base64.b64decode(clean_b64)
             return types.Part.from_bytes(data=img_bytes, mime_type="image/png")
         except Exception as e:
             print(f"[Warning] Failed to decode base64 reference image: {str(e)}")
 
-    # Load local packaged abei.png
     local_path = os.path.join(os.path.dirname(__file__), 'abei.png')
     if os.path.exists(local_path):
         try:
@@ -56,199 +55,174 @@ def get_reference_part(b64_str: str = None):
         print(f"[Warning] abei.png not found at '{local_path}'")
     return None
 
-def enhance_prompt(raw_prompt: str) -> str:
+# ==============================================================================
+# 2. AI Prompt Generation & Enrichment
+# ==============================================================================
+def enrich_prompt_for_image_generation(api_key: str, raw_prompt: str) -> str:
     """
-    Enhances raw user prompt into a 16-bit pixel art scene prompt adhering strictly to AGENTS.md guidelines.
-    """
-    clean_prompt = raw_prompt.strip()
-    enhanced = (
-        f"Pixel art 16-bit scene, 4:3 aspect ratio. "
-        f"Abei the white polar bear (red scarf, mint green shirt) {clean_prompt}. "
-        f"Chunky pixels, thick black outlines, vibrant 16-bit color palette, no watermark, no UI chrome. "
-        f"Match Abei style from reference image."
-    )
-    print(f"[Info] Enhanced Prompt: '{enhanced}'")
-    return enhanced
-
-def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
-    """
-    Generation Pipeline:
-    1. Try direct multimodal image models in sequence with the reference image abei.png (no description intermediate step):
-       - gemini-3.1-flash-lite-image
-       - gemini-3.1-flash-image
-       - gemini-3-pro-image
-    2. Fallback (last resort): Gemini 2.5 Flash description expansion + Imagen 3 rendering.
+    Use Gemini text models to expand the raw prompt into a cinematic, 
+    coherent pixel-art scene without deformations.
     """
     client = genai.Client(api_key=api_key)
-
-    direct_multimodal_models = [
-        "gemini-3.1-flash-lite-image",
-        "gemini-3.1-flash-image",
-        "gemini-3-pro-image"
-    ]
-
-    enhanced_prompt = (
-        f"Pixel art 16-bit scene, 4:3 aspect ratio. "
-        f"Abei the white polar bear (red scarf, mint green shirt) {prompt.strip()}. "
-        f"Chunky pixels, thick black outlines, vibrant 16-bit color palette, no watermark, no UI chrome. "
-        f"Match Abei style from reference image."
+    prompt_instructions = (
+        f"You are an expert 16-bit pixel art director for a GBA retro game. "
+        f"The user wants to see Abei (a white polar bear with a red scarf and mint green shirt) doing the following: '{raw_prompt}'.\n"
+        f"Write a rich, highly descriptive prompt to generate this image.\n"
+        f"CRITICAL DIRECTIVES:\n"
+        f"- Visually coherent & Cinematic: Frame it like a cinematic cutscene, beautiful lighting.\n"
+        f"- Local elements: Add typical props, architecture, or atmosphere matching the location mentioned.\n"
+        f"- NO DEFORMATION: Abei must remain a perfectly proportioned cute polar bear. Do not deform his anatomy.\n"
+        f"- Art style: 16-bit GBA pixel art graphics, chunky pixels, rich vibrant color palette, thick black outlines, no text UI chrome, no watermarks.\n"
+        f"Output ONLY the final image generation prompt."
     )
+    
+    print("[Info] Enriching prompt with generative AI...")
+    for text_model in ["gemini-3.5-flash", "gemini-1.5-flash"]:
+        try:
+            response = client.models.generate_content(
+                model=text_model,
+                contents=prompt_instructions
+            )
+            if response and hasattr(response, 'text') and response.text:
+                enhanced = f"Pixel art 16-bit scene, 4:3 aspect ratio. Abei the white polar bear (red scarf, mint green shirt). {response.text.strip()}"
+                print(f"[Info] AI Enhanced Prompt ({text_model}): '{enhanced[:150]}...'")
+                return enhanced
+        except Exception as e:
+            print(f"[Warning] Prompt enrichment with '{text_model}' failed: {str(e)}")
+            
+    # Fallback if both text models fail
+    clean_prompt = raw_prompt.strip()
+    fallback_enhanced = (
+        f"Pixel art 16-bit scene, 4:3 aspect ratio. "
+        f"Abei the white polar bear (red scarf, mint green shirt) {clean_prompt}. "
+        f"Chunky pixels, thick black outlines, vibrant 16-bit color palette, cinematic lighting, strictly no character deformation."
+    )
+    print("[Warning] Falling back to standard prompt enhancement.")
+    return fallback_enhanced
 
+# ==============================================================================
+# 3. AI Image Generation
+# ==============================================================================
+def try_direct_multimodal_models(client, enhanced_prompt: str, ref_part) -> str:
+    """Attempt direct multimodal generation with gemini image models."""
+    models = ["gemini-3.1-flash-lite-image", "gemini-3.1-flash-image", "gemini-3-pro-image"]
     contents = [enhanced_prompt]
     if ref_part:
         contents.append(ref_part)
 
     rejected_models = []
-
-    # 1. Try Direct Multimodal Image Models Chain
-    for idx, model_name in enumerate(direct_multimodal_models, start=1):
+    for idx, model_name in enumerate(models, start=1):
         if idx > 1:
-            print("[Rate Limit Pause] ⏳ Waiting 30 seconds before testing next model to prevent high RPM...")
+            print("[Rate Limit Pause] ⏳ Waiting 30s before testing next model...")
             time.sleep(30)
-
-        print(f"[Model Attempt {idx}/{len(direct_multimodal_models)}] 🚀 Trying direct multimodal image model: '{model_name}'...")
+            
+        print(f"[Model Attempt {idx}/{len(models)}] 🚀 Trying: '{model_name}'...")
         try:
-            response = client.models.generate_content(
-                model=model_name,
-                contents=contents
-            )
-
-            found_image = False
+            response = client.models.generate_content(model=model_name, contents=contents)
+            
             if hasattr(response, 'parts') and response.parts:
                 for part in response.parts:
                     if hasattr(part, 'inline_data') and part.inline_data and hasattr(part.inline_data, 'data'):
                         img_bytes = part.inline_data.data
-                        print(f"[Model Success] ✅ Model '{model_name}' generated image successfully! ({len(img_bytes)} bytes)")
+                        print(f"[Success] ✅ Model '{model_name}' generated image ({len(img_bytes)} bytes)")
                         return base64.b64encode(img_bytes).decode('utf-8')
-                    elif hasattr(part, 'text') and part.text:
-                        print(f"[Model Output] Model '{model_name}' returned text instead of inline image data: {part.text[:100]}...")
-
-            if not found_image:
-                reason = "Model API returned response without inline_data image bytes (returned text or empty parts)."
-                print(f"[Model Rejected] ❌ Model '{model_name}' turned down: {reason}")
-                rejected_models.append((model_name, reason))
-
+                        
+            reason = "Returned response without inline_data image bytes."
+            print(f"[Rejected] ❌ '{model_name}' failed: {reason}")
+            rejected_models.append((model_name, reason))
         except Exception as e:
-            error_details = f"API Error [{type(e).__name__}]: {str(e)}"
-            print(f"[Model Rejected] ❌ Model '{model_name}' turned down by API: {error_details}")
-            rejected_models.append((model_name, error_details))
+            err = f"API Error [{type(e).__name__}]: {str(e)}"
+            print(f"[Rejected] ❌ '{model_name}': {err}")
+            rejected_models.append((model_name, err))
+            
+    return None
 
-    # 2. Fallback (Last Resort): Description Expansion + Imagen 3
-    print(f"\n[Fallback Triggered] ⚠️ All direct multimodal models failed. Detailed rejection breakdown:")
-    for m, r in rejected_models:
-        print(f"  - Model '{m}' -> {r}")
-
-    print("[Rate Limit Pause] ⏳ Waiting 30 seconds before fallback prompt expansion...")
+def try_imagen_fallback(client, enhanced_prompt: str) -> str:
+    """Fallback to Gemini 2.5 Flash Image."""
+    print("[Rate Limit Pause] ⏳ Waiting 30s before fallback image rendering...")
     time.sleep(30)
-
-    print("\n[Fallback Step 1] 🔄 Running multimodal prompt expansion...")
-    detailed_prompt = enhanced_prompt
-    try:
-        analysis_contents = [
-            f"You are an expert 16-bit pixel art director for a GBA retro game. "
-            f"Examine the attached reference image of Abei the white polar bear (red scarf, mint green shirt). "
-            f"Write a rich, highly descriptive 16-bit retro pixel art scene prompt for: '{prompt}'.\n\n"
-            f"Directives:\n"
-            f"- Aspect ratio: 4:3 widescreen retro composition.\n"
-            f"- Character: Abei the polar bear with his iconic red scarf and mint green shirt, cute expression, readable at card size.\n"
-            f"- Setting & Action: Render iconic landmarks, specific brand packaging, local props, and humorous atmosphere for '{prompt}'.\n"
-            f"- Art style: 16-bit GBA pixel art graphics, chunky pixels, rich vibrant color palette, thick black outlines, dramatic lighting, no text UI chrome, no watermarks."
-        ]
-        if ref_part:
-            analysis_contents.append(ref_part)
-
-        analysis = None
-        for text_model in ["gemini-3.5-flash", "gemini-1.5-flash"]:
-            try:
-                print(f"[Fallback Step 1] Trying text model '{text_model}'...")
-                analysis = client.models.generate_content(
-                    model=text_model,
-                    contents=analysis_contents
-                )
-                break
-            except Exception as e:
-                print(f"[Fallback Step 1 Warning] Text model '{text_model}' failed: {str(e)}")
-
-        if analysis and hasattr(analysis, 'text') and analysis.text:
-            detailed_prompt = f"Pixel art 16-bit scene, 4:3 aspect ratio. {analysis.text.strip()} Chunky pixels, thick black outlines, vibrant 16-bit colors."
-            print(f"[Fallback Step 1 Success] ✅ Gemini 2.5 Flash enhanced prompt: '{detailed_prompt[:120]}...'")
-    except Exception as e:
-        print(f"[Fallback Step 1 Warning] ⚠️ Gemini 2.5 Flash analysis skipped: API Error [{type(e).__name__}]: {str(e)}")
-
-    print("[Rate Limit Pause] ⏳ Waiting 30 seconds before fallback image rendering...")
-    time.sleep(30)
-
-    print("[Fallback Step 2] 🎨 Attempting final image rendering with 'gemini-2.5-flash-image'...")
+    
     fallback_model = "gemini-2.5-flash-image"
+    print(f"[Fallback] 🎨 Attempting final image rendering with '{fallback_model}'...")
     try:
-        fb_response = client.models.generate_content(
+        response = client.models.generate_content(
             model=fallback_model,
-            contents=[detailed_prompt]
+            contents=[enhanced_prompt]
         )
-        if hasattr(fb_response, 'parts') and fb_response.parts:
-            for part in fb_response.parts:
+        if hasattr(response, 'parts') and response.parts:
+            for part in response.parts:
                 if hasattr(part, 'inline_data') and part.inline_data and hasattr(part.inline_data, 'data'):
                     img_bytes = part.inline_data.data
-                    print(f"[Fallback Success] ✅ Successfully rendered image via fallback '{fallback_model}'! ({len(img_bytes)} bytes)")
+                    print(f"[Fallback Success] ✅ Successfully rendered image via '{fallback_model}'!")
                     return base64.b64encode(img_bytes).decode('utf-8')
-        reason = f"Fallback model '{fallback_model}' returned no inline_data image bytes."
-        print(f"[Fallback Rejected] ❌ '{fallback_model}' turned down: {reason}")
-        rejected_models.append((fallback_model, reason))
+                    
+        print(f"[Fallback Rejected] ❌ '{fallback_model}' returned no inline_data image bytes.")
     except Exception as e:
-        error_details = f"API Error [{type(e).__name__}]: {str(e)}"
-        print(f"[Fallback Rejected] ❌ '{fallback_model}' turned down by API: {error_details}")
-        rejected_models.append((fallback_model, error_details))
+        print(f"[Fallback Rejected] ❌ '{fallback_model}' API Error: {str(e)}")
+        
+    raise ValueError("All image generation models (including fallback) failed.")
 
-    summary_errors = "\n".join(f"• {m}: {r}" for m, r in rejected_models)
-    raise ValueError(f"All image generation models failed. Last error details:\n{summary_errors}")
+def generate_gemini_image(api_key: str, enhanced_prompt: str, ref_part=None) -> str:
+    """Main image generation pipeline orchestration."""
+    client = genai.Client(api_key=api_key)
+    
+    # 1. Try Direct Multimodal Models
+    b64_image = try_direct_multimodal_models(client, enhanced_prompt, ref_part)
+    if b64_image:
+        return b64_image
+        
+    # 2. Fallback
+    print("\n[Fallback Triggered] ⚠️ All direct multimodal models failed.")
+    return try_imagen_fallback(client, enhanced_prompt)
+
+# ==============================================================================
+# 4. Metadata Extraction
+# ==============================================================================
+def lookup_coordinates_in_csv(city_name: str):
+    """Lookup latitude and longitude for a city in the local CSV file."""
+    csv_path = os.path.join(os.path.dirname(__file__), 'cities.csv')
+    try:
+        with open(csv_path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row['city'] == city_name.lower():
+                    return round(float(row['lat']), 4), round(float(row['lng']), 4)
+    except Exception as ex:
+        print(f"[Error] Failed to read local CSV for city '{city_name}': {str(ex)}")
+    return None, None
 
 def generate_metadata_extras(api_key: str, prompt: str):
-    """Generate distinct global coordinates and a witty subtitle based on prompt string using Gemini."""
-    try:
-        client = genai.Client(api_key=api_key)
-        response = None
-        for text_model in ["gemini-3.5-flash", "gemini-1.5-flash"]:
-            try:
-                response = client.models.generate_content(
-                    model=text_model,
-                    contents=f"Extract the real-world city mentioned in this prompt: '{prompt}'. If no obvious city is found, pick a default plausible one (e.g. London). Also write a witty, punchy 1-line subtitle (max 60 chars) for a trading card describing what Abei is doing. Output the city in <CITY></CITY> tags and the subtitle in <DESC></DESC> tags. Example: <CITY>Rio de Janeiro</CITY><DESC>Abei dances the samba in bright neon feathers!</DESC>"
-                )
+    """Generate global coordinates and a witty subtitle based on raw prompt."""
+    client = genai.Client(api_key=api_key)
+    for text_model in ["gemini-3.5-flash", "gemini-1.5-flash"]:
+        try:
+            instruction = (
+                f"Extract the real-world city mentioned in this prompt: '{prompt}'. "
+                f"If no obvious city is found, pick a default plausible one (e.g. London). "
+                f"Also write a witty, punchy 1-line subtitle (max 60 chars) for a trading card describing what Abei is doing. "
+                f"Output the city in <CITY></CITY> tags and the subtitle in <DESC></DESC> tags. "
+                f"Example: <CITY>Rio de Janeiro</CITY><DESC>Abei dances the samba in bright neon feathers!</DESC>"
+            )
+            response = client.models.generate_content(model=text_model, contents=instruction)
+            
+            if response and hasattr(response, 'text') and response.text:
+                city_match = re.search(r'<CITY>(.*?)</CITY>', response.text, re.IGNORECASE)
+                desc_match = re.search(r'<DESC>(.*?)</DESC>', response.text, re.IGNORECASE)
+                
+                subtitle = desc_match.group(1).strip() if desc_match else f"Abei seen: {prompt.strip()}"
+                
+                if city_match:
+                    city_name = city_match.group(1).strip()
+                    print(f"[Info] Extracted city: {city_name} | Subtitle: {subtitle}")
+                    lat, lng = lookup_coordinates_in_csv(city_name)
+                    if lat is not None and lng is not None:
+                        return lat, lng, subtitle
+                    print(f"[Warning] City '{city_name}' not found in CSV.")
                 break
-            except Exception as e:
-                print(f"[Warning] Text model '{text_model}' failed in generate_coordinates: {str(e)}")
+        except Exception as e:
+            print(f"[Warning] Text model '{text_model}' failed for metadata extraction: {str(e)}")
 
-        if response and hasattr(response, 'text') and response.text:
-            city_match = re.search(r'<CITY>(.*?)</CITY>', response.text, re.IGNORECASE)
-            desc_match = re.search(r'<DESC>(.*?)</DESC>', response.text, re.IGNORECASE)
-            
-            subtitle = desc_match.group(1).strip() if desc_match else f"Abei seen: {prompt.strip()}"
-            
-            if city_match:
-                city_name = city_match.group(1).strip()
-                print(f"[Info] Extracted city from LLM: {city_name} | Subtitle: {subtitle}")
-                try:
-                    csv_path = os.path.join(os.path.dirname(__file__), 'cities.csv')
-                    found_lat, found_lng = None, None
-                    with open(csv_path, 'r', encoding='utf-8') as f:
-                        reader = csv.DictReader(f)
-                        for row in reader:
-                            if row['city'] == city_name.lower():
-                                found_lat = round(float(row['lat']), 4)
-                                found_lng = round(float(row['lng']), 4)
-                                break
-                    if found_lat is not None:
-                        print(f"[Info] Found coordinates for {city_name} in local CSV: lat={found_lat}, lng={found_lng}")
-                        return found_lat, found_lng, subtitle
-                    else:
-                        print(f"[Warning] City '{city_name}' not found in local CSV.")
-                except Exception as ex:
-                    print(f"[Error] Failed to read local CSV for city '{city_name}': {str(ex)}")
-            else:
-                print(f"[Warning] No <CITY> tag found in LLM response: {response.text}")
-    except Exception as e:
-        print(f"[Warning] Failed to generate metadata via Gemini: {str(e)}")
-
-    # Fallback to deterministic random if LLM fails
+    # Fallback to random coordinates
     seed = sum(ord(c) * (i + 1) for i, c in enumerate(prompt))
     rng = random.Random(seed)
     lat = round(rng.uniform(-40.0, 68.0), 4)
@@ -256,12 +230,13 @@ def generate_metadata_extras(api_key: str, prompt: str):
     print(f"[Info] Generated fallback coordinates: lat={lat}, lng={lng}")
     return lat, lng, f"Abei seen: {prompt.strip()}"
 
-def build_sighting_metadata(api_key: str, prompt: str) -> dict:
-    clean_id = "".join(c if c.isalnum() else "-" for c in prompt.lower()).strip("-")[:30]
-    lat, lng, subtitle = generate_metadata_extras(api_key, prompt)
+def build_sighting_metadata(api_key: str, raw_prompt: str) -> dict:
+    """Build the final sighting dictionary to be committed."""
+    clean_id = "".join(c if c.isalnum() else "-" for c in raw_prompt.lower()).strip("-")[:30]
+    lat, lng, subtitle = generate_metadata_extras(api_key, raw_prompt)
     return {
         "id": clean_id,
-        "title": prompt.strip().title()[:30],
+        "title": raw_prompt.strip().title()[:30],
         "subtitle": subtitle,
         "lat": lat,
         "lng": lng,
@@ -270,7 +245,11 @@ def build_sighting_metadata(api_key: str, prompt: str) -> dict:
         "createdOn": datetime.datetime.now(datetime.timezone.utc).isoformat()
     }
 
+# ==============================================================================
+# 5. External Services (GitHub)
+# ==============================================================================
 def trigger_github_committer(sighting: dict, image_b64: str, github_token: str):
+    """Invoke the synchronous Lambda that commits to GitHub."""
     committer_lambda = os.environ.get('GITHUB_COMMITTER_LAMBDA_NAME', 'github-committer')
     try:
         lambda_client = boto3.client('lambda')
@@ -279,64 +258,56 @@ def trigger_github_committer(sighting: dict, image_b64: str, github_token: str):
             'sighting': sighting,
             'github_token': github_token
         }
-
         response = lambda_client.invoke(
             FunctionName=committer_lambda,
-            InvocationType='RequestResponse', # Synchronous trigger (6MB payload limit instead of 1MB)
+            InvocationType='RequestResponse',
             Payload=json.dumps(payload)
         )
-        print(f"[Info] Successfully triggered synchronous committer Lambda '{committer_lambda}'. Invoke StatusCode: {response.get('StatusCode')}")
+        print(f"[Info] Triggered committer Lambda '{committer_lambda}'. StatusCode: {response.get('StatusCode')}")
     except Exception as err:
-        print(f"[Error] Failed to invoke committer Lambda '{committer_lambda}': {str(err)}")
         raise RuntimeError(f"Committer Lambda invocation failed: {str(err)}") from err
 
+# ==============================================================================
+# 6. Main Orchestrator (Lambda Handler)
+# ==============================================================================
 def lambda_handler(event, context):
     # Handle CORS OPTIONS preflight
     if event.get('requestContext', {}).get('http', {}).get('method') == 'OPTIONS':
         return build_response(200, {'status': 'ok'})
 
     try:
-        print(f"[Info] Received Lambda invocation event: {json.dumps(event)}")
+        print(f"[Info] Received Lambda invocation event.")
         
-        # 1. Parse Inputs
+        # 1. Parse & Validate Inputs
         body = parse_event_body(event)
         raw_prompt = body.get('prompt')
         api_key = body.get('api_key') or os.environ.get('GEMINI_API_KEY')
         github_token = body.get('github_token') or os.environ.get('GITHUB_TOKEN')
 
         if not raw_prompt:
-            return build_response(400, {
-                'success': False,
-                'error': 'Missing required parameter: prompt'
-            })
-
+            return build_response(400, {'success': False, 'error': 'Missing prompt'})
         if not api_key:
-            return build_response(400, {
-                'success': False,
-                'error': 'Missing Gemini API Key in environment variable GEMINI_API_KEY'
-            })
-
+            return build_response(400, {'success': False, 'error': 'Missing Gemini API Key'})
         if not github_token:
-            return build_response(400, {
-                'success': False,
-                'error': 'Missing GitHub Token in environment variable GITHUB_TOKEN'
-            })
+            return build_response(400, {'success': False, 'error': 'Missing GitHub Token'})
 
-        # 2. Get Reference Image Part & Enhance Prompt with AGENTS.md rules
+        # 2. AI Prompt Enrichment (New Step)
+        enhanced_prompt = enrich_prompt_for_image_generation(api_key, raw_prompt)
+
+        # 3. Load Reference Image
         ref_part = get_reference_part(body.get('reference_image'))
-        enhanced_prompt = enhance_prompt(raw_prompt)
 
-        # 3. Generate Scene Image with Gemini
+        # 4. Generate Image
         generated_b64 = generate_gemini_image(api_key, enhanced_prompt, ref_part)
 
-        # 4. Create Sighting Metadata & Trigger GitHub Committer
+        # 5. Extract Metadata & Commit
         sighting = build_sighting_metadata(api_key, raw_prompt)
         trigger_github_committer(sighting, generated_b64, github_token)
 
-        # 5. Return Immediate Detailed Success
+        # 6. Return Success
         return build_response(200, {
             'success': True,
-            'message': 'Image successfully generated and queued for GitHub commit.',
+            'message': 'Image generated and queued for commit.',
             'sighting': sighting,
             'image_preview': f"data:image/png;base64,{generated_b64[:100]}..."
         })
