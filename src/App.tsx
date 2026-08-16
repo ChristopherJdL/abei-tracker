@@ -23,10 +23,12 @@ function App() {
   )
   const [error, setError] = useState<string | null>(null)
 
-  const isWednesday = new Date().getDay() === 3
+  const today = new Date()
+  const isWednesday = today.getDay() === 3
+  const isAug16 = today.getMonth() === 7 && today.getDate() === 16
   const isBypass =
     new URLSearchParams(window.location.search).get('bypass') === 'newabeibutton'
-  const showNewAbeiButton = isWednesday || isBypass
+  const showNewAbeiButton = isWednesday || isBypass || isAug16
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)

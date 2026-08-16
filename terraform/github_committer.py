@@ -33,60 +33,73 @@ def make_github_request(url: str, method: str, token: str, data: dict = None) ->
         print(f"[GitHub API HTTPError {e.code}] {url}: {e.reason}\nBody: {error_body}")
         raise RuntimeError(f"GitHub API Error {e.code}: {e.reason} - {error_body}") from e
 
-def upload_scene_image(owner: str, repo: str, token: str, sighting_id: str, image_b64: str):
-    image_path = f"public/scenes/{sighting_id}.png"
-    url = f"https://api.github.com/repos/{owner}/{repo}/contents/{image_path}"
+def commit_sighting_and_image(owner: str, repo: str, token: str, sighting: dict, image_b64: str):
+    base_url = f"https://api.github.com/repos/{owner}/{repo}"
     
-    clean_b64 = image_b64.split(',')[1] if ',' in image_b64 else image_b64
+    # 1. Get current commit and tree SHAs
+    ref_res = make_github_request(f"{base_url}/git/refs/heads/main", 'GET', token)
+    commit_sha = ref_res['object']['sha']
     
-    # Check if file already exists to supply sha for overwrite
-    existing_sha = None
-    try:
-        get_res = make_github_request(f"{url}?ref=main", 'GET', token)
-        existing_sha = get_res.get('sha')
-    except Exception:
-        existing_sha = None
-
-    payload = {
-        "message": f"feat: add scene image for {sighting_id} via Lambda #2",
-        "content": clean_b64,
-        "branch": "main"
-    }
-    if existing_sha:
-        payload["sha"] = existing_sha
-
-    make_github_request(url, 'PUT', token, payload)
-    print(f"[Info] Uploaded scene image '{image_path}' to GitHub")
-
-def update_locations_json(owner: str, repo: str, token: str, sighting: dict):
-    get_url = f"https://api.github.com/repos/{owner}/{repo}/contents/public/locations.json?ref=main"
-    put_url = f"https://api.github.com/repos/{owner}/{repo}/contents/public/locations.json"
+    commit_res = make_github_request(f"{base_url}/git/commits/{commit_sha}", 'GET', token)
+    tree_sha = commit_res['tree']['sha']
     
-    # 1. Fetch current locations.json from latest main branch HEAD
-    loc_file = make_github_request(get_url, 'GET', token)
-    current_sha = loc_file['sha']
+    # 2. Get current locations.json
+    loc_url = f"{base_url}/contents/public/locations.json?ref=main"
+    loc_file = make_github_request(loc_url, 'GET', token)
     current_json = json.loads(base64.b64decode(loc_file['content']).decode('utf-8'))
-
-    # 2. Update existing entry or append new sighting
+    
+    # Update locations
     existing_index = next((i for i, s in enumerate(current_json) if s.get('id') == sighting['id']), None)
     if existing_index is not None:
         current_json[existing_index] = sighting
-        print(f"[Info] Updated existing sighting entry '{sighting['id']}' in locations.json")
     else:
         current_json.append(sighting)
-        print(f"[Info] Appended new sighting entry '{sighting['id']}' (total {len(current_json)} items) to locations.json")
-
-    # 3. Commit updated locations.json
-    updated_b64 = base64.b64encode(json.dumps(current_json, indent=2).encode('utf-8')).decode('utf-8')
-    payload = {
-        "message": f"feat: add new sighting {sighting.get('title')} via Lambda #2",
-        "content": updated_b64,
-        "sha": current_sha,
-        "branch": "main"
-    }
-
-    make_github_request(put_url, 'PUT', token, payload)
-    print(f"[Info] Successfully committed public/locations.json on GitHub for sighting '{sighting['id']}'")
+        
+    updated_locations = json.dumps(current_json, indent=2)
+    
+    # 3. Create blob for the image
+    clean_b64 = image_b64.split(',')[1] if ',' in image_b64 else image_b64
+    blob_res = make_github_request(f"{base_url}/git/blobs", 'POST', token, {
+        "content": clean_b64,
+        "encoding": "base64"
+    })
+    image_sha = blob_res['sha']
+    
+    # 4. Create new tree
+    image_path = f"public/scenes/{sighting['id']}.png"
+    tree_res = make_github_request(f"{base_url}/git/trees", 'POST', token, {
+        "base_tree": tree_sha,
+        "tree": [
+            {
+                "path": "public/locations.json",
+                "mode": "100644",
+                "type": "blob",
+                "content": updated_locations
+            },
+            {
+                "path": image_path,
+                "mode": "100644",
+                "type": "blob",
+                "sha": image_sha
+            }
+        ]
+    })
+    new_tree_sha = tree_res['sha']
+    
+    # 5. Create new commit
+    new_commit_res = make_github_request(f"{base_url}/git/commits", 'POST', token, {
+        "message": f"feat: add sighting & scene for {sighting['id']} via single commit",
+        "tree": new_tree_sha,
+        "parents": [commit_sha]
+    })
+    new_commit_sha = new_commit_res['sha']
+    
+    # 6. Update reference
+    make_github_request(f"{base_url}/git/refs/heads/main", 'PATCH', token, {
+        "sha": new_commit_sha
+    })
+    
+    print(f"[Info] Successfully committed public/locations.json and {image_path} on GitHub for sighting '{sighting['id']}' atomically")
 
 def lambda_handler(event, context):
     print(f"[Info] GitHub Committer Lambda #2 started with event: {json.dumps(event)}")
@@ -107,11 +120,8 @@ def lambda_handler(event, context):
                 'body': json.dumps({'error': err_msg})
             }
 
-        # 1. Upload PNG image
-        upload_scene_image(owner, repo, github_token, sighting['id'], image_b64)
-
-        # 2. Append/Update locations.json
-        update_locations_json(owner, repo, github_token, sighting)
+        # 1. Atomic Commit
+        commit_sighting_and_image(owner, repo, github_token, sighting, image_b64)
 
         print("[Success] All GitHub files committed successfully!")
         return {

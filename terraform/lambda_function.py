@@ -108,7 +108,10 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
         try:
             response = client.models.generate_content(
                 model=model_name,
-                contents=contents
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    response_mime_type="image/png"
+                )
             )
 
             found_image = False
@@ -173,7 +176,10 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     try:
         fb_response = client.models.generate_content(
             model=fallback_model,
-            contents=[detailed_prompt]
+            contents=[detailed_prompt],
+            config=types.GenerateContentConfig(
+                response_mime_type="image/png"
+            )
         )
         if hasattr(fb_response, 'parts') and fb_response.parts:
             for part in fb_response.parts:
@@ -192,17 +198,37 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     summary_errors = "\n".join(f"• {m}: {r}" for m, r in rejected_models)
     raise ValueError(f"All image generation models failed. Last error details:\n{summary_errors}")
 
-def generate_coordinates(prompt: str):
-    """Generate distinct global coordinates deterministically based on prompt string."""
+def generate_coordinates(api_key: str, prompt: str):
+    """Generate distinct global coordinates based on prompt string using Gemini."""
+    try:
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=f"Extract the real-world latitude and longitude for the location mentioned in this prompt: '{prompt}'. If no obvious location is found, pick a default plausible one (e.g. London). Return ONLY valid JSON with keys 'lat' (float) and 'lng' (float).",
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json"
+            )
+        )
+        if response and hasattr(response, 'text') and response.text:
+            data = json.loads(response.text)
+            lat = round(float(data.get('lat', 51.5072)), 4)
+            lng = round(float(data.get('lng', -0.1276)), 4)
+            print(f"[Info] Generated coordinates from LLM: lat={lat}, lng={lng}")
+            return lat, lng
+    except Exception as e:
+        print(f"[Warning] Failed to generate coordinates via Gemini: {str(e)}")
+
+    # Fallback to deterministic random if LLM fails
     seed = sum(ord(c) * (i + 1) for i, c in enumerate(prompt))
     rng = random.Random(seed)
     lat = round(rng.uniform(-40.0, 68.0), 4)
     lng = round(rng.uniform(-130.0, 140.0), 4)
+    print(f"[Info] Generated fallback coordinates: lat={lat}, lng={lng}")
     return lat, lng
 
-def build_sighting_metadata(prompt: str) -> dict:
+def build_sighting_metadata(api_key: str, prompt: str) -> dict:
     clean_id = "".join(c if c.isalnum() else "-" for c in prompt.lower()).strip("-")[:30]
-    lat, lng = generate_coordinates(prompt)
+    lat, lng = generate_coordinates(api_key, prompt)
     return {
         "id": clean_id,
         "title": prompt.strip().title()[:30],
@@ -274,7 +300,7 @@ def lambda_handler(event, context):
         generated_b64 = generate_gemini_image(api_key, enhanced_prompt, ref_part)
 
         # 4. Create Sighting Metadata & Trigger GitHub Committer
-        sighting = build_sighting_metadata(raw_prompt)
+        sighting = build_sighting_metadata(api_key, raw_prompt)
         trigger_github_committer(sighting, generated_b64, github_token)
 
         # 5. Return Immediate Detailed Success
