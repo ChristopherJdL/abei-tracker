@@ -84,7 +84,6 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  image-rendering: pixelated;
 }
 
 .pokemon-card__art-shine {

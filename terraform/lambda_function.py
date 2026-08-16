@@ -202,8 +202,8 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     summary_errors = "\n".join(f"• {m}: {r}" for m, r in rejected_models)
     raise ValueError(f"All image generation models failed. Last error details:\n{summary_errors}")
 
-def generate_coordinates(api_key: str, prompt: str):
-    """Generate distinct global coordinates based on prompt string using Gemini."""
+def generate_metadata_extras(api_key: str, prompt: str):
+    """Generate distinct global coordinates and a witty subtitle based on prompt string using Gemini."""
     try:
         client = genai.Client(api_key=api_key)
         response = None
@@ -211,17 +211,21 @@ def generate_coordinates(api_key: str, prompt: str):
             try:
                 response = client.models.generate_content(
                     model=text_model,
-                    contents=f"Extract the real-world city mentioned in this prompt: '{prompt}'. If no obvious city is found, pick a default plausible one (e.g. London). Output ONLY the city name wrapped in <CITY></CITY> tags. Example: <CITY>Rio de Janeiro</CITY>."
+                    contents=f"Extract the real-world city mentioned in this prompt: '{prompt}'. If no obvious city is found, pick a default plausible one (e.g. London). Also write a witty, punchy 1-line subtitle (max 60 chars) for a trading card describing what Abei is doing. Output the city in <CITY></CITY> tags and the subtitle in <DESC></DESC> tags. Example: <CITY>Rio de Janeiro</CITY><DESC>Abei dances the samba in bright neon feathers!</DESC>"
                 )
                 break
             except Exception as e:
                 print(f"[Warning] Text model '{text_model}' failed in generate_coordinates: {str(e)}")
 
         if response and hasattr(response, 'text') and response.text:
-            match = re.search(r'<CITY>(.*?)</CITY>', response.text, re.IGNORECASE)
-            if match:
-                city_name = match.group(1).strip()
-                print(f"[Info] Extracted city from LLM: {city_name}")
+            city_match = re.search(r'<CITY>(.*?)</CITY>', response.text, re.IGNORECASE)
+            desc_match = re.search(r'<DESC>(.*?)</DESC>', response.text, re.IGNORECASE)
+            
+            subtitle = desc_match.group(1).strip() if desc_match else f"Abei seen: {prompt.strip()}"
+            
+            if city_match:
+                city_name = city_match.group(1).strip()
+                print(f"[Info] Extracted city from LLM: {city_name} | Subtitle: {subtitle}")
                 try:
                     csv_path = os.path.join(os.path.dirname(__file__), 'cities.csv')
                     found_lat, found_lng = None, None
@@ -234,7 +238,7 @@ def generate_coordinates(api_key: str, prompt: str):
                                 break
                     if found_lat is not None:
                         print(f"[Info] Found coordinates for {city_name} in local CSV: lat={found_lat}, lng={found_lng}")
-                        return found_lat, found_lng
+                        return found_lat, found_lng, subtitle
                     else:
                         print(f"[Warning] City '{city_name}' not found in local CSV.")
                 except Exception as ex:
@@ -242,7 +246,7 @@ def generate_coordinates(api_key: str, prompt: str):
             else:
                 print(f"[Warning] No <CITY> tag found in LLM response: {response.text}")
     except Exception as e:
-        print(f"[Warning] Failed to generate coordinates via Gemini: {str(e)}")
+        print(f"[Warning] Failed to generate metadata via Gemini: {str(e)}")
 
     # Fallback to deterministic random if LLM fails
     seed = sum(ord(c) * (i + 1) for i, c in enumerate(prompt))
@@ -250,15 +254,15 @@ def generate_coordinates(api_key: str, prompt: str):
     lat = round(rng.uniform(-40.0, 68.0), 4)
     lng = round(rng.uniform(-130.0, 140.0), 4)
     print(f"[Info] Generated fallback coordinates: lat={lat}, lng={lng}")
-    return lat, lng
+    return lat, lng, f"Abei seen: {prompt.strip()}"
 
 def build_sighting_metadata(api_key: str, prompt: str) -> dict:
     clean_id = "".join(c if c.isalnum() else "-" for c in prompt.lower()).strip("-")[:30]
-    lat, lng = generate_coordinates(api_key, prompt)
+    lat, lng, subtitle = generate_metadata_extras(api_key, prompt)
     return {
         "id": clean_id,
         "title": prompt.strip().title()[:30],
-        "subtitle": f"Abei seen: {prompt.strip()}",
+        "subtitle": subtitle,
         "lat": lat,
         "lng": lng,
         "image": f"/scenes/{clean_id}.png",
