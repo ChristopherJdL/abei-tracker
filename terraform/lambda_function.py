@@ -246,10 +246,10 @@ def trigger_github_committer(sighting: dict, image_b64: str, github_token: str):
 
         response = lambda_client.invoke(
             FunctionName=committer_lambda,
-            InvocationType='Event', # Asynchronous trigger
+            InvocationType='RequestResponse', # Synchronous trigger (6MB payload limit instead of 1MB)
             Payload=json.dumps(payload)
         )
-        print(f"[Info] Successfully triggered asynchronous committer Lambda '{committer_lambda}'. Invoke StatusCode: {response.get('StatusCode')}")
+        print(f"[Info] Successfully triggered synchronous committer Lambda '{committer_lambda}'. Invoke StatusCode: {response.get('StatusCode')}")
     except Exception as err:
         print(f"[Error] Failed to invoke committer Lambda '{committer_lambda}': {str(err)}")
         raise RuntimeError(f"Committer Lambda invocation failed: {str(err)}") from err
