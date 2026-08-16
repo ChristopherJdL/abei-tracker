@@ -88,7 +88,7 @@ def commit_sighting_and_image(owner: str, repo: str, token: str, sighting: dict,
     
     # 5. Create new commit
     new_commit_res = make_github_request(f"{base_url}/git/commits", 'POST', token, {
-        "message": f"feat: add sighting & scene for {sighting['id']} via single commit",
+        "message": f"[lambda-triggered] add sighting & scene for {sighting['id']}",
         "tree": new_tree_sha,
         "parents": [commit_sha]
     })
