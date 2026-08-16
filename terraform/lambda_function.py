@@ -141,7 +141,7 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     print("[Rate Limit Pause] ⏳ Waiting 30 seconds before fallback prompt expansion...")
     time.sleep(30)
 
-    print("\n[Fallback Step 1] 🔄 Running multimodal prompt expansion with 'gemini-1.5-flash'...")
+    print("\n[Fallback Step 1] 🔄 Running multimodal prompt expansion...")
     detailed_prompt = enhanced_prompt
     try:
         analysis_contents = [
@@ -157,10 +157,18 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
         if ref_part:
             analysis_contents.append(ref_part)
 
-        analysis = client.models.generate_content(
-            model="gemini-1.5-flash",
-            contents=analysis_contents
-        )
+        analysis = None
+        for text_model in ["gemini-3.5-flash", "gemini-1.5-flash"]:
+            try:
+                print(f"[Fallback Step 1] Trying text model '{text_model}'...")
+                analysis = client.models.generate_content(
+                    model=text_model,
+                    contents=analysis_contents
+                )
+                break
+            except Exception as e:
+                print(f"[Fallback Step 1 Warning] Text model '{text_model}' failed: {str(e)}")
+
         if analysis and hasattr(analysis, 'text') and analysis.text:
             detailed_prompt = f"Pixel art 16-bit scene, 4:3 aspect ratio. {analysis.text.strip()} Chunky pixels, thick black outlines, vibrant 16-bit colors."
             print(f"[Fallback Step 1 Success] ✅ Gemini 2.5 Flash enhanced prompt: '{detailed_prompt[:120]}...'")
@@ -198,10 +206,17 @@ def generate_coordinates(api_key: str, prompt: str):
     """Generate distinct global coordinates based on prompt string using Gemini."""
     try:
         client = genai.Client(api_key=api_key)
-        response = client.models.generate_content(
-            model="gemini-1.5-flash",
-            contents=f"Extract the real-world city mentioned in this prompt: '{prompt}'. If no obvious city is found, pick a default plausible one (e.g. London). Output ONLY the city name wrapped in <CITY></CITY> tags. Example: <CITY>Rio de Janeiro</CITY>."
-        )
+        response = None
+        for text_model in ["gemini-3.5-flash", "gemini-1.5-flash"]:
+            try:
+                response = client.models.generate_content(
+                    model=text_model,
+                    contents=f"Extract the real-world city mentioned in this prompt: '{prompt}'. If no obvious city is found, pick a default plausible one (e.g. London). Output ONLY the city name wrapped in <CITY></CITY> tags. Example: <CITY>Rio de Janeiro</CITY>."
+                )
+                break
+            except Exception as e:
+                print(f"[Warning] Text model '{text_model}' failed in generate_coordinates: {str(e)}")
+
         if response and hasattr(response, 'text') and response.text:
             match = re.search(r'<CITY>(.*?)</CITY>', response.text, re.IGNORECASE)
             if match:
