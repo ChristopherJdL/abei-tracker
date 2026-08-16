@@ -398,5 +398,15 @@
     "image": "/scenes/abei-in-belfast-eating-haggis.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T08:17:22.350277+00:00"
+  },
+  {
+    "id": "abei-in-beijing-eating-bao",
+    "title": "Abei In Beijing Eating Bao",
+    "subtitle": "Abei seen: Abei in Beijing eating bao",
+    "lat": 39.9075,
+    "lng": 116.3972,
+    "image": "/scenes/abei-in-beijing-eating-bao.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-16T08:35:52.840977+00:00"
   }
 ]
