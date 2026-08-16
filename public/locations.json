@@ -448,5 +448,15 @@
     "image": "/scenes/abei-being-in-a-boat-in-greenl.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T09:48:44.508560+00:00"
+  },
+  {
+    "id": "abei-driving-mclaren-in-osaka-",
+    "title": "Abei Driving Mclaren In Osaka ",
+    "subtitle": "Oh deer! Abei drifts through Osaka at warp speed!",
+    "lat": 34.6938,
+    "lng": 135.5011,
+    "image": "/scenes/abei-driving-mclaren-in-osaka-.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-16T12:10:16.908934+00:00"
   }
 ]
