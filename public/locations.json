@@ -418,5 +418,15 @@
     "image": "/scenes/abei-eating-pasta-in-rome.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T08:39:42.190454+00:00"
+  },
+  {
+    "id": "abei-seen-in-sotchi--russia-do",
+    "title": "Abei Seen In Sotchi, Russia Do",
+    "subtitle": "Abei shreds the snowy slopes with Comrade Dima!",
+    "lat": 43.597,
+    "lng": 39.7248,
+    "image": "/scenes/abei-seen-in-sotchi--russia-do.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-16T08:58:47.922958+00:00"
   }
 ]
