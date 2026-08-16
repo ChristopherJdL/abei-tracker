@@ -83,6 +83,10 @@ function App() {
     setActive(sighting)
   }, [])
 
+  let nextDay = ''
+  if (day === 2) nextDay = 'WEDNESDAY'
+  else if (day >= 4 || day === 6) nextDay = 'SUNDAY'
+
   return (
     <div className="app">
       {!ready && <IntroScreen onEnter={() => setReady(true)} />}
@@ -101,11 +105,11 @@ function App() {
             ADD NEW ABEI
           </PixelButton>
         ) : (
-          <div className="status-chip" aria-live="polite">
-            BEAR STATUS:
+          <div className="status-chip" aria-live="polite" style={{ textAlign: 'right' }}>
+            ONLY ON SUN/MON/WED
             <br />
             <span className="blink">
-              {active ? `LOCKED: ${active.title}` : '[ SCANNING... ]'}
+              TRY NEXT {nextDay}
             </span>
           </div>
         )}
