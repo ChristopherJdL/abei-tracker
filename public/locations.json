@@ -378,5 +378,15 @@
     "image": "/scenes/new-abei-in-brazil-eating-pica.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T08:04:24.074522+00:00"
+  },
+  {
+    "id": "abei-in-rio-enjoying-carnaval-",
+    "title": "Abei In Rio Enjoying Carnaval ",
+    "subtitle": "Abei seen: Abei in Rio enjoying carnaval with fluo green and fluo yellow passistas.",
+    "lat": 42.4317,
+    "lng": 18.5972,
+    "image": "/scenes/abei-in-rio-enjoying-carnaval-.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-16T08:11:28.759612+00:00"
   }
 ]
