@@ -51,12 +51,16 @@
 
 .pokemon-card__title {
   flex: 1;
+  min-width: 0;
   margin: 0;
   font-size: clamp(9px, 2.5vw, 11px);
   color: #ffffff;
   text-shadow: 1px 1px 0 #0c4a6e, -1px -1px 0 #0284c7;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-align: center;
+  padding: 0 4px;
 }
 
 .pokemon-card__close {
