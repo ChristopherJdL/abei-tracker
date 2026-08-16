@@ -368,5 +368,15 @@
     "image": "/scenes/abei-in-massachussets-eating-a.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T07:35:10.350008+00:00"
+  },
+  {
+    "id": "new-abei-in-brazil-eating-pica",
+    "title": "New Abei In Brazil Eating Pica",
+    "subtitle": "Abei seen: new abei in brazil eating pica\u00f1a",
+    "lat": 57.0417,
+    "lng": 49.6237,
+    "image": "/scenes/new-abei-in-brazil-eating-pica.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-16T08:04:24.074522+00:00"
   }
 ]
