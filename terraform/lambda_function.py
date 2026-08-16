@@ -5,6 +5,7 @@ import io
 import datetime
 import traceback
 import random
+import time
 import boto3
 from google import genai
 from google.genai import types
@@ -99,6 +100,10 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
 
     # 1. Try Direct Multimodal Image Models Chain
     for idx, model_name in enumerate(direct_multimodal_models, start=1):
+        if idx > 1:
+            print("[Rate Limit Pause] ⏳ Waiting 30 seconds before testing next model to prevent high RPM...")
+            time.sleep(30)
+
         print(f"[Model Attempt {idx}/{len(direct_multimodal_models)}] 🚀 Trying direct multimodal image model: '{model_name}'...")
         try:
             response = client.models.generate_content(
@@ -131,6 +136,9 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     for m, r in rejected_models:
         print(f"  - Model '{m}' -> {r}")
 
+    print("[Rate Limit Pause] ⏳ Waiting 30 seconds before fallback prompt expansion...")
+    time.sleep(30)
+
     print("\n[Fallback Step 1] 🔄 Running multimodal prompt expansion with 'gemini-2.5-flash'...")
     detailed_prompt = enhanced_prompt
     try:
@@ -156,6 +164,9 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
             print(f"[Fallback Step 1 Success] ✅ Gemini 2.5 Flash enhanced prompt: '{detailed_prompt[:120]}...'")
     except Exception as e:
         print(f"[Fallback Step 1 Warning] ⚠️ Gemini 2.5 Flash analysis skipped: API Error [{type(e).__name__}]: {str(e)}")
+
+    print("[Rate Limit Pause] ⏳ Waiting 30 seconds before fallback image rendering...")
+    time.sleep(30)
 
     print("[Fallback Step 2] 🎨 Attempting final image rendering with 'gemini-2.5-flash-image'...")
     fallback_model = "gemini-2.5-flash-image"
