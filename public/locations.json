@@ -408,5 +408,15 @@
     "image": "/scenes/abei-in-beijing-eating-bao.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T08:35:52.840977+00:00"
+  },
+  {
+    "id": "abei-eating-pasta-in-rome",
+    "title": "Abei Eating Pasta In Rome",
+    "subtitle": "Abei seen: Abei eating pasta in rome",
+    "lat": 41.8919,
+    "lng": 12.5113,
+    "image": "/scenes/abei-eating-pasta-in-rome.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-16T08:39:42.190454+00:00"
   }
 ]
