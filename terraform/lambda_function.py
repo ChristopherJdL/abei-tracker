@@ -139,7 +139,7 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     print("[Rate Limit Pause] ⏳ Waiting 30 seconds before fallback prompt expansion...")
     time.sleep(30)
 
-    print("\n[Fallback Step 1] 🔄 Running multimodal prompt expansion with 'gemini-2.5-flash'...")
+    print("\n[Fallback Step 1] 🔄 Running multimodal prompt expansion with 'gemini-3.1-flash'...")
     detailed_prompt = enhanced_prompt
     try:
         analysis_contents = [
@@ -156,7 +156,7 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
             analysis_contents.append(ref_part)
 
         analysis = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.1-flash",
             contents=analysis_contents
         )
         if analysis and hasattr(analysis, 'text') and analysis.text:
@@ -197,8 +197,8 @@ def generate_coordinates(api_key: str, prompt: str):
     try:
         client = genai.Client(api_key=api_key)
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=f"Extract the real-world latitude and longitude for the location mentioned in this prompt: '{prompt}'. If no obvious location is found, pick a default plausible one (e.g. London). Return ONLY valid JSON with keys 'lat' (float) and 'lng' (float).",
+            model="gemini-3.1-flash",
+            contents=f"Extract the real-world latitude and longitude for the location mentioned in this prompt: '{prompt}'. If no obvious location is found, pick a default plausible one (e.g. London). Return ONLY valid JSON with keys 'lat' (float) and 'lng' (float). Do NOT wrap the response in markdown blocks (like ```json), just output the raw JSON object.",
             config=types.GenerateContentConfig(
                 response_mime_type="application/json"
             )
