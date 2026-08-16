@@ -1,2 +1,3 @@
 google-genai
 pillow
+geonamescache==3.0.2

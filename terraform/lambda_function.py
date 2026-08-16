@@ -7,6 +7,8 @@ import traceback
 import random
 import time
 import boto3
+import re
+import geonamescache
 from google import genai
 from google.genai import types
 
@@ -198,17 +200,27 @@ def generate_coordinates(api_key: str, prompt: str):
         client = genai.Client(api_key=api_key)
         response = client.models.generate_content(
             model="gemini-1.5-flash",
-            contents=f"Extract the real-world latitude and longitude for the location mentioned in this prompt: '{prompt}'. If no obvious location is found, pick a default plausible one (e.g. London). Return ONLY valid JSON with keys 'lat' (float) and 'lng' (float). Do NOT wrap the response in markdown blocks (like ```json), just output the raw JSON object.",
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json"
-            )
+            contents=f"Extract the real-world city mentioned in this prompt: '{prompt}'. If no obvious city is found, pick a default plausible one (e.g. London). Output ONLY the city name wrapped in <CITY></CITY> tags. Example: <CITY>Rio de Janeiro</CITY>."
         )
         if response and hasattr(response, 'text') and response.text:
-            data = json.loads(response.text)
-            lat = round(float(data.get('lat', 51.5072)), 4)
-            lng = round(float(data.get('lng', -0.1276)), 4)
-            print(f"[Info] Generated coordinates from LLM: lat={lat}, lng={lng}")
-            return lat, lng
+            match = re.search(r'<CITY>(.*?)</CITY>', response.text, re.IGNORECASE)
+            if match:
+                city_name = match.group(1).strip()
+                print(f"[Info] Extracted city from LLM: {city_name}")
+                gc = geonamescache.GeonamesCache()
+                cities = gc.get_cities_by_name(city_name)
+                if cities:
+                    # Take the first matched city (usually the most prominent if exact match, or we just rely on geonamescache order)
+                    # get_cities_by_name returns a list of dicts, e.g. [{'3451190': {'geonameid': ...}}]
+                    city_data = list(cities[0].values())[0]
+                    lat = round(float(city_data['latitude']), 4)
+                    lng = round(float(city_data['longitude']), 4)
+                    print(f"[Info] Found coordinates for {city_name} in geonamescache: lat={lat}, lng={lng}")
+                    return lat, lng
+                else:
+                    print(f"[Warning] City '{city_name}' not found in geonamescache.")
+            else:
+                print(f"[Warning] No <CITY> tag found in LLM response: {response.text}")
     except Exception as e:
         print(f"[Warning] Failed to generate coordinates via Gemini: {str(e)}")
 
