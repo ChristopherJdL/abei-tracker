@@ -108,10 +108,7 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
         try:
             response = client.models.generate_content(
                 model=model_name,
-                contents=contents,
-                config=types.GenerateContentConfig(
-                    response_mime_type="image/png"
-                )
+                contents=contents
             )
 
             found_image = False
@@ -176,10 +173,7 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     try:
         fb_response = client.models.generate_content(
             model=fallback_model,
-            contents=[detailed_prompt],
-            config=types.GenerateContentConfig(
-                response_mime_type="image/png"
-            )
+            contents=[detailed_prompt]
         )
         if hasattr(fb_response, 'parts') and fb_response.parts:
             for part in fb_response.parts:
