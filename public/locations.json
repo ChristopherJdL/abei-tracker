@@ -428,5 +428,15 @@
     "image": "/scenes/abei-seen-in-sotchi--russia-do.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T08:58:47.922958+00:00"
+  },
+  {
+    "id": "abei-is-now-in-ghuanzhong-chin",
+    "title": "Abei Is Now In Ghuanzhong Chin",
+    "subtitle": "Abei and a lucky cat sprint to avoid becoming takeout!",
+    "lat": 23.1167,
+    "lng": 113.25,
+    "image": "/scenes/abei-is-now-in-ghuanzhong-chin.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-16T09:46:40.159985+00:00"
   }
 ]
