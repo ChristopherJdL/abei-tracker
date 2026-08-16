@@ -157,29 +157,26 @@ def generate_gemini_image(api_key: str, prompt: str, ref_part=None) -> str:
     except Exception as e:
         print(f"[Fallback Step 1 Warning] ⚠️ Gemini 2.5 Flash analysis skipped: API Error [{type(e).__name__}]: {str(e)}")
 
-    print("[Fallback Step 2] 🎨 Attempting final image rendering with 'imagen-3.0-generate-002'...")
+    print("[Fallback Step 2] 🎨 Attempting final image rendering with 'gemini-2.5-flash-image'...")
+    fallback_model = "gemini-2.5-flash-image"
     try:
-        result = client.models.generate_images(
-            model='imagen-3.0-generate-002',
-            prompt=detailed_prompt,
-            config=types.GenerateImagesConfig(
-                number_of_images=1,
-                aspect_ratio="4:3",
-                output_mime_type="image/png"
-            )
+        fb_response = client.models.generate_content(
+            model=fallback_model,
+            contents=[detailed_prompt]
         )
-        if result and hasattr(result, 'generated_images') and result.generated_images:
-            img_bytes = result.generated_images[0].image.image_bytes
-            print(f"[Fallback Success] ✅ Successfully rendered image via fallback 'imagen-3.0-generate-002'! ({len(img_bytes)} bytes)")
-            return base64.b64encode(img_bytes).decode('utf-8')
-        else:
-            reason = "Imagen 3 API returned response with no generated_images array."
-            print(f"[Fallback Rejected] ❌ 'imagen-3.0-generate-002' turned down: {reason}")
-            rejected_models.append(('imagen-3.0-generate-002', reason))
+        if hasattr(fb_response, 'parts') and fb_response.parts:
+            for part in fb_response.parts:
+                if hasattr(part, 'inline_data') and part.inline_data and hasattr(part.inline_data, 'data'):
+                    img_bytes = part.inline_data.data
+                    print(f"[Fallback Success] ✅ Successfully rendered image via fallback '{fallback_model}'! ({len(img_bytes)} bytes)")
+                    return base64.b64encode(img_bytes).decode('utf-8')
+        reason = f"Fallback model '{fallback_model}' returned no inline_data image bytes."
+        print(f"[Fallback Rejected] ❌ '{fallback_model}' turned down: {reason}")
+        rejected_models.append((fallback_model, reason))
     except Exception as e:
         error_details = f"API Error [{type(e).__name__}]: {str(e)}"
-        print(f"[Fallback Rejected] ❌ 'imagen-3.0-generate-002' turned down by API: {error_details}")
-        rejected_models.append(('imagen-3.0-generate-002', error_details))
+        print(f"[Fallback Rejected] ❌ '{fallback_model}' turned down by API: {error_details}")
+        rejected_models.append((fallback_model, error_details))
 
     summary_errors = "\n".join(f"• {m}: {r}" for m, r in rejected_models)
     raise ValueError(f"All image generation models failed. Last error details:\n{summary_errors}")
