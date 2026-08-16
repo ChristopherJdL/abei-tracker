@@ -438,5 +438,15 @@
     "image": "/scenes/abei-is-now-in-ghuanzhong-chin.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T09:46:40.159985+00:00"
+  },
+  {
+    "id": "abei-being-in-a-boat-in-greenl",
+    "title": "Abei Being In A Boat In Greenl",
+    "subtitle": "Abei dodges icebergs and catches cool vibes!",
+    "lat": 64.1835,
+    "lng": -51.7216,
+    "image": "/scenes/abei-being-in-a-boat-in-greenl.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-16T09:48:44.508560+00:00"
   }
 ]
