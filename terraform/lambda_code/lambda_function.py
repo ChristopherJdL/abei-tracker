@@ -71,7 +71,7 @@ def enrich_prompt_for_image_generation(api_key: str, raw_prompt: str) -> str:
         f"CRITICAL DIRECTIVES:\n"
         f"- Visually coherent & Cinematic: Frame it like a cinematic cutscene, beautiful lighting.\n"
         f"- Local elements: Add typical props, architecture, or atmosphere matching the location mentioned.\n"
-        f"- NO DEFORMATION: Abei must remain a perfectly proportioned cute polar bear. Do not deform his anatomy.\n"
+        f"- NO DEFORMATION: Abei must remain a perfectly proportioned cute polar bear. Do not deform his anatomy. He does NOT have eyebrows.\n"
         f"- Art style: 16-bit GBA pixel art graphics, chunky pixels, rich vibrant color palette, thick black outlines, no text UI chrome, no watermarks.\n"
         f"Output ONLY the final image generation prompt."
     )
@@ -95,7 +95,7 @@ def enrich_prompt_for_image_generation(api_key: str, raw_prompt: str) -> str:
     fallback_enhanced = (
         f"Pixel art 16-bit scene, 4:3 aspect ratio. "
         f"Abei the white polar bear (red scarf, mint green shirt) {clean_prompt}. "
-        f"Chunky pixels, thick black outlines, vibrant 16-bit color palette, cinematic lighting, strictly no character deformation."
+        f"Chunky pixels, thick black outlines, vibrant 16-bit color palette, cinematic lighting, strictly no character deformation, and Abei does not have eyebrows."
     )
     print("[Warning] Falling back to standard prompt enhancement.")
     return fallback_enhanced
