@@ -488,5 +488,15 @@
     "image": "/scenes/abei-in-cameroon-meeting-camer.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-17T14:41:40.700208+00:00"
+  },
+  {
+    "id": "new-abei-found-in-bolivia-eati",
+    "title": "New Abei Found In Bolivia Eati",
+    "subtitle": "Abei dines on salte\u00f1as by a neon-bright cholet!",
+    "lat": -30.7418,
+    "lng": -59.6452,
+    "image": "/scenes/new-abei-found-in-bolivia-eati.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-17T15:14:20.396729+00:00"
   }
 ]
