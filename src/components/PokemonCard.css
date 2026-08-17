@@ -173,3 +173,207 @@
   display: flex;
   justify-content: center;
 }
+
+/* ==========================================================================
+   EXPEDITION TERMINAL / MAP-REPORT SUBMISSION MODAL
+   ========================================================================== */
+.pokemon-card--terminal {
+  max-width: 480px;
+}
+
+.pokemon-card__stage-badge--new {
+  background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%);
+  border-color: #38bdf8;
+  color: #0c4a6e;
+}
+
+.pokemon-card__strip--tracker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.5px;
+}
+
+.terminal-radar-dot {
+  width: 5px;
+  height: 5px;
+  background: #0284c7;
+  border-radius: 50%;
+  display: inline-block;
+  animation: scan-blink 1.2s steps(2, end) infinite;
+}
+
+.pokemon-card__body--terminal {
+  background: #f8fafc;
+  border: 2.5px solid #0284c7;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.terminal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.terminal-form__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-form__paw {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.terminal-form__question {
+  font-size: 8.5px;
+  color: #0c4a6e;
+  font-weight: bold;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+}
+
+.terminal-form__helper {
+  margin: 0;
+  font-size: 7.5px;
+  line-height: 1.6;
+  color: #475569;
+}
+
+.terminal-input-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #38bdf8;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.terminal-input-wrapper:focus-within {
+  border-color: #0284c7;
+  box-shadow:
+    0 0 0 2px #bae6fd,
+    inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.terminal-textarea {
+  width: 100%;
+  min-height: 100px;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 10px 12px;
+  font-family: 'Press Start 2P', monospace, sans-serif;
+  font-size: 9px;
+  line-height: 1.6;
+  color: #0f172a;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.terminal-textarea::placeholder {
+  color: #94a3b8;
+  font-size: 8px;
+  line-height: 1.6;
+}
+
+.terminal-input-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background: #f0f9ff;
+  border-top: 1.5px solid #e0f2fe;
+  font-size: 6.5px;
+  color: #0284c7;
+}
+
+.terminal-input-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.terminal-status-blink {
+  color: #059669;
+  animation: scan-blink 1s steps(2, end) infinite;
+}
+
+.terminal-char-count {
+  color: #64748b;
+  font-family: 'Press Start 2P', monospace, sans-serif;
+  font-size: 6.5px;
+}
+
+.terminal-form__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+/* Submission / Feedback States */
+.terminal-feedback {
+  padding: 8px 4px;
+  text-align: center;
+  font-family: 'Press Start 2P', monospace, sans-serif;
+}
+
+.terminal-feedback__box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-feedback__badge {
+  display: inline-block;
+  padding: 7px 14px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  font-size: 9.5px;
+  letter-spacing: 0.8px;
+  box-shadow:
+    0 3px 0 0 rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.terminal-feedback__badge--success {
+  background: linear-gradient(180deg, #143848 0%, #0d2a38 100%);
+  border: 2px solid var(--ice-cyan);
+  color: #ff7700;
+  text-shadow: 1px 1px 0 #421200;
+}
+
+.terminal-feedback__badge--limit {
+  background: linear-gradient(180deg, #5c0d0d 0%, #300707 100%);
+  border: 2px solid #ef4444;
+  color: #ff5555;
+  text-shadow: 1px 1px 0 #2b0000;
+}
+
+.terminal-feedback__text {
+  margin: 6px 0 0;
+  color: #1e293b;
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.terminal-feedback__sub {
+  margin: 4px 0 0;
+  color: #475569;
+  font-size: 8px;
+  line-height: 1.6;
+}

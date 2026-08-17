@@ -90,14 +90,14 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
       <div className="encounter-dim" aria-hidden />
 
       <div
-        className="pokemon-card"
+        className="pokemon-card pokemon-card--terminal"
         role="dialog"
         aria-modal="true"
         aria-labelledby="request-title"
       >
-        {/* Top Header Bar */}
+        {/* 1. Top Header Bar: Small Stage Badge + Main Title + Close Button */}
         <div className="pokemon-card__topbar">
-          <div className="pokemon-card__stage-badge">
+          <div className="pokemon-card__stage-badge pokemon-card__stage-badge--new">
             <img
               className="pixel pokemon-card__stage-img"
               src="/assets/abei.png"
@@ -123,119 +123,91 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
           </div>
         </div>
 
-        {/* Sub-strip Header */}
-        <div className="pokemon-card__strip">
-          Global Polar Bear Tracker
+        {/* 2. Sub-strip Header: Global Polar Bear Tracker */}
+        <div className="pokemon-card__strip pokemon-card__strip--tracker">
+          <span className="terminal-radar-dot" aria-hidden />
+          <span>GLOBAL POLAR BEAR TRACKER</span>
+          <span className="terminal-radar-dot" aria-hidden />
         </div>
 
-        {/* Body Content */}
-        <div className="pokemon-card__body">
+        {/* 3. Expedition Terminal Body Content */}
+        <div className="pokemon-card__body pokemon-card__body--terminal">
           {submitted ? (
-            <div
-              style={{
-                padding: '12px 6px',
-                textAlign: 'center',
-                color: '#1e293b',
-                fontFamily: "'Press Start 2P', monospace, sans-serif",
-                fontSize: '10px',
-                lineHeight: '1.8',
-              }}
-            >
+            <div className="terminal-feedback">
               {isLimitReached ? (
-                <>
-                  <div
-                    style={{
-                      display: 'inline-block',
-                      padding: '8px 14px',
-                      margin: '0 auto 14px',
-                      background: 'linear-gradient(180deg, #5c0d0d 0%, #300707 100%)',
-                      border: '2px solid #ef4444',
-                      borderRadius: '6px',
-                      boxShadow: '0 3px 0 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                      color: '#ff5555',
-                      fontSize: '10px',
-                      letterSpacing: '1px',
-                      textShadow: '1px 1px 0 #2b0000',
-                    }}
-                  >
+                <div className="terminal-feedback__box">
+                  <div className="terminal-feedback__badge terminal-feedback__badge--limit">
                     LIMIT OF SUBMISSION REACHED
                   </div>
-                  <p style={{ margin: '8px 0 0', color: '#334155', fontSize: '9px', lineHeight: '1.7' }}>
-                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 2 Abei creations per day allowed per operator, only on Sun/Mon/Wed. Come back next {nextDay} to hunt more paws!
+                  <p className="terminal-feedback__text">
+                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 2 Abei creations per day allowed per operator, only on Sun/Mon/Wed.
                   </p>
-                </>
+                  <p className="terminal-feedback__sub">
+                    Come back next <strong>{nextDay}</strong> to hunt more paws!
+                  </p>
+                </div>
               ) : (
-                <>
-                  <div
-                    style={{
-                      display: 'inline-block',
-                      padding: '8px 16px',
-                      margin: '0 auto 16px',
-                      background: 'linear-gradient(180deg, #143848 0%, #0d2a38 100%)',
-                      border: '2px solid var(--ice-cyan)',
-                      borderRadius: '6px',
-                      boxShadow: '0 3px 0 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                      color: '#ff7700',
-                      fontSize: '10px',
-                      letterSpacing: '1px',
-                      textShadow: '1px 1px 0 #421200',
-                    }}
-                  >
+                <div className="terminal-feedback__box">
+                  <div className="terminal-feedback__badge terminal-feedback__badge--success">
                     SUBMISSION RECEIVED
                   </div>
-                  <p style={{ margin: '8px 0 0', color: '#334155', fontSize: '9px', lineHeight: '1.7' }}>
-                    Your submission is under evaluation, come back next time to see if your submission is accepted.
+                  <p className="terminal-feedback__text">
+                    Your sighting report has been beamed to Arctic Satellite HQ!
                   </p>
-                </>
+                  <p className="terminal-feedback__sub">
+                    Our polar cartographers are rendering the encounter. Check back soon to hunt Abei’s new paw on the globe.
+                  </p>
+                </div>
               )}
             </div>
           ) : (
-            <form
-              onSubmit={handleSubmit}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px',
-              }}
-            >
-              <label
-                htmlFor="abei-prompt-input"
-                style={{
-                  fontFamily: "'Press Start 2P', monospace, sans-serif",
-                  fontSize: '9px',
-                  color: '#0c4a6e',
-                  lineHeight: '1.6',
-                }}
-              >
-                Where do you want to see Abei next?
-              </label>
+            <form onSubmit={handleSubmit} className="terminal-form">
+              {/* Question Header */}
+              <div className="terminal-form__header">
+                <img
+                  className="pixel terminal-form__paw"
+                  src="/assets/bear-print.png"
+                  alt=""
+                  aria-hidden
+                />
+                <label
+                  htmlFor="abei-prompt-input"
+                  className="terminal-form__question"
+                >
+                  WHERE DO YOU WANT TO SEE ABEI NEXT?
+                </label>
+              </div>
 
-              <textarea
-                id="abei-prompt-input"
-                value={promptText}
-                onChange={(e) => setPromptText(e.target.value)}
-                rows={4}
-                placeholder="e.g. Abei eating ramen in Tokyo..."
-                required
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  background: '#ffffff',
-                  border: '2px solid #38bdf8',
-                  borderRadius: '6px',
-                  color: '#0f172a',
-                  fontFamily: 'inherit',
-                  fontSize: '11px',
-                  lineHeight: '1.5',
-                  resize: 'none',
-                  boxSizing: 'border-box',
-                  outline: 'none',
-                  boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.1)',
-                }}
-              />
+              {/* Guidance / Helper Text */}
+              <p className="terminal-form__helper">
+                Write a complete sentence describing Abei's next journey, activity, or funny scenario:
+              </p>
 
-              <div style={{ marginTop: '4px', textAlign: 'center' }}>
-                <PixelButton type="submit" variant="orange">
+              {/* Dominant Large Multiline AI Prompt Field */}
+              <div className="terminal-input-wrapper">
+                <textarea
+                  id="abei-prompt-input"
+                  value={promptText}
+                  onChange={(e) => setPromptText(e.target.value)}
+                  rows={5}
+                  placeholder="e.g. Abei eating warm katsu sando under the neon signs of Shibuya Crossing in Tokyo!"
+                  required
+                  className="terminal-textarea"
+                  maxLength={280}
+                />
+                <div className="terminal-input-footer">
+                  <span className="terminal-input-status">
+                    <span className="terminal-status-blink">●</span> EXPEDITION PROMPT READY
+                  </span>
+                  <span className="terminal-char-count">
+                    {promptText.length}/280
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <div className="terminal-form__actions">
+                <PixelButton type="submit" variant="orange" disabled={!promptText.trim()}>
                   SUBMIT SIGHTING
                 </PixelButton>
               </div>
@@ -243,9 +215,7 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
           )}
         </div>
 
-
-
-        {/* Action Button */}
+        {/* 4. Footer Action Button */}
         <div className="pokemon-card__footer-action">
           <PixelButton variant="blue" onClick={onClose}>
             {submitted ? 'CLOSE' : 'BACK TO MAP'}
