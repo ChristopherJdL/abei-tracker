@@ -69,10 +69,24 @@ data "archive_file" "lambda_zip" {
 # ==========================================
 # 2. Lambda #2 Build & Package (GitHub Committer)
 # ==========================================
+resource "null_resource" "trigger_committer_build" {
+  triggers = {
+    always_run = timestamp()
+  }
+}
+
 data "archive_file" "committer_zip" {
   type        = "zip"
   source_file = "${path.module}/lambda_code/github_committer.py"
   output_path = "${path.module}/github_committer.zip"
+  depends_on  = [null_resource.trigger_committer_build]
+}
+
+# General build trigger null_resource
+resource "null_resource" "trigger_both_builds" {
+  triggers = {
+    build_trigger = timestamp()
+  }
 }
 
 # ==========================================
