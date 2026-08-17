@@ -200,23 +200,26 @@ def generate_metadata_extras(api_key: str, prompt: str):
                 f"Extract the real-world city mentioned in this prompt: '{prompt}'. "
                 f"If no obvious city is found, pick a default plausible one (e.g. London). "
                 f"Also write a witty, punchy 1-line subtitle (max 60 chars) for a trading card describing what Abei is doing. "
-                f"Output the city in <CITY></CITY> tags and the subtitle in <DESC></DESC> tags. "
-                f"Example: <CITY>Rio de Janeiro</CITY><DESC>Abei dances the samba in bright neon feathers!</DESC>"
+                f"Finally, create a short, catchy title (max 30 chars) for the encounter card. "
+                f"Output the city in <CITY></CITY> tags, the subtitle in <DESC></DESC> tags, and the title in <TITLE></TITLE> tags. "
+                f"Example: <CITY>Rio de Janeiro</CITY><DESC>Abei dances the samba in bright neon feathers!</DESC><TITLE>Carnaval Abei</TITLE>"
             )
             response = client.models.generate_content(model=text_model, contents=instruction)
             
             if response and hasattr(response, 'text') and response.text:
                 city_match = re.search(r'<CITY>(.*?)</CITY>', response.text, re.IGNORECASE)
                 desc_match = re.search(r'<DESC>(.*?)</DESC>', response.text, re.IGNORECASE)
+                title_match = re.search(r'<TITLE>(.*?)</TITLE>', response.text, re.IGNORECASE)
                 
                 subtitle = desc_match.group(1).strip() if desc_match else f"Abei seen: {prompt.strip()}"
+                title = title_match.group(1).strip() if title_match else prompt.strip().title()[:30]
                 
                 if city_match:
                     city_name = city_match.group(1).strip()
-                    print(f"[Info] Extracted city: {city_name} | Subtitle: {subtitle}")
+                    print(f"[Info] Extracted city: {city_name} | Title: {title} | Subtitle: {subtitle}")
                     lat, lng = lookup_coordinates_in_csv(city_name)
                     if lat is not None and lng is not None:
-                        return lat, lng, subtitle
+                        return lat, lng, subtitle, title
                     print(f"[Warning] City '{city_name}' not found in CSV.")
                 break
         except Exception as e:
@@ -228,15 +231,15 @@ def generate_metadata_extras(api_key: str, prompt: str):
     lat = round(rng.uniform(-40.0, 68.0), 4)
     lng = round(rng.uniform(-130.0, 140.0), 4)
     print(f"[Info] Generated fallback coordinates: lat={lat}, lng={lng}")
-    return lat, lng, f"Abei seen: {prompt.strip()}"
+    return lat, lng, f"Abei seen: {prompt.strip()}", prompt.strip().title()[:30]
 
 def build_sighting_metadata(api_key: str, raw_prompt: str) -> dict:
     """Build the final sighting dictionary to be committed."""
     clean_id = "".join(c if c.isalnum() else "-" for c in raw_prompt.lower()).strip("-")[:30]
-    lat, lng, subtitle = generate_metadata_extras(api_key, raw_prompt)
+    lat, lng, subtitle, title = generate_metadata_extras(api_key, raw_prompt)
     return {
         "id": clean_id,
-        "title": raw_prompt.strip().title()[:30],
+        "title": title,
         "subtitle": subtitle,
         "lat": lat,
         "lng": lng,
