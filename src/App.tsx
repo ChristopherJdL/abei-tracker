@@ -92,7 +92,7 @@ function App() {
           <img className="pixel" src="/assets/bear-print.png" alt="" />
           <div className="brand-text">
             <strong>ABEI TRACKER GBA</strong>
-            <small>friendly polar bear tracker</small>
+            <small>Friendly polar bear tracker</small>
           </div>
         </div>
 

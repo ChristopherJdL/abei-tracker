@@ -15,34 +15,42 @@ export interface NewsTickerItem {
 export const NEWS_TICKER_ITEMS: NewsTickerItem[] = [
   {
     label: 'BREAKING',
-    text: 'Whale spotted asking directions to Iceland. Locals unconvinced',
+    text: 'Machu Picchu summit: llama startled by fluffy white tourist attempting yoga pose',
   },
   {
     label: 'ALERT',
-    text: 'Sahara caravan reports stolen camel. Fluffy suspect last seen heading east',
-  },
-  {
-    label: 'EXCLUSIVE',
-    text: 'Shibuya scramble halted. One commuter refused to drop katsu sando',
-  },
-  {
-    label: 'UPDATE',
-    text: 'Table Mountain guide: tourist ate entire bunny chow. Zero regrets',
-  },
-  {
-    label: 'URGENT',
-    text: 'Baie des Sirènes grill empty. Poisson grillé gone. Paw prints on sand',
+    text: 'Venice gondolier in tears: bear passenger steered gondola straight into gelato parlor',
   },
   {
     label: 'LIVE',
-    text: 'Mystery bear-shaped vigilante took down gang in Marseille. Police baffled',
-  },
-  {
-    label: 'BREAKING',
-    text: 'Qatar oil slick: seagull pulled free mid-ocean. Engineers watched from the plant',
+    text: 'Seoul karaoke room booked for 12 hours straight. Only cheerful bear roars echoing out',
   },
   {
     label: 'EXCLUSIVE',
-    text: 'Nouvelle Zemble ice floe: seal escaped. Penguin still screaming',
+    text: 'Taj Mahal marble gardens: security baffled by cozy red scarf draped over fountain',
+  },
+  {
+    label: 'URGENT',
+    text: 'Swiss Alps chalet fondue pot emptied in 20 seconds. Suspect fled downhill on a wooden sled',
+  },
+  {
+    label: 'UPDATE',
+    text: 'Amsterdam canals: runaway yellow paddle boat spotted with oversized polar captain at helm',
+  },
+  {
+    label: 'BREAKING',
+    text: 'Great Sphinx shadow photobombed by mint-green shirt. Archaeologists thoroughly charmed',
+  },
+  {
+    label: 'ALERT',
+    text: 'Singapore hawker center: entire stall of chili crab cleared out. 5-star review left in paw print',
+  },
+  {
+    label: 'LIVE',
+    text: 'Banff National Park: local grizzly bear reported completely intimidated by polite polar visitor',
+  },
+  {
+    label: 'EXCLUSIVE',
+    text: 'Bangkok tuk-tuk breaks speed record through night market. Passenger wore mint shirt and scarf',
   },
 ]

@@ -20,7 +20,10 @@ export function NewsTicker() {
   return (
     <div className="news-ticker" role="region" aria-label="Tracker news feed">
       <div className="news-ticker__label" aria-hidden>
-        <span className="news-ticker__live">LIVE</span>
+        <div className="news-ticker__live-badge">
+          <span className="news-ticker__live-dot" />
+          <span className="news-ticker__live">LIVE</span>
+        </div>
         <span className="news-ticker__brand">TRACKER FEED</span>
       </div>
       <div className="news-ticker__viewport">
