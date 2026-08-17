@@ -6,6 +6,7 @@ import {
   recordSightingCreationToday,
 } from '../lib/creations'
 import './PokemonCard.css'
+import './NewAbeiModal.css'
 
 interface NewAbeiModalProps {
   onClose: () => void
