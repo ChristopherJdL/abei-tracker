@@ -200,9 +200,9 @@ def generate_metadata_extras(api_key: str, prompt: str):
                 f"Extract the real-world city mentioned in this prompt: '{prompt}'. "
                 f"If no obvious city is found, pick a default plausible one (e.g. London). "
                 f"Also write a witty, punchy 1-line subtitle (max 60 chars) for a trading card describing what Abei is doing. "
-                f"Finally, create a short, catchy title (max 30 chars) for the encounter card. "
+                f"Finally, create a short, catchy 2-word title for the encounter card. "
                 f"Output the city in <CITY></CITY> tags, the subtitle in <DESC></DESC> tags, and the title in <TITLE></TITLE> tags. "
-                f"Example: <CITY>Rio de Janeiro</CITY><DESC>Abei dances the samba in bright neon feathers!</DESC><TITLE>Carnaval Abei</TITLE>"
+                f"Example: <CITY>Rio de Janeiro</CITY><DESC>Abei dances the samba in bright neon feathers!</DESC><TITLE>Rio Carnaval</TITLE>"
             )
             response = client.models.generate_content(model=text_model, contents=instruction)
             
@@ -231,7 +231,8 @@ def generate_metadata_extras(api_key: str, prompt: str):
     lat = round(rng.uniform(-40.0, 68.0), 4)
     lng = round(rng.uniform(-130.0, 140.0), 4)
     print(f"[Info] Generated fallback coordinates: lat={lat}, lng={lng}")
-    return lat, lng, f"Abei seen: {prompt.strip()}", prompt.strip().title()[:30]
+    title_fallback = " ".join(prompt.strip().title().split()[:2])
+    return lat, lng, f"Abei seen: {prompt.strip()}", title_fallback
 
 def build_sighting_metadata(api_key: str, raw_prompt: str) -> dict:
     """Build the final sighting dictionary to be committed."""
