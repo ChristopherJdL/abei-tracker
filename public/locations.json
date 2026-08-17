@@ -498,5 +498,15 @@
     "image": "/scenes/new-abei-found-in-bolivia-eati.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-17T15:14:20.396729+00:00"
+  },
+  {
+    "id": "new-abei-found-in-detroit-eati",
+    "title": "Motown Munchies",
+    "subtitle": "Abei grabs a slice of Motown with a furry superfan!",
+    "lat": 42.3314,
+    "lng": -83.0457,
+    "image": "/scenes/new-abei-found-in-detroit-eati.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-17T17:20:05.370539+00:00"
   }
 ]
