@@ -478,5 +478,15 @@
     "image": "/scenes/abei-in-bahawalpur-doing-a-typ.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-17T14:39:56.443986+00:00"
+  },
+  {
+    "id": "abei-in-cameroon-meeting-camer",
+    "title": "Abei In Cameroon Meeting Camer",
+    "subtitle": "Abei locks eyes with Cameroon's pride and joy!",
+    "lat": 3.8667,
+    "lng": 11.5167,
+    "image": "/scenes/abei-in-cameroon-meeting-camer.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-17T14:41:40.700208+00:00"
   }
 ]
