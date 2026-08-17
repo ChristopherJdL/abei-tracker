@@ -458,5 +458,15 @@
     "image": "/scenes/abei-driving-mclaren-in-osaka-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T12:10:16.908934+00:00"
+  },
+  {
+    "id": "abei-eating-non-hygiene-food-i",
+    "title": "Abei Eating Non Hygiene Food I",
+    "subtitle": "Abei battles a legendary case of Delhi Belly!",
+    "lat": 28.6214,
+    "lng": 77.2148,
+    "image": "/scenes/abei-eating-non-hygiene-food-i.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-17T14:36:35.283563+00:00"
   }
 ]
