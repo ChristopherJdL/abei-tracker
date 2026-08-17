@@ -468,5 +468,15 @@
     "image": "/scenes/abei-eating-non-hygiene-food-i.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-17T14:36:35.283563+00:00"
+  },
+  {
+    "id": "abei-in-bahawalpur-doing-a-typ",
+    "title": "Abei In Bahawalpur Doing A Typ",
+    "subtitle": "Abei drifts a jeep through the Cholistan dunes!",
+    "lat": 29.3978,
+    "lng": 71.6752,
+    "image": "/scenes/abei-in-bahawalpur-doing-a-typ.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-17T14:39:56.443986+00:00"
   }
 ]
