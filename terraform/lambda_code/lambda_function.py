@@ -179,7 +179,7 @@ def generate_gemini_image(api_key: str, enhanced_prompt: str, ref_part=None) -> 
 # 4. Metadata Extraction
 # ==============================================================================
 def extract_fallback_title_from_prompt(prompt: str) -> str:
-    """Scan the prompt for any known city in cities.csv to use as a fallback title."""
+    """Scan the prompt for any known city in cities.csv to use as a fallback title. If none found, fall back to first two words of the prompt."""
     prompt_lower = prompt.lower()
     csv_path = os.path.join(os.path.dirname(__file__), 'assets', 'cities.csv')
     try:
@@ -195,7 +195,9 @@ def extract_fallback_title_from_prompt(prompt: str) -> str:
                 return longest_match.title()
     except Exception:
         pass
-    return "Unknown Location"
+    # Fallback: use the first two words of the prompt as title
+    words = prompt.strip().split()
+    return " ".join(words[:2]) if words else "Unknown Location"
 
 def lookup_coordinates_in_csv(city_name: str):
     """Lookup latitude and longitude for a city in the local CSV file."""
