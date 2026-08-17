@@ -178,6 +178,25 @@ def generate_gemini_image(api_key: str, enhanced_prompt: str, ref_part=None) -> 
 # ==============================================================================
 # 4. Metadata Extraction
 # ==============================================================================
+def extract_fallback_title_from_prompt(prompt: str) -> str:
+    """Scan the prompt for any known city in cities.csv to use as a fallback title."""
+    prompt_lower = prompt.lower()
+    csv_path = os.path.join(os.path.dirname(__file__), 'assets', 'cities.csv')
+    try:
+        with open(csv_path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            longest_match = ""
+            for row in reader:
+                city = row['city'].lower()
+                if len(city) > 3 and city in prompt_lower:
+                    if len(city) > len(longest_match):
+                        longest_match = city
+            if longest_match:
+                return longest_match.title()
+    except Exception:
+        pass
+    return "Unknown Location"
+
 def lookup_coordinates_in_csv(city_name: str):
     """Lookup latitude and longitude for a city in the local CSV file."""
     csv_path = os.path.join(os.path.dirname(__file__), 'assets', 'cities.csv')
@@ -212,7 +231,7 @@ def generate_metadata_extras(api_key: str, prompt: str):
                 title_match = re.search(r'<TITLE>(.*?)</TITLE>', response.text, re.IGNORECASE)
                 
                 subtitle = desc_match.group(1).strip() if desc_match else f"Abei seen: {prompt.strip()}"
-                title = title_match.group(1).strip() if title_match else prompt.strip().title()[:30]
+                title = title_match.group(1).strip() if title_match else (city_match.group(1).strip().title() if city_match else extract_fallback_title_from_prompt(prompt))
                 
                 if city_match:
                     city_name = city_match.group(1).strip()
@@ -231,7 +250,7 @@ def generate_metadata_extras(api_key: str, prompt: str):
     lat = round(rng.uniform(-40.0, 68.0), 4)
     lng = round(rng.uniform(-130.0, 140.0), 4)
     print(f"[Info] Generated fallback coordinates: lat={lat}, lng={lng}")
-    title_fallback = " ".join(prompt.strip().title().split()[:2])
+    title_fallback = extract_fallback_title_from_prompt(prompt)
     return lat, lng, f"Abei seen: {prompt.strip()}", title_fallback
 
 def build_sighting_metadata(api_key: str, raw_prompt: str) -> dict:
