@@ -42,7 +42,7 @@ def get_reference_part(b64_str: str = None):
         except Exception as e:
             print(f"[Warning] Failed to decode base64 reference image: {str(e)}")
 
-    local_path = os.path.join(os.path.dirname(__file__), 'abei.png')
+    local_path = os.path.join(os.path.dirname(__file__), 'assets', 'abei.png')
     if os.path.exists(local_path):
         try:
             with open(local_path, 'rb') as f:
@@ -180,7 +180,7 @@ def generate_gemini_image(api_key: str, enhanced_prompt: str, ref_part=None) -> 
 # ==============================================================================
 def lookup_coordinates_in_csv(city_name: str):
     """Lookup latitude and longitude for a city in the local CSV file."""
-    csv_path = os.path.join(os.path.dirname(__file__), 'cities.csv')
+    csv_path = os.path.join(os.path.dirname(__file__), 'assets', 'cities.csv')
     try:
         with open(csv_path, 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f)

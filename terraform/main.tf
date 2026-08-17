@@ -52,10 +52,9 @@ resource "null_resource" "install_dependencies" {
     command = <<EOT
       rm -rf ${path.module}/lambda_package
       mkdir -p ${path.module}/lambda_package
-      python3 -m pip install -r ${path.module}/requirements.txt -t ${path.module}/lambda_package --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.12 --upgrade
-      cp ${path.module}/lambda_function.py ${path.module}/lambda_package/
-      cp ${path.module}/abei.png ${path.module}/lambda_package/
-      cp ${path.module}/cities.csv ${path.module}/lambda_package/
+      python3 -m pip install -r ${path.module}/lambda_code/requirements.txt -t ${path.module}/lambda_package --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.12 --upgrade
+      cp ${path.module}/lambda_code/lambda_function.py ${path.module}/lambda_package/
+      cp -r ${path.module}/lambda_code/assets ${path.module}/lambda_package/
     EOT
   }
 }
@@ -72,7 +71,7 @@ data "archive_file" "lambda_zip" {
 # ==========================================
 data "archive_file" "committer_zip" {
   type        = "zip"
-  source_file = "${path.module}/github_committer.py"
+  source_file = "${path.module}/lambda_code/github_committer.py"
   output_path = "${path.module}/github_committer.zip"
 }
 
