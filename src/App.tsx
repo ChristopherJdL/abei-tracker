@@ -23,6 +23,12 @@ function App() {
   )
   const [error, setError] = useState<string | null>(null)
 
+  const day = new Date().getDay()
+  const isAllowedDay = day === 0 || day === 1 || day === 3 // Sunday, Monday, Wednesday
+  const isBypass =
+    new URLSearchParams(window.location.search).get('bypass') === 'newabeibutton'
+  const showNewAbeiButton = isAllowedDay || isBypass
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const revertId = params.get('revert')?.trim()
@@ -90,9 +96,11 @@ function App() {
           </div>
         </div>
 
-        <PixelButton variant="orange" onClick={() => setRequestModalOpen(true)}>
-          ADD NEW ABEI
-        </PixelButton>
+        {showNewAbeiButton && (
+          <PixelButton variant="orange" onClick={() => setRequestModalOpen(true)}>
+            ADD NEW ABEI
+          </PixelButton>
+        )}
       </header>
 
       <main className="frame">
