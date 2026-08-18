@@ -77,8 +77,7 @@ img.pixel {
 }
 
 /* While zooming: only throttle map-adjacent chrome — footer/ticker/corner Abei stay independent. */
-html.abei-map-zooming .app::before,
-html.abei-map-zooming .status-chip .blink {
+html.abei-map-zooming .app::before {
   animation-play-state: paused !important;
 }
 
