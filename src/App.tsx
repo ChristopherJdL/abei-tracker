@@ -29,6 +29,11 @@ function App() {
     new URLSearchParams(window.location.search).get('bypass') === 'newabeibutton'
   const showNewAbeiButton = isAllowedDay || isBypass
 
+  let nextAllowedDay = ''
+  if (day === 0) nextAllowedDay = 'Monday'
+  else if (day === 1 || day === 2) nextAllowedDay = 'Wednesday'
+  else nextAllowedDay = 'Sunday'
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const revertId = params.get('revert')?.trim()
@@ -96,9 +101,13 @@ function App() {
           </div>
         </div>
 
-        {showNewAbeiButton && (
+        {showNewAbeiButton ? (
           <PixelButton variant="orange" onClick={() => setRequestModalOpen(true)}>
             ADD NEW ABEI
+          </PixelButton>
+        ) : (
+          <PixelButton variant="gray" disabled>
+            {`WAIT FOR NEXT ${nextAllowedDay.toUpperCase()} TO ADD A NEW ABEI`}
           </PixelButton>
         )}
       </header>

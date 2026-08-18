@@ -6,7 +6,7 @@ interface PixelButtonProps {
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
-  variant?: 'orange' | 'blue' | 'red';
+  variant?: 'orange' | 'blue' | 'red' | 'gray';
   isSquare?: boolean;
   className?: string;
   style?: React.CSSProperties;
