@@ -508,5 +508,15 @@
     "image": "/scenes/new-abei-found-in-detroit-eati.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-17T17:20:05.370539+00:00"
+  },
+  {
+    "id": "new-abei-in-new-zealand",
+    "title": "Kiwi Chaos",
+    "subtitle": "Abei tries to out-haka a very confused kiwi.",
+    "lat": -36.8485,
+    "lng": 174.7635,
+    "image": "/scenes/new-abei-in-new-zealand.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-18T06:02:51.688278+00:00"
   }
 ]
