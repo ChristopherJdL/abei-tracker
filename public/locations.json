@@ -538,5 +538,15 @@
     "image": "/scenes/new-abei-found-in-nw51rz-londo.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-19T11:42:05.504417+00:00"
+  },
+  {
+    "id": "photorealistic-cinematic-scene",
+    "title": "Kremlin Summit",
+    "subtitle": "Abei seals a chilly alliance with a warm handshake!",
+    "lat": 55.752,
+    "lng": 37.6178,
+    "image": "/scenes/photorealistic-cinematic-scene.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-19T12:18:33.857541+00:00"
   }
 ]
