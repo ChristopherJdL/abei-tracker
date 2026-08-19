@@ -548,5 +548,15 @@
     "image": "/scenes/photorealistic-cinematic-scene.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-19T12:18:33.857541+00:00"
+  },
+  {
+    "id": "new-abei-in-menekre--ivory-coa",
+    "title": "Foufou Feast",
+    "subtitle": "Abei dines on fine foufou with an elephant pal!",
+    "lat": 5.3544,
+    "lng": -4.0017,
+    "image": "/scenes/new-abei-in-menekre--ivory-coa.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-19T13:48:22.217116+00:00"
   }
 ]
