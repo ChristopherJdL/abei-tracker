@@ -528,5 +528,15 @@
     "image": "/scenes/new-abei-found-in-batman--the-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-18T09:46:55.527668+00:00"
+  },
+  {
+    "id": "new-abei-found-in-nw51rz-londo",
+    "title": "Bunny Brunch",
+    "subtitle": "Bacon and dubious greens with a bunny buddy!",
+    "lat": 42.9834,
+    "lng": -81.233,
+    "image": "/scenes/new-abei-found-in-nw51rz-londo.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-19T11:42:05.504417+00:00"
   }
 ]
