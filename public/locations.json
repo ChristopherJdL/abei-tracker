@@ -558,5 +558,15 @@
     "image": "/scenes/new-abei-in-menekre--ivory-coa.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-19T13:48:22.217116+00:00"
+  },
+  {
+    "id": "abei-found-in-quebec-and-meets",
+    "title": "Introd",
+    "subtitle": "Abei seen: Abei found in Quebec and meets a Quebec black bear (Beno\u00eet) anthropomorphic. They are in a Cabane \u00e0 Sucre. In a speech bubble that black bear introduces himself in French with a very strong Quebec Accent and idioms.",
+    "lat": 19.2907,
+    "lng": 49.0776,
+    "image": "/scenes/abei-found-in-quebec-and-meets.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-20T15:50:26.821071+00:00"
   }
 ]
