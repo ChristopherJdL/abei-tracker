@@ -568,5 +568,15 @@
     "image": "/scenes/abei-found-in-quebec-and-meets.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-20T15:50:26.821071+00:00"
+  },
+  {
+    "id": "amsterdam-red-district",
+    "title": "Amsterdam Lights",
+    "subtitle": "Canal stroll with a Dutch cow — glowing red windows across the water.",
+    "lat": 52.3718,
+    "lng": 4.896,
+    "image": "/scenes/amsterdam-red-district.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-21T15:01:20.000Z"
   }
 ]
