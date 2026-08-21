@@ -588,5 +588,15 @@
     "image": "/scenes/abei-in-tibet-meeting-dala\u00ef-la.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-21T18:36:12.240377+00:00"
+  },
+  {
+    "id": "abei-in-sweden-eating-10000-sw",
+    "title": "Meatball Mayhem",
+    "subtitle": "Abei tackles a mountain of meatballs with a moose!",
+    "lat": 59.3294,
+    "lng": 18.0687,
+    "image": "/scenes/abei-in-sweden-eating-10000-sw.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-21T18:59:49.782741+00:00"
   }
 ]
