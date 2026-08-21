@@ -561,8 +561,8 @@
   },
   {
     "id": "abei-found-in-quebec-and-meets",
-    "title": "Cabane à Sucre",
-    "subtitle": "Attache ta tuque! Tasting tire d'érable with Benoît in Quebec.",
+    "title": "Cabane \u00e0 Sucre",
+    "subtitle": "Attache ta tuque! Tasting tire d'\u00e9rable with Beno\u00eet in Quebec.",
     "lat": 46.8139,
     "lng": -71.208,
     "image": "/scenes/abei-found-in-quebec-and-meets.png",
@@ -572,11 +572,21 @@
   {
     "id": "amsterdam-red-district",
     "title": "Amsterdam Lights",
-    "subtitle": "Canal stroll with a Dutch cow — glowing red windows across the water.",
+    "subtitle": "Canal stroll with a Dutch cow \u2014 glowing red windows across the water.",
     "lat": 52.3718,
     "lng": 4.896,
     "image": "/scenes/amsterdam-red-district.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-21T15:01:20.000Z"
+  },
+  {
+    "id": "abei-in-tibet-meeting-dala\u00ef-la",
+    "title": "Zen Yak",
+    "subtitle": "Abei finds inner peace with a very zen yak!",
+    "lat": 29.65,
+    "lng": 91.1,
+    "image": "/scenes/abei-in-tibet-meeting-dala\u00ef-la.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-21T18:36:12.240377+00:00"
   }
 ]
