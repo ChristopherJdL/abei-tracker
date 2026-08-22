@@ -598,5 +598,15 @@
     "image": "/scenes/abei-in-sweden-eating-10000-sw.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-21T18:59:49.782741+00:00"
+  },
+  {
+    "id": "abei-is-taming-a-bunch-of-shee",
+    "title": "Udder Madness",
+    "subtitle": "Sheep whispering and udder-chugging in split-screen!",
+    "lat": -36.8485,
+    "lng": 174.7635,
+    "image": "/scenes/abei-is-taming-a-bunch-of-shee.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-22T10:13:37.975358+00:00"
   }
 ]
