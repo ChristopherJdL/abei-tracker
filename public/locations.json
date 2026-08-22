@@ -608,5 +608,15 @@
     "image": "/scenes/abei-is-taming-a-bunch-of-shee.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-22T10:13:37.975358+00:00"
+  },
+  {
+    "id": "abei-meets-taiwanese-bear-in-h",
+    "title": "Bear",
+    "subtitle": "Abei seen: Abei meets Taiwanese bear in Hualien",
+    "lat": 0.1712,
+    "lng": 43.8926,
+    "image": "/scenes/abei-meets-taiwanese-bear-in-h.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-22T20:51:53.309401+00:00"
   }
 ]
