@@ -628,5 +628,15 @@
     "image": "/scenes/abei-visiting-an-isolated-indo.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-23T19:19:31.873455+00:00"
+  },
+  {
+    "id": "abei-visiting-french-lick--ind",
+    "title": "Historic Haven",
+    "subtitle": "Abei hunts for history and hot springs!",
+    "lat": 38.5489,
+    "lng": -86.62,
+    "image": "/scenes/abei-visiting-french-lick--ind.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-23T19:20:18.033970+00:00"
   }
 ]
