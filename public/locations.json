@@ -618,5 +618,15 @@
     "image": "/scenes/abei-meets-taiwanese-bear-in-h.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-22T20:51:53.309401+00:00"
+  },
+  {
+    "id": "abei-visiting-an-isolated-indo",
+    "title": "Tribal Feast",
+    "subtitle": "Abei hopes he's the guest of honor, not the main course!",
+    "lat": -2.5337,
+    "lng": 140.7181,
+    "image": "/scenes/abei-visiting-an-isolated-indo.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-23T19:19:31.873455+00:00"
   }
 ]
