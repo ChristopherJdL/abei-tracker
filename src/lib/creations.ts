@@ -1,5 +1,5 @@
 const DAILY_LIMIT_KEY = 'abei-daily-creations';
-const MAX_CREATIONS_PER_DAY = 2;
+const MAX_CREATIONS_PER_DAY = 3;
 
 interface DailyCreationData {
   date: string; // YYYY-MM-DD

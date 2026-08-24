@@ -141,7 +141,7 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
                     LIMIT OF SUBMISSION REACHED
                   </div>
                   <p className="terminal-feedback__text">
-                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 2 Abei creations per day allowed per operator, only on Sun/Mon/Wed.
+                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 3 Abei creations per day allowed per operator, only on Sun/Mon/Wed.
                   </p>
                   <p className="terminal-feedback__sub">
                     Come back next <strong>{nextDay}</strong> to hunt more paws!
