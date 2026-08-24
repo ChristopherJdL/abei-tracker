@@ -668,5 +668,15 @@
     "image": "/scenes/abei-meets-a-legendary-phantom.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-24T08:33:29.284887+00:00"
+  },
+  {
+    "id": "abei-meets-the-feline-phantom-",
+    "title": "Phantom Partner",
+    "subtitle": "Abei plots a neon heist with a crafty feline mentor.",
+    "lat": 35.6895,
+    "lng": 139.6917,
+    "image": "/scenes/abei-meets-the-feline-phantom-.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-24T08:34:43.464203+00:00"
   }
 ]
