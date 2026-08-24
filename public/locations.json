@@ -653,10 +653,20 @@
     "id": "abei-is-in-rhode-island-with-a",
     "title": "Spider Sleuth",
     "subtitle": "Abei hires a spider-sleuth to untangle a sticky case.",
-    "lat": 41.8240,
+    "lat": 41.824,
     "lng": -71.4128,
     "image": "/scenes/abei-is-in-rhode-island-with-a.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-24T07:58:29.595766+00:00"
+  },
+  {
+    "id": "abei-meets-a-legendary-phantom",
+    "title": "Crimson Shadow",
+    "subtitle": "Abei brings an umbrella to a stylish showdown.",
+    "lat": 34.6938,
+    "lng": 135.5011,
+    "image": "/scenes/abei-meets-a-legendary-phantom.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-24T08:33:29.284887+00:00"
   }
 ]
