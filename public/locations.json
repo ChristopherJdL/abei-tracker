@@ -688,5 +688,15 @@
     "image": "/scenes/abei-is-having-a-chill-holiday.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-26T08:00:30.782493+00:00"
+  },
+  {
+    "id": "abei-meets-a-blue-alien--dog-l",
+    "title": "Alien Aloha",
+    "subtitle": "Abei tames a toothy space pup on the beach!",
+    "lat": 21.3069,
+    "lng": -157.8583,
+    "image": "/scenes/abei-meets-a-blue-alien--dog-l.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-26T08:04:54.475132+00:00"
   }
 ]
