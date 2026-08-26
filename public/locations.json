@@ -678,5 +678,15 @@
     "image": "/scenes/abei-meets-the-feline-phantom-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-24T08:34:43.464203+00:00"
+  },
+  {
+    "id": "abei-is-having-a-chill-holiday",
+    "title": "Island Chill",
+    "subtitle": "Abei trades deadlines for hammocks and coconuts!",
+    "lat": -17.5347,
+    "lng": -149.5684,
+    "image": "/scenes/abei-is-having-a-chill-holiday.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-26T08:00:30.782493+00:00"
   }
 ]
