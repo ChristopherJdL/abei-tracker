@@ -63,8 +63,8 @@ img.pixel {
 
 .maplibregl-canvas {
   outline: none;
-  /* Dark mode OSM: invert colors, keep water blue by rotating hue, adjust brightness/contrast to match arctic theme */
-  filter: invert(1) hue-rotate(180deg) brightness(1.2) contrast(1.1);
+  /* Tint Esri Dark Gray into an arctic navy/teal tone */
+  filter: sepia(1) hue-rotate(170deg) saturate(2.5) brightness(0.8) contrast(1.2);
 }
 
 /* While zooming: kill marker chrome — GPU map owns the frame budget. */

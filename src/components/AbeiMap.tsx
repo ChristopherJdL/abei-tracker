@@ -27,17 +27,15 @@ const MAP_STYLE: StyleSpecification = {
   version: 8,
   name: 'abei-arctic-dark',
   sources: {
-    'osm-standard': {
+    'esri-dark-gray': {
       type: 'raster',
       tiles: [
-        'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
       ],
       tileSize: 256,
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxzoom: 19,
+        '&copy; <a href="https://www.esri.com/">Esri</a>, HERE, Garmin, FAO, NOAA, USGS, EPA',
+      maxzoom: 16,
     },
   },
   layers: [
@@ -47,9 +45,9 @@ const MAP_STYLE: StyleSpecification = {
       paint: { 'background-color': '#071f2e' },
     },
     {
-      id: 'osm-standard',
+      id: 'esri-dark-gray',
       type: 'raster',
-      source: 'osm-standard',
+      source: 'esri-dark-gray',
       paint: {
         'raster-fade-duration': 0,
         'raster-opacity': 1,
