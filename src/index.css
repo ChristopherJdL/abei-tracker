@@ -63,6 +63,8 @@ img.pixel {
 
 .maplibregl-canvas {
   outline: none;
+  /* Dark mode OSM: invert colors, keep water blue by rotating hue, adjust brightness/contrast to match arctic theme */
+  filter: invert(1) hue-rotate(180deg) brightness(1.2) contrast(1.1);
 }
 
 /* While zooming: kill marker chrome — GPU map owns the frame budget. */
