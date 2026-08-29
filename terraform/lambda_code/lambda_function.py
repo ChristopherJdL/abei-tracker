@@ -258,55 +258,94 @@ def lookup_coordinates_in_csv(city_name: str, country_or_state: str = None):
 
     return None, None
 
-def generate_metadata_extras(api_key: str, prompt: str):
-    """Generate global coordinates and a witty subtitle based on raw prompt."""
+def generate_metadata_extras(api_key: str, prompt: str, generated_b64: str = None):
+    """Generate global coordinates and a witty subtitle based on prompt and the generated image."""
     client = genai.Client(api_key=api_key)
+    
+    # 1. Geocoding from prompt
+    lat = None
+    lng = None
+    city_name = None
+    country_name = None
+    title = None
+    
     for text_model in ["gemini-3.5-flash", "gemini-1.5-flash"]:
         try:
             instruction = (
                 f"Extract the real-world city AND country (or state) mentioned in this prompt: '{prompt}'. "
                 f"If no obvious city is found, pick a default plausible one (e.g. London, United Kingdom). "
-                f"Also write a witty, punchy 1-line subtitle (max 60 chars) for a trading card describing what Abei is doing. "
-                f"Finally, create a short, catchy 2-word title for the encounter card. "
-                f"Output the city in <CITY></CITY> tags, the country/state in <COUNTRY></COUNTRY> tags, the subtitle in <DESC></DESC> tags, and the title in <TITLE></TITLE> tags. "
-                f"Example: <CITY>Rio de Janeiro</CITY><COUNTRY>Brazil</COUNTRY><DESC>Abei dances the samba in bright neon feathers!</DESC><TITLE>Rio Carnaval</TITLE>"
+                f"Also create a short, catchy 2-word title for the encounter card. "
+                f"Output the city in <CITY></CITY> tags, the country/state in <COUNTRY></COUNTRY> tags, and the title in <TITLE></TITLE> tags. "
+                f"Example: <CITY>Rio de Janeiro</CITY><COUNTRY>Brazil</COUNTRY><TITLE>Rio Carnaval</TITLE>"
             )
             response = client.models.generate_content(model=text_model, contents=instruction)
-            
             if response and hasattr(response, 'text') and response.text:
                 city_match = re.search(r'<CITY>(.*?)</CITY>', response.text, re.IGNORECASE)
                 country_match = re.search(r'<COUNTRY>(.*?)</COUNTRY>', response.text, re.IGNORECASE)
-                desc_match = re.search(r'<DESC>(.*?)</DESC>', response.text, re.IGNORECASE)
                 title_match = re.search(r'<TITLE>(.*?)</TITLE>', response.text, re.IGNORECASE)
                 
-                subtitle = desc_match.group(1).strip() if desc_match else f"Abei seen: {prompt.strip()}"
                 title = title_match.group(1).strip() if title_match else (city_match.group(1).strip().title() if city_match else extract_fallback_title_from_prompt(prompt))
-                
                 if city_match:
                     city_name = city_match.group(1).strip()
                     country_name = country_match.group(1).strip() if country_match else None
-                    print(f"[Info] Extracted city: '{city_name}' | Country: '{country_name}' | Title: '{title}' | Subtitle: '{subtitle}'")
+                    print(f"[Info] Extracted city: '{city_name}' | Country: '{country_name}' | Title: '{title}'")
                     lat, lng = lookup_coordinates_in_csv(city_name, country_name)
-                    if lat is not None and lng is not None:
-                        return lat, lng, subtitle, title
-                    print(f"[Warning] City '{city_name}' (country: '{country_name}') not found in CSV.")
                 break
         except Exception as e:
-            print(f"[Warning] Text model '{text_model}' failed for metadata extraction: {str(e)}")
+            print(f"[Warning] Text model '{text_model}' failed for geo extraction: {str(e)}")
 
-    # Fallback to random coordinates
-    seed = sum(ord(c) * (i + 1) for i, c in enumerate(prompt))
-    rng = random.Random(seed)
-    lat = round(rng.uniform(-40.0, 68.0), 4)
-    lng = round(rng.uniform(-130.0, 140.0), 4)
-    print(f"[Info] Generated fallback coordinates: lat={lat}, lng={lng}")
-    title_fallback = extract_fallback_title_from_prompt(prompt)
-    return lat, lng, f"Abei seen: {prompt.strip()}", title_fallback
+    if lat is None or lng is None:
+        seed = sum(ord(c) * (i + 1) for i, c in enumerate(prompt))
+        rng = random.Random(seed)
+        lat = round(rng.uniform(-40.0, 68.0), 4)
+        lng = round(rng.uniform(-130.0, 140.0), 4)
+        print(f"[Info] Generated fallback coordinates: lat={lat}, lng={lng}")
 
-def build_sighting_metadata(api_key: str, raw_prompt: str) -> dict:
+    if not title:
+        title = extract_fallback_title_from_prompt(prompt)
+
+    # 2. Subtitle generation: Inspect the actual generated image so it never hallucinates missing props
+    subtitle = None
+    if generated_b64:
+        try:
+            clean_b64 = generated_b64.split(',')[1] if ',' in generated_b64 else generated_b64
+            img_bytes = base64.b64decode(clean_b64)
+            image_part = types.Part.from_bytes(data=img_bytes, mime_type="image/png")
+            
+            vision_instruction = (
+                "You are writing a witty 1-line subtitle (max 60 characters) for a retro pixel-art trading card encounter. "
+                "Look closely at what is ACTUALLY visible and happening in this image. "
+                "Describe Abei (the white polar bear with the red scarf) and what he is doing, his friends, or the action. "
+                "Do NOT mention objects, foods, or actions that are not clearly visible in the image. "
+                "Output ONLY the subtitle text inside <DESC></DESC> tags. "
+                "Example: <DESC>Abei shares a sunset cliffside chill with an alien pal!</DESC>"
+            )
+            for vision_model in ["gemini-3.5-flash", "gemini-1.5-flash"]:
+                try:
+                    v_res = client.models.generate_content(
+                        model=vision_model,
+                        contents=[image_part, vision_instruction]
+                    )
+                    if v_res and hasattr(v_res, 'text') and v_res.text:
+                        v_match = re.search(r'<DESC>(.*?)</DESC>', v_res.text, re.IGNORECASE)
+                        if v_match:
+                            subtitle = v_match.group(1).strip()
+                            print(f"[Info] Multimodal image-verified subtitle ({vision_model}): '{subtitle}'")
+                            break
+                except Exception as ve:
+                    print(f"[Warning] Multimodal subtitle generation with '{vision_model}' failed: {str(ve)}")
+        except Exception as e:
+            print(f"[Warning] Failed to decode image for vision description: {str(e)}")
+
+    if not subtitle:
+        subtitle = f"Abei seen: {prompt.strip()}"
+
+    return lat, lng, subtitle, title
+
+def build_sighting_metadata(api_key: str, raw_prompt: str, generated_b64: str = None) -> dict:
     """Build the final sighting dictionary to be committed."""
     clean_id = "".join(c if c.isalnum() else "-" for c in raw_prompt.lower()).strip("-")[:30]
-    lat, lng, subtitle, title = generate_metadata_extras(api_key, raw_prompt)
+    lat, lng, subtitle, title = generate_metadata_extras(api_key, raw_prompt, generated_b64)
     return {
         "id": clean_id,
         "title": title,
@@ -373,8 +412,8 @@ def lambda_handler(event, context):
         # 4. Generate Image
         generated_b64 = generate_gemini_image(api_key, enhanced_prompt, ref_part)
 
-        # 5. Extract Metadata & Commit
-        sighting = build_sighting_metadata(api_key, raw_prompt)
+        # 5. Extract Metadata (inspecting generated image for 100% accurate subtitle) & Commit
+        sighting = build_sighting_metadata(api_key, raw_prompt, generated_b64)
         trigger_github_committer(sighting, generated_b64, github_token)
 
         # 6. Return Success
