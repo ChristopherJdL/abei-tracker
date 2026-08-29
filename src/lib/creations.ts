@@ -10,7 +10,29 @@ function getTodayString(): string {
   return new Date().toISOString().split('T')[0];
 }
 
+export function isBypassActive(): boolean {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('bypass')) {
+      const val = params.get('bypass')?.toLowerCase();
+      if (val === '' || val === 'true' || val === '1' || val === 'newabeibutton') {
+        localStorage.setItem('abei-bypass', 'true');
+        return true;
+      }
+      if (val === 'false' || val === '0') {
+        localStorage.removeItem('abei-bypass');
+        return false;
+      }
+    }
+    return localStorage.getItem('abei-bypass') === 'true';
+  } catch {
+    return false;
+  }
+}
+
 export function canCreateSightingToday(): boolean {
+  if (isBypassActive()) return true;
+
   try {
     const raw = localStorage.getItem(DAILY_LIMIT_KEY);
     if (!raw) return true;

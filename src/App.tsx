@@ -10,6 +10,7 @@ import {
   markDiscovered,
   revertDiscovered,
 } from './lib/discovered'
+import { isBypassActive } from './lib/creations'
 import type { Sighting } from './types'
 import './App.css'
 
@@ -25,8 +26,7 @@ function App() {
 
   const day = new Date().getDay()
   const isAllowedDay = day === 0 || day === 1 || day === 3 || day === 6 // Sunday, Monday, Wednesday, Saturday
-  const isBypass =
-    new URLSearchParams(window.location.search).get('bypass') === 'newabeibutton'
+  const isBypass = isBypassActive()
   const showNewAbeiButton = isAllowedDay || isBypass
 
   let nextAllowedDay = ''
