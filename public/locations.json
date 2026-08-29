@@ -818,5 +818,15 @@
     "image": "/scenes/abei-doing-plastic-surgery-in-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T19:32:26.100393+00:00"
+  },
+  {
+    "id": "abei-meet-the-president-of-nor",
+    "title": "Secret Summit",
+    "subtitle": "Abei keeps it cool during a grand diplomatic summit!",
+    "lat": 39.0339,
+    "lng": 125.7543,
+    "image": "/scenes/abei-meet-the-president-of-nor.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-29T19:33:07.970317+00:00"
   }
 ]
