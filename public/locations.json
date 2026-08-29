@@ -728,5 +728,15 @@
     "image": "/scenes/abei-in-alaska-driving-water-p.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T07:58:12.382312+00:00"
+  },
+  {
+    "id": "abei-is-houton-nasa-being-an-a",
+    "title": "Lunar Launch",
+    "subtitle": "Abei tells Houston there's absolutely no problem here!",
+    "lat": 54.3998,
+    "lng": -126.6701,
+    "image": "/scenes/abei-is-houton-nasa-being-an-a.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-29T08:00:57.519376+00:00"
   }
 ]
