@@ -414,6 +414,30 @@ def lambda_handler(event, context):
 
         # 5. Extract Metadata (inspecting generated image for 100% accurate subtitle) & Commit
         sighting = build_sighting_metadata(api_key, raw_prompt, generated_b64)
+
+        # 6. S3 + CloudFront CDN Upload (if configured)
+        scenes_bucket = os.environ.get('SCENES_BUCKET')
+        cdn_domain = os.environ.get('CDN_DOMAIN')
+        if scenes_bucket and cdn_domain:
+            try:
+                import boto3
+                s3_client = boto3.client('s3')
+                s3_key = f"scenes/{sighting['id']}.png"
+                img_bytes = base64.b64decode(generated_b64)
+                print(f"[S3 Upload] 📦 Uploading scene to s3://{scenes_bucket}/{s3_key}...")
+                s3_client.put_object(
+                    Bucket=scenes_bucket,
+                    Key=s3_key,
+                    Body=img_bytes,
+                    ContentType='image/png',
+                    CacheControl='public, max-age=31536000, immutable'
+                )
+                cdn_url = f"https://{cdn_domain.rstrip('/')}/{s3_key}"
+                sighting['image'] = cdn_url
+                print(f"[S3 Upload] ✅ Scene uploaded to CDN: {cdn_url}")
+            except Exception as s3_err:
+                print(f"[S3 Warning] ⚠️ Could not upload to S3, falling back to Git commit: {s3_err}")
+
         trigger_github_committer(sighting, generated_b64, github_token)
 
         # 6. Return Success

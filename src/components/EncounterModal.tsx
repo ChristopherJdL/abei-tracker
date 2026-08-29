@@ -18,7 +18,7 @@ export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  const imageFileName = sighting.image.replace('/scenes/', '')
+  const imageFileName = sighting.image.split('/').pop() || sighting.id
 
   return createPortal(
     <div className="encounter-layer" role="presentation">
