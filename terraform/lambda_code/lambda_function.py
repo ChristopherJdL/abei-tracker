@@ -9,6 +9,7 @@ import time
 import boto3
 import re
 import csv
+import unicodedata
 from google import genai
 from google.genai import types
 
@@ -178,38 +179,83 @@ def generate_gemini_image(api_key: str, enhanced_prompt: str, ref_part=None) -> 
 # ==============================================================================
 # 4. Metadata Extraction
 # ==============================================================================
-def extract_fallback_title_from_prompt(prompt: str) -> str:
-    """Scan the prompt for any known city in cities.csv to use as a fallback title. If none found, fall back to first two words of the prompt."""
-    prompt_lower = prompt.lower()
+_CACHED_CITIES = None
+
+def get_cities_dataset():
+    """Load and cache cities dataset from local CSV."""
+    global _CACHED_CITIES
+    if _CACHED_CITIES is not None:
+        return _CACHED_CITIES
+
     csv_path = os.path.join(os.path.dirname(__file__), 'assets', 'cities.csv')
+    cities = []
     try:
         with open(csv_path, 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
-            longest_match = ""
             for row in reader:
-                city = row['city'].lower()
-                if len(city) > 3 and city in prompt_lower:
-                    if len(city) > len(longest_match):
-                        longest_match = city
-            if longest_match:
-                return longest_match.title()
-    except Exception:
-        pass
+                cities.append(row)
+        _CACHED_CITIES = cities
+        print(f"[Info] Successfully loaded {_CACHED_CITIES.__len__()} cities from CSV into memory cache.")
+    except Exception as ex:
+        print(f"[Error] Failed to read local CSV: {str(ex)}")
+        _CACHED_CITIES = []
+    return _CACHED_CITIES
+
+def normalize_geo_string(s: str) -> str:
+    """Strip accents and lowercase a geographic string for resilient matching."""
+    if not s:
+        return ''
+    n = unicodedata.normalize('NFKD', s).encode('ASCII', 'ignore').decode('utf-8')
+    return n.lower().strip()
+
+def extract_fallback_title_from_prompt(prompt: str) -> str:
+    """Scan the prompt for any known city in cities.csv to use as a fallback title. If none found, fall back to first two words of the prompt."""
+    prompt_norm = normalize_geo_string(prompt)
+    cities = get_cities_dataset()
+    longest_match = ""
+    for row in cities:
+        city = row['city']
+        if len(city) > 3 and city in prompt_norm:
+            if len(city) > len(longest_match):
+                longest_match = city
+    if longest_match:
+        return longest_match.title()
+
     # Fallback: use the first two words of the prompt as title
     words = prompt.strip().split()
     return " ".join(words[:2]) if words else "Unknown Location"
 
-def lookup_coordinates_in_csv(city_name: str):
-    """Lookup latitude and longitude for a city in the local CSV file."""
-    csv_path = os.path.join(os.path.dirname(__file__), 'assets', 'cities.csv')
-    try:
-        with open(csv_path, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                if row['city'] == city_name.lower():
+def lookup_coordinates_in_csv(city_name: str, country_or_state: str = None):
+    """
+    Lookup latitude and longitude for a city in the local CSV file.
+    The CSV is pre-sorted by population in descending order.
+    1. If country_or_state is provided, matches city AND (country / country_code / state).
+    2. Fallback matches city alone (highest population worldwide wins).
+    """
+    cq = normalize_geo_string(city_name)
+    cos = normalize_geo_string(country_or_state) if country_or_state else None
+    cities = get_cities_dataset()
+
+    # 1. Attempt match on both city AND country/state
+    if cos:
+        for row in cities:
+            if row['city'] == cq:
+                r_country = row.get('country', '')
+                r_cc = row.get('country_code', '').lower()
+                r_state = row.get('state', '')
+                if (cos in r_country or 
+                    cos == r_cc or 
+                    cos in r_state or 
+                    r_country in cos):
+                    print(f"[Info] Geocode match: '{city_name}' in '{country_or_state}' -> {row['city']}, {r_country} ({row['lat']}, {row['lng']}, pop: {row.get('population', 'N/A')})")
                     return round(float(row['lat']), 4), round(float(row['lng']), 4)
-    except Exception as ex:
-        print(f"[Error] Failed to read local CSV for city '{city_name}': {str(ex)}")
+
+    # 2. Fallback: match city only (highest population match wins)
+    for row in cities:
+        if row['city'] == cq:
+            print(f"[Info] Geocode fallback (highest pop): '{city_name}' -> {row['city']}, {row.get('country', '')} ({row['lat']}, {row['lng']}, pop: {row.get('population', 'N/A')})")
+            return round(float(row['lat']), 4), round(float(row['lng']), 4)
+
     return None, None
 
 def generate_metadata_extras(api_key: str, prompt: str):
@@ -218,17 +264,18 @@ def generate_metadata_extras(api_key: str, prompt: str):
     for text_model in ["gemini-3.5-flash", "gemini-1.5-flash"]:
         try:
             instruction = (
-                f"Extract the real-world city mentioned in this prompt: '{prompt}'. "
-                f"If no obvious city is found, pick a default plausible one (e.g. London). "
+                f"Extract the real-world city AND country (or state) mentioned in this prompt: '{prompt}'. "
+                f"If no obvious city is found, pick a default plausible one (e.g. London, United Kingdom). "
                 f"Also write a witty, punchy 1-line subtitle (max 60 chars) for a trading card describing what Abei is doing. "
                 f"Finally, create a short, catchy 2-word title for the encounter card. "
-                f"Output the city in <CITY></CITY> tags, the subtitle in <DESC></DESC> tags, and the title in <TITLE></TITLE> tags. "
-                f"Example: <CITY>Rio de Janeiro</CITY><DESC>Abei dances the samba in bright neon feathers!</DESC><TITLE>Rio Carnaval</TITLE>"
+                f"Output the city in <CITY></CITY> tags, the country/state in <COUNTRY></COUNTRY> tags, the subtitle in <DESC></DESC> tags, and the title in <TITLE></TITLE> tags. "
+                f"Example: <CITY>Rio de Janeiro</CITY><COUNTRY>Brazil</COUNTRY><DESC>Abei dances the samba in bright neon feathers!</DESC><TITLE>Rio Carnaval</TITLE>"
             )
             response = client.models.generate_content(model=text_model, contents=instruction)
             
             if response and hasattr(response, 'text') and response.text:
                 city_match = re.search(r'<CITY>(.*?)</CITY>', response.text, re.IGNORECASE)
+                country_match = re.search(r'<COUNTRY>(.*?)</COUNTRY>', response.text, re.IGNORECASE)
                 desc_match = re.search(r'<DESC>(.*?)</DESC>', response.text, re.IGNORECASE)
                 title_match = re.search(r'<TITLE>(.*?)</TITLE>', response.text, re.IGNORECASE)
                 
@@ -237,11 +284,12 @@ def generate_metadata_extras(api_key: str, prompt: str):
                 
                 if city_match:
                     city_name = city_match.group(1).strip()
-                    print(f"[Info] Extracted city: {city_name} | Title: {title} | Subtitle: {subtitle}")
-                    lat, lng = lookup_coordinates_in_csv(city_name)
+                    country_name = country_match.group(1).strip() if country_match else None
+                    print(f"[Info] Extracted city: '{city_name}' | Country: '{country_name}' | Title: '{title}' | Subtitle: '{subtitle}'")
+                    lat, lng = lookup_coordinates_in_csv(city_name, country_name)
                     if lat is not None and lng is not None:
                         return lat, lng, subtitle, title
-                    print(f"[Warning] City '{city_name}' not found in CSV.")
+                    print(f"[Warning] City '{city_name}' (country: '{country_name}') not found in CSV.")
                 break
         except Exception as e:
             print(f"[Warning] Text model '{text_model}' failed for metadata extraction: {str(e)}")
