@@ -808,5 +808,15 @@
     "image": "/scenes/a-black-furred--anthropomorphi.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T19:32:03.931434+00:00"
+  },
+  {
+    "id": "abei-doing-plastic-surgery-in-",
+    "title": "Seoul Makeover",
+    "subtitle": "Abei nervously contemplates a glow-up in Seoul!",
+    "lat": 37.566,
+    "lng": 126.9784,
+    "image": "/scenes/abei-doing-plastic-surgery-in-.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-29T19:32:26.100393+00:00"
   }
 ]
