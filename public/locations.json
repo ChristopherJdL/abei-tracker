@@ -708,5 +708,15 @@
     "image": "/scenes/abei-driving-a-red-well-known-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-28T16:59:19.394806+00:00"
+  },
+  {
+    "id": "abei-eating-singearporean-food",
+    "title": "Hawker Feast",
+    "subtitle": "Abei braves the fiery heat of local chili crab!",
+    "lat": 1.2897,
+    "lng": 103.8501,
+    "image": "/scenes/abei-eating-singearporean-food.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-29T07:57:52.275605+00:00"
   }
 ]
