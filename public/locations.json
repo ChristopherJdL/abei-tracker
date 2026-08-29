@@ -758,5 +758,15 @@
     "image": "/scenes/abei-met-people-from-somalian-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T08:49:13.755965+00:00"
+  },
+  {
+    "id": "a-lanky--tawny-desert-canid--c",
+    "title": "Desert Dash",
+    "subtitle": "Abei goes supersonic to catch one fast bird!",
+    "lat": 35.0845,
+    "lng": -106.6511,
+    "image": "/scenes/a-lanky--tawny-desert-canid--c.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-29T09:06:28.134355+00:00"
   }
 ]
