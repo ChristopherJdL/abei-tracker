@@ -21,6 +21,7 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
   let nextDay = ''
   if (day === 0) nextDay = 'Monday'
   else if (day === 1 || day === 2) nextDay = 'Wednesday'
+  else if (day === 3 || day === 4 || day === 5) nextDay = 'Saturday'
   else nextDay = 'Sunday'
 
   useEffect(() => {
@@ -141,7 +142,7 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
                     LIMIT OF SUBMISSION REACHED
                   </div>
                   <p className="terminal-feedback__text">
-                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 3 Abei creations per day allowed per operator, only on Sun/Mon/Wed.
+                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 3 Abei creations per day allowed per operator, only on Wed/Sat/Sun/Mon.
                   </p>
                   <p className="terminal-feedback__sub">
                     Come back next <strong>{nextDay}</strong> to hunt more paws!

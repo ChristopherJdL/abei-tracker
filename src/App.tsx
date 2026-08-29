@@ -24,7 +24,7 @@ function App() {
   const [error, setError] = useState<string | null>(null)
 
   const day = new Date().getDay()
-  const isAllowedDay = day === 0 || day === 1 || day === 3 // Sunday, Monday, Wednesday
+  const isAllowedDay = day === 0 || day === 1 || day === 3 || day === 6 // Sunday, Monday, Wednesday, Saturday
   const isBypass =
     new URLSearchParams(window.location.search).get('bypass') === 'newabeibutton'
   const showNewAbeiButton = isAllowedDay || isBypass
@@ -32,6 +32,7 @@ function App() {
   let nextAllowedDay = ''
   if (day === 0) nextAllowedDay = 'Monday'
   else if (day === 1 || day === 2) nextAllowedDay = 'Wednesday'
+  else if (day === 3 || day === 4 || day === 5) nextAllowedDay = 'Saturday'
   else nextAllowedDay = 'Sunday'
 
   useEffect(() => {
