@@ -788,5 +788,15 @@
     "image": "/scenes/abei-with-the-4-ninja-turtles-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T12:34:37.558182+00:00"
+  },
+  {
+    "id": "journey-to-terra-del-fuego--hu",
+    "title": "Sheer Safari",
+    "subtitle": "Abei hunts llamas in freezing winds and a sheer bikini!",
+    "lat": -54.8108,
+    "lng": -68.3159,
+    "image": "/scenes/journey-to-terra-del-fuego--hu.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-29T12:40:56.997767+00:00"
   }
 ]
