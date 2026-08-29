@@ -778,5 +778,15 @@
     "image": "/scenes/abei-runs-with-the-fastest-thi.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T12:28:31.085990+00:00"
+  },
+  {
+    "id": "abei-with-the-4-ninja-turtles-",
+    "title": "Turtle Power",
+    "subtitle": "Abei strikes an epic ninja pose with the turtles!",
+    "lat": 40.7062,
+    "lng": -73.6187,
+    "image": "/scenes/abei-with-the-4-ninja-turtles-.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-29T12:34:37.558182+00:00"
   }
 ]
