@@ -718,5 +718,15 @@
     "image": "/scenes/abei-eating-singearporean-food.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T07:57:52.275605+00:00"
+  },
+  {
+    "id": "abei-in-alaska-driving-water-p",
+    "title": "Splash Landing",
+    "subtitle": "Abei makes a chilly splash in the Last Frontier!",
+    "lat": 38.2667,
+    "lng": -85.533,
+    "image": "/scenes/abei-in-alaska-driving-water-p.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-29T07:58:12.382312+00:00"
   }
 ]
