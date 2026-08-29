@@ -758,5 +758,15 @@
     "image": "/scenes/abei-met-people-from-somalian-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T08:49:13.755965+00:00"
+  },
+  {
+    "id": "a-lanky--tawny-desert-canid--n",
+    "title": "Desert Pursuit",
+    "subtitle": "Abei joins the endless chase with a sign and a dream!",
+    "lat": 35.0845,
+    "lng": -106.6511,
+    "image": "/scenes/a-lanky--tawny-desert-canid--n.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-29T08:59:46.659814+00:00"
   }
 ]
