@@ -748,5 +748,15 @@
     "image": "/scenes/abei-in-fort-island-hawaii--w-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T08:16:32.606067+00:00"
+  },
+  {
+    "id": "abei-met-people-from-somalian-",
+    "title": "Maritime Meetup",
+    "subtitle": "Abei swaps tales with high-seas Somali sailors!",
+    "lat": 2.0371,
+    "lng": 45.3438,
+    "image": "/scenes/abei-met-people-from-somalian-.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-29T08:49:13.755965+00:00"
   }
 ]
