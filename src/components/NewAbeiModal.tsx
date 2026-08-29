@@ -195,14 +195,13 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
                   placeholder="e.g. Abei eating warm katsu sando under the neon signs of Shibuya Crossing in Tokyo!"
                   required
                   className="terminal-textarea"
-                  maxLength={280}
                 />
                 <div className="terminal-input-footer">
                   <span className="terminal-input-status">
                     <span className="terminal-status-blink">●</span> EXPEDITION PROMPT READY
                   </span>
                   <span className="terminal-char-count">
-                    {promptText.length}/280
+                    {promptText.length} CHARS
                   </span>
                 </div>
               </div>
