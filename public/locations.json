@@ -798,5 +798,15 @@
     "image": "/scenes/journey-to-terra-del-fuego--hu.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T12:40:56.997767+00:00"
+  },
+  {
+    "id": "a-black-furred--anthropomorphi",
+    "title": "Skyline Standoff",
+    "subtitle": "Abei tries to break the ice with a grumpy hedgehog!",
+    "lat": 3.1412,
+    "lng": 101.6865,
+    "image": "/scenes/a-black-furred--anthropomorphi.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-29T19:32:03.931434+00:00"
   }
 ]
