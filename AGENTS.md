@@ -149,6 +149,7 @@ Use PRs only if the user explicitly asks for one.
 - Preserve arctic CSS variables and pixel framing.
 - Keep map interaction working when the encounter card is open.
 - Let Vercel auto-deploy from `main` after push.
+- Automatically order CloudFront to refresh/invalidate modified images in the cache (`aws cloudfront create-invalidation`) when done committing an image edit.
 
 **Don’t**
 
@@ -200,6 +201,12 @@ When two scenes share a theme (two wastelands, two London stops, etc.):
 2. Save/overwrite `public/scenes/<id>.png`.
 3. Keep `locations.json` `image` path and witty `subtitle` in sync.
 4. Lint/build, commit and push to `main` (Vercel auto-deploys).
+5. **CloudFront cache refresh**: If you (the AI agent) modify an image on request, automatically order CloudFront to refresh that image in the cache once committed:
+   ```bash
+   aws cloudfront create-invalidation --distribution-id EB5D4YJXER6OF --paths "/scenes/<id>.png"
+   # If serving from the S3 CDN bucket, also sync the updated file:
+   aws s3 cp public/scenes/<id>.png s3://abei-tracker-scenes-eu-west-2/scenes/<id>.png --cache-control "public, max-age=31536000, immutable"
+   ```
 
 ### Regeneration tip
 
