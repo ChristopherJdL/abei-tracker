@@ -93,6 +93,7 @@ export function AbeiMap({
         maxZoom: 16,
         transition: 0,
         attributionsCollapsible: true,
+        crossOrigin: 'anonymous',
       }),
     })
 
@@ -105,6 +106,7 @@ export function AbeiMap({
         maxZoom: 16,
         transition: 0,
         attributionsCollapsible: true,
+        crossOrigin: 'anonymous',
       }),
     })
 
