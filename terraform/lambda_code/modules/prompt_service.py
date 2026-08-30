@@ -7,15 +7,22 @@ TEXT_MODELS = ["gemini-3.5-flash", "gemini-1.5-flash"]
 def build_enrichment_instructions(raw_prompt: str) -> str:
     """Build the system instructions given to Gemini text models."""
     return (
-        f"You are an expert 16-bit pixel art director for a GBA retro game. "
-        f"The user wants to see Abei (a white polar bear with a red scarf and mint green shirt) doing the following: '{raw_prompt}'.\n"
-        f"Write a rich, highly descriptive prompt to generate this image.\n"
-        f"CRITICAL DIRECTIVES:\n"
-        f"- Visually coherent & Cinematic: Frame it like a cinematic cutscene, beautiful lighting.\n"
-        f"- Local elements: Add typical props, architecture, or atmosphere matching the location mentioned.\n"
-        f"- NO DEFORMATION: Abei must remain a perfectly proportioned cute polar bear. Do not deform his anatomy. He does NOT have eyebrows.\n"
-        f"- Art style: 16-bit GBA pixel art graphics, chunky pixels, rich vibrant color palette, thick black outlines, no text UI chrome, no watermarks.\n"
-        f"Output ONLY the final image generation prompt."
+        f"You are an expert 16-bit pixel art director for a classic retro video game (Game Boy Advance / SNES / arcade style).\n"
+        f"The user wants to see Abei (the white polar bear with red scarf and mint green shirt) in this scene: '{raw_prompt}'.\n\n"
+        f"Write a rich, highly descriptive prompt for image generation following these STRICT DIRECTIVES:\n\n"
+        f"1. UNIFIED 16-BIT PIXEL ART (CRITICAL):\n"
+        f"- The ENTIRE image (characters, background, sky, buildings, props) MUST be rendered in the EXACT same chunky 16-bit pixel art style.\n"
+        f"- No digital airbrushing, no smooth painterly gradients, no realistic lighting. Use retro pixel clustering, limited vibrant palette, and authentic pixel shading.\n\n"
+        f"2. COHERENT ACTION & INTERACTION (NO STIFF STICKERS):\n"
+        f"- Characters must NOT stand stiffly side-by-side staring forward like pasted stickers.\n"
+        f"- Put them in an active, dynamic, comedic, or adventurous interaction: moving with momentum, sharing props, physical comedy, or expressive interaction.\n"
+        f"- Characters must share the ground plane with cast pixel shadows connecting them naturally to the environment.\n\n"
+        f"3. CHARACTER INTEGRITY (ABEI):\n"
+        f"- White polar bear, recognizable mint-green shirt, red scarf.\n"
+        f"- Clean cute facial features: small black dot eyes, black nose, cute mouth/pout. Strictly NO eyebrows, no human facial deformation.\n\n"
+        f"4. LOCAL DETAILS & ATMOSPHERE:\n"
+        f"- Include unmistakable landmarks, architectural style, authentic cultural food or props specific to the location.\n\n"
+        f"Output ONLY the final image generation prompt (around 80-120 words), starting with: 'Pixel art 16-bit scene, 4:3 aspect ratio.'"
     )
 
 def build_fallback_prompt(raw_prompt: str) -> str:
@@ -23,9 +30,10 @@ def build_fallback_prompt(raw_prompt: str) -> str:
     clean_prompt = raw_prompt.strip()
     return (
         f"Pixel art 16-bit scene, 4:3 aspect ratio. "
-        f"Abei the white polar bear (red scarf, mint green shirt) {clean_prompt}. "
-        f"Chunky pixels, thick black outlines, vibrant 16-bit color palette, cinematic lighting, "
-        f"strictly no character deformation, and Abei does not have eyebrows."
+        f"Abei the white polar bear (red scarf, mint green shirt) and companions actively engaged in {clean_prompt}. "
+        f"Chunky pixels across the entire scene including background, thick black outlines, vibrant 16-bit retro arcade color palette, "
+        f"dynamic character interaction and shared pixel shadows on the ground. "
+        f"No smooth digital gradients, no realistic backgrounds, strictly no character deformation, and Abei does not have eyebrows."
     )
 
 def enrich_prompt(api_key: str, raw_prompt: str) -> str:
