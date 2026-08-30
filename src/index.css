@@ -241,11 +241,15 @@ html.abei-map-zooming .map-tint {
 }
 
 /* Undiscovered hunt zone — large translucent yellow pixel oval. */
+.abei-hunt-zone,
+.abei-hunt-zone * {
+  pointer-events: none !important;
+}
+
 .abei-hunt-zone {
   position: relative;
   width: 200px;
   height: 140px;
-  pointer-events: none;
 }
 
 .abei-hunt-zone__core {

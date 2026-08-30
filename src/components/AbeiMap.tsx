@@ -205,15 +205,25 @@ export function AbeiMap({
       map.addOverlay(zone)
 
       const pawEl = makePinElement()
+      let startPos: { x: number; y: number } | null = null
+
+      pawEl.addEventListener('pointerdown', (e) => {
+        startPos = { x: e.clientX, y: e.clientY }
+      })
+
       pawEl.addEventListener('click', (e) => {
         e.stopPropagation()
+        if (startPos) {
+          const dist = Math.hypot(e.clientX - startPos.x, e.clientY - startPos.y)
+          if (dist > 6) return
+        }
         selectRef.current(sighting)
       })
       const paw = new Overlay({
         element: pawEl,
         position: coord,
         positioning: 'center-center',
-        stopEvent: true,
+        stopEvent: false,
       })
       map.addOverlay(paw)
 
