@@ -6,6 +6,7 @@ import XYZ from 'ol/source/XYZ'
 import Overlay from 'ol/Overlay'
 import { fromLonLat } from 'ol/proj'
 import { defaults as defaultControls } from 'ol/control/defaults'
+import Attribution from 'ol/control/Attribution'
 import { createEmpty, extendCoordinate } from 'ol/extent'
 import type { Sighting } from '../types'
 import { getHuntState, type HuntState, type MapViewContext } from '../lib/sightings'
@@ -123,8 +124,13 @@ export function AbeiMap({
         controls: defaultControls({
           zoom: false,
           rotate: false,
-          attribution: true,
-        }),
+          attribution: false,
+        }).extend([
+          new Attribution({
+            collapsible: true,
+            collapsed: true,
+          }),
+        ]),
       })
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Map failed to start'
