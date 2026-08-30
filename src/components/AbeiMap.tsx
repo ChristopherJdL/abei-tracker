@@ -37,6 +37,15 @@ const MAP_STYLE: StyleSpecification = {
         '&copy; <a href="https://www.esri.com/">Esri</a>, HERE, Garmin, FAO, NOAA, USGS, EPA',
       maxzoom: 16,
     },
+    'esri-dark-gray-labels': {
+      type: 'raster',
+      tiles: [
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+      ],
+      tileSize: 256,
+      attribution: '',
+      maxzoom: 16,
+    },
   },
   layers: [
     {
@@ -51,6 +60,15 @@ const MAP_STYLE: StyleSpecification = {
       paint: {
         'raster-fade-duration': 0,
         'raster-opacity': 1,
+      },
+    },
+    {
+      id: 'esri-dark-gray-labels',
+      type: 'raster',
+      source: 'esri-dark-gray-labels',
+      paint: {
+        'raster-fade-duration': 0,
+        'raster-opacity': 0.85,
       },
     },
   ],
