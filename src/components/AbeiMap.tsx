@@ -92,6 +92,7 @@ export function AbeiMap({
           '&copy; <a href="https://www.esri.com/" target="_blank" rel="noreferrer">Esri</a>, HERE, Garmin, FAO, NOAA, USGS, EPA',
         maxZoom: 16,
         transition: 0,
+        attributionsCollapsible: true,
       }),
     })
 
@@ -103,6 +104,7 @@ export function AbeiMap({
         url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
         maxZoom: 16,
         transition: 0,
+        attributionsCollapsible: true,
       }),
     })
 
