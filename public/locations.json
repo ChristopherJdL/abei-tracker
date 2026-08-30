@@ -838,5 +838,15 @@
     "image": "/scenes/abei-doing-boating-in-lake-ont.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-30T09:10:40.831139+00:00"
+  },
+  {
+    "id": "abei-dancing-ballet-in-ukraine",
+    "title": "Kyiv Ballet",
+    "subtitle": "Abei strikes a graceful pose under the golden domes!",
+    "lat": 50.4547,
+    "lng": 30.5238,
+    "image": "/scenes/abei-dancing-ballet-in-ukraine.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-30T09:10:59.551844+00:00"
   }
 ]
