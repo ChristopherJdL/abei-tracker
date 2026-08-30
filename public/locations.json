@@ -828,5 +828,15 @@
     "image": "/scenes/abei-meet-the-president-of-nor.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T19:33:07.970317+00:00"
+  },
+  {
+    "id": "abei-doing-boating-in-lake-ont",
+    "title": "Lake Cruise",
+    "subtitle": "Abei paddles his cozy boat into a pixel-perfect sunset!",
+    "lat": 43.7064,
+    "lng": -79.3986,
+    "image": "/scenes/abei-doing-boating-in-lake-ont.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-30T09:10:40.831139+00:00"
   }
 ]
