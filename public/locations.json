@@ -848,5 +848,15 @@
     "image": "/scenes/abei-dancing-ballet-in-ukraine.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-30T09:10:59.551844+00:00"
+  },
+  {
+    "id": "abei-chills-in-athens-greece",
+    "title": "Athens Chill",
+    "subtitle": "Abei chills out with a scenic sunset over Athens!",
+    "lat": 37.9838,
+    "lng": 23.7278,
+    "image": "/scenes/abei-chills-in-athens-greece.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-30T09:11:09.518592+00:00"
   }
 ]
