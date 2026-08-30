@@ -20,6 +20,7 @@ interface AbeiMapProps {
 
 const MARKER_STD = '/assets/marker.png'
 const MARKER_NEW = '/assets/marker-new.png'
+const WORLD_WIDTH = 40075016.68557849
 
 function makeZoneElement(): HTMLDivElement {
   const el = document.createElement('div')
@@ -295,8 +296,13 @@ export function AbeiMap({
     if (!sighting) return
     lastFlyId.current = activeId
 
+    const baseCoord = fromLonLat([sighting.lng, sighting.lat])
+    const currentCenter = map.getView().getCenter() ?? [0, 0]
+    const k = Math.round((currentCenter[0] - baseCoord[0]) / WORLD_WIDTH)
+    const targetCoord = [baseCoord[0] + k * WORLD_WIDTH, baseCoord[1]]
+
     map.getView().animate({
-      center: fromLonLat([sighting.lng, sighting.lat]),
+      center: targetCoord,
       duration: 750,
     })
   }, [activeId, sightings])
@@ -308,6 +314,27 @@ export function AbeiMap({
 
     let timer: ReturnType<typeof setTimeout> | undefined
     let moving = false
+
+    const wrapOverlays = () => {
+      const view = map.getView()
+      const center = view.getCenter()
+      if (!center) return
+      const centerX = center[0]
+
+      for (const sighting of sightingsRef.current) {
+        const bundle = layersRef.current.get(sighting.id)
+        if (!bundle) continue
+        const baseCoord = fromLonLat([sighting.lng, sighting.lat])
+        const k = Math.round((centerX - baseCoord[0]) / WORLD_WIDTH)
+        const targetCoord = [baseCoord[0] + k * WORLD_WIDTH, baseCoord[1]]
+
+        const currentPos = bundle.paw.getPosition()
+        if (!currentPos || Math.abs(currentPos[0] - targetCoord[0]) > 1) {
+          bundle.paw.setPosition(targetCoord)
+          bundle.zone.setPosition(targetCoord)
+        }
+      }
+    }
 
     const applyState = (bundle: LayerBundle, next: HuntState) => {
       const prev = bundle.state
@@ -350,16 +377,21 @@ export function AbeiMap({
       const size = map.getSize()
       if (!size) return
 
+      wrapOverlays()
+
       const extent = view.calculateExtent(size)
       const zoom = view.getZoom() ?? 2
+      const centerX = (extent[0] + extent[2]) / 2
 
       const mapContext: MapViewContext = {
         getZoom: () => zoom,
         containsLngLat: (lng: number, lat: number) => {
           const coord = fromLonLat([lng, lat])
+          const k = Math.round((centerX - coord[0]) / WORLD_WIDTH)
+          const targetX = coord[0] + k * WORLD_WIDTH
           return (
-            coord[0] >= extent[0] &&
-            coord[0] <= extent[2] &&
+            targetX >= extent[0] &&
+            targetX <= extent[2] &&
             coord[1] >= extent[1] &&
             coord[1] <= extent[3]
           )
@@ -392,6 +424,7 @@ export function AbeiMap({
     syncHunt()
     map.on('movestart', onMoveStart)
     map.on('moveend', onMoveEnd)
+    map.getView().on('change:center', wrapOverlays)
 
     // Re-check 12h window without needing a map gesture.
     const interval = window.setInterval(syncHunt, 60_000)
@@ -401,6 +434,7 @@ export function AbeiMap({
       window.clearInterval(interval)
       map.un('movestart', onMoveStart)
       map.un('moveend', onMoveEnd)
+      map.getView().un('change:center', wrapOverlays)
     }
   }, [])
 
