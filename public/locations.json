@@ -878,5 +878,15 @@
     "image": "/scenes/abei-in-edmonton--canada-doing.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-30T16:59:20.663958+00:00"
+  },
+  {
+    "id": "new-abei-found-in-colombia-doi",
+    "title": "Protein Deal",
+    "subtitle": "Abei strikes a shady protein deal with a buff leopard.",
+    "lat": 4.6097,
+    "lng": -74.0817,
+    "image": "/scenes/new-abei-found-in-colombia-doi.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-30T17:15:30.613973+00:00"
   }
 ]
