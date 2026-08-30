@@ -85,45 +85,53 @@ html.abei-map-zooming .map-tint {
   opacity: 0;
 }
 
-/* Retro Pixel HUD Map Attribution */
+/* Retro Pixel HUD Map Attribution Drawer */
 .ol-attribution {
   position: absolute !important;
-  bottom: 0 !important;
-  right: 0 !important;
+  bottom: 8px !important;
+  right: 8px !important;
   margin: 0 !important;
-  padding: 4px 8px !important;
-  background: rgba(4, 16, 24, 0.94) !important;
-  border-top: 2px solid #082f49 !important;
-  border-left: 2px solid #082f49 !important;
-  border-right: none !important;
-  border-bottom: none !important;
-  border-radius: 0 !important;
-  box-shadow: -2px -2px 0 rgba(0, 0, 0, 0.4) !important;
-  font-family: var(--font-pixel) !important;
-  font-size: 8px !important;
-  line-height: 1.6 !important;
-  letter-spacing: 0.5px !important;
-  color: #bae6fd !important;
-  text-shadow: 1px 1px 0 #000 !important;
-  max-width: min(85vw, 420px);
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  z-index: 10 !important;
-}
-
-.ol-attribution.ol-collapsed {
   padding: 0 !important;
-  border: none !important;
   background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  flex-direction: row-reverse !important; /* Button on right, drawer slides out to left */
+  align-items: center !important;
+  z-index: 10 !important;
   box-shadow: none !important;
 }
 
+/* The sliding drawer containing the pixel attribution text */
 .ol-attribution ul {
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 4px 8px !important;
   list-style: none !important;
-  display: inline-block !important;
+  display: flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+  background: rgba(4, 16, 24, 0.94) !important;
+  border: 1px solid #082f49 !important;
+  border-right: none !important;
+  box-shadow: -2px 2px 6px rgba(0, 0, 0, 0.5) !important;
+  font-family: var(--font-pixel) !important;
+  font-size: 8px !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0.5px !important;
+  color: #bae6fd !important;
+  text-shadow: 1px 1px 0 #000 !important;
+  max-width: min(80vw, 420px) !important;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease !important;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* When collapsed: the drawer is tucked completely away, only the button is seen */
+.ol-attribution.ol-collapsed ul {
+  display: none !important;
+  transform: translateX(20px) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .ol-attribution li {
@@ -144,14 +152,16 @@ html.abei-map-zooming .map-tint {
   color: #ffffff !important;
 }
 
+/* The toggle button [i] / [»] */
 .ol-attribution button {
+  flex-shrink: 0 !important;
   background: #082f49 !important;
   color: var(--ice-cyan) !important;
   font-family: var(--font-pixel) !important;
   font-size: 8px !important;
-  width: 18px !important;
-  height: 18px !important;
-  line-height: 16px !important;
+  width: 20px !important;
+  height: 20px !important;
+  line-height: 18px !important;
   text-align: center !important;
   border: 1px solid #38bdf8 !important;
   border-radius: 0 !important;
@@ -161,17 +171,14 @@ html.abei-map-zooming .map-tint {
   display: grid !important;
   place-items: center !important;
   text-shadow: 1px 1px 0 #000 !important;
-  transition: background 0.15s, color 0.15s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6) !important;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .ol-attribution button:hover {
   background: #0369a1 !important;
   color: #ffffff !important;
-}
-
-.ol-attribution.ol-collapsed button {
-  margin: 6px !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+  border-color: #ffffff !important;
 }
 
 .abei-map-error {
