@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { PixelButton } from './PixelButton'
 import type { Sighting } from '../types'
+import { resolveSceneUrl } from '../lib/cdn'
 import './PokemonCard.css'
 
 interface EncounterModalProps {
@@ -19,6 +20,7 @@ export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
   }, [onClose])
 
   const imageFileName = sighting.image.split('/').pop() || sighting.id
+  const sceneSrc = resolveSceneUrl(sighting.image)
 
   return createPortal(
     <div className="encounter-layer" role="presentation">
@@ -63,7 +65,7 @@ export function EncounterModal({ sighting, onClose }: EncounterModalProps) {
         <div className="pokemon-card__art-frame">
           <img
             className="pixel pokemon-card__art-img"
-            src={sighting.image}
+            src={sceneSrc}
             alt={`Abei sighting: ${sighting.title}`}
           />
           <div className="pokemon-card__art-shine" aria-hidden />

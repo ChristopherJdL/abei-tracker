@@ -5,7 +5,7 @@
     "subtitle": "Home ice — Abei waves from the floe.",
     "lat": 78.2232,
     "lng": 15.6267,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/arctic.png",
+    "image": "/scenes/arctic.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T10:32:29.000Z"
   },
@@ -15,7 +15,7 @@
     "subtitle": "Stole a camel. Now riding shotgun into the Sahara.",
     "lat": 23.4162,
     "lng": 25.6628,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/desert.png",
+    "image": "/scenes/desert.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T10:32:29.000Z"
   },
@@ -25,7 +25,7 @@
     "subtitle": "Taco in paw, cactus nearby, sky on fire.",
     "lat": 27.0,
     "lng": -102.0,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/mexico.png",
+    "image": "/scenes/mexico.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T10:32:29.000Z"
   },
@@ -35,7 +35,7 @@
     "subtitle": "Lambeth stop — posing in front of Sky Gardens.",
     "lat": 51.4815,
     "lng": -0.1329,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/london.png",
+    "image": "/scenes/london.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T10:32:29.000Z"
   },
@@ -45,7 +45,7 @@
     "subtitle": "Scramble stop — katsu sando, 7-Eleven edition.",
     "lat": 35.6595,
     "lng": 139.7004,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/tokyo.png",
+    "image": "/scenes/tokyo.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T10:32:29.000Z"
   },
@@ -55,7 +55,7 @@
     "subtitle": "Croissant crumbs near the tower.",
     "lat": 48.8584,
     "lng": 2.2945,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/paris.png",
+    "image": "/scenes/paris.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T10:32:29.000Z"
   },
@@ -65,7 +65,7 @@
     "subtitle": "Dancing under green northern lights.",
     "lat": 64.1466,
     "lng": -21.9426,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/iceland.png",
+    "image": "/scenes/iceland.png",
     "status": "RUMORED",
     "createdOn": "2026-07-31T10:32:29.000Z"
   },
@@ -75,7 +75,7 @@
     "subtitle": "Bare paws, claws out — seal secured. One penguin: horrified.",
     "lat": -82.8628,
     "lng": 135.0,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/southpole.png",
+    "image": "/scenes/southpole.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T10:32:29.000Z"
   },
@@ -85,7 +85,7 @@
     "subtitle": "Almost violent: Abei vs kangaroo. Dust, claws, no mercy.",
     "lat": -25.2744,
     "lng": 133.7751,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/australia.png",
+    "image": "/scenes/australia.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T10:32:29.000Z"
   },
@@ -95,7 +95,7 @@
     "subtitle": "Guizhou mist — tea, calligraphy, wooden drum towers.",
     "lat": 25.9116,
     "lng": 109.1639,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/zhaoxing.png",
+    "image": "/scenes/zhaoxing.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T10:59:49.000Z"
   },
@@ -105,7 +105,7 @@
     "subtitle": "Mysterious bear-shaped vigilante took down the cagoule gang.",
     "lat": 43.2951,
     "lng": 5.3744,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/marseille.png",
+    "image": "/scenes/marseille.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T10:59:49.000Z"
   },
@@ -115,7 +115,7 @@
     "subtitle": "Table Mountain backdrop — bunny chow in paw. Authentic.",
     "lat": -33.9249,
     "lng": 18.4241,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/capetown.png",
+    "image": "/scenes/capetown.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T14:00:52.000Z"
   },
@@ -125,7 +125,7 @@
     "subtitle": "Baie des Sirènes — poisson grillé on the sand, boats bobbing.",
     "lat": 4.7485,
     "lng": -6.6363,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/sanpedro.png",
+    "image": "/scenes/sanpedro.png",
     "status": "CONFIRMED",
     "createdOn": "2026-07-31T14:02:38.000Z"
   },
@@ -135,7 +135,7 @@
     "subtitle": "Popular Oxford garden — super-smoking BBQ, Wagyu and the works.",
     "lat": 51.7364,
     "lng": -1.2347,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/oxford.png",
+    "image": "/scenes/oxford.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-02T09:59:44.000Z"
   },
@@ -145,7 +145,7 @@
     "subtitle": "Volcano rim selfie — Grand Mère Kalle closing in.",
     "lat": -21.248,
     "lng": 55.706,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/reunion.png",
+    "image": "/scenes/reunion.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-02T10:07:44.000Z"
   },
@@ -155,7 +155,7 @@
     "subtitle": "Bordeaux walls, matching tree pose — plush jury watching.",
     "lat": 25.0478,
     "lng": 121.5319,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/taiwan.png",
+    "image": "/scenes/taiwan.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-02T10:33:52.000Z"
   },
@@ -165,7 +165,7 @@
     "subtitle": "Third Space Battersea — lap pool vs iron, split-screen edition.",
     "lat": 51.4825,
     "lng": -0.1437,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/gym-time.png",
+    "image": "/scenes/gym-time.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-02T13:01:39.000Z"
   },
@@ -175,7 +175,7 @@
     "subtitle": "Arctic ice — ringed seal on the menu. Abei approves.",
     "lat": 74.0,
     "lng": 56.0,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/novaya-zemlya.png",
+    "image": "/scenes/novaya-zemlya.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-02T20:00:00.000Z"
   },
@@ -185,7 +185,7 @@
     "subtitle": "Terrace lunch — panisse, navette, and bouillabaisse. Abei très content.",
     "lat": 43.3456,
     "lng": 5.4667,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/plan-de-cuques.png",
+    "image": "/scenes/plan-de-cuques.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-02T21:30:00.000Z"
   },
@@ -195,7 +195,7 @@
     "subtitle": "Oil slick swim — seagull secured. Engineers watching from the plant.",
     "lat": 25.45,
     "lng": 51.55,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/qatar-oil.png",
+    "image": "/scenes/qatar-oil.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-03T09:55:00.000Z"
   },
@@ -205,7 +205,7 @@
     "subtitle": "Garden of Morning Calm — photobombing the infamous little white church.",
     "lat": 37.748,
     "lng": 127.352,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/gapyeong-botanic.png",
+    "image": "/scenes/gapyeong-botanic.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-03T10:45:00.000Z"
   },
@@ -215,7 +215,7 @@
     "subtitle": "Under the interchange canopy — walking towards Sky Gardens.",
     "lat": 51.4862,
     "lng": -0.1235,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/vauxhall-bus.png",
+    "image": "/scenes/vauxhall-bus.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-03T18:07:00.000Z"
   },
@@ -225,7 +225,7 @@
     "subtitle": "Full hazmat suit. Fluorescent uranium rock. Slight smirk.",
     "lat": 37.45,
     "lng": 141.01,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/fukushima-wasteland.png",
+    "image": "/scenes/fukushima-wasteland.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-04T10:28:00.000Z"
   },
@@ -235,7 +235,7 @@
     "subtitle": "Sunset harbour wasteland. Uranium in paw. Petit Gris on the rubble.",
     "lat": 32.776,
     "lng": 129.864,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/nagasaki-uranium.png",
+    "image": "/scenes/nagasaki-uranium.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-04T14:28:00.000Z"
   },
@@ -245,7 +245,7 @@
     "subtitle": "Dairy aisle crisis. Elle & Vire double cream or Elmlea?",
     "lat": 51.4808,
     "lng": -0.1289,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/nine-elms-sainsburys.png",
+    "image": "/scenes/nine-elms-sainsburys.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-05T14:35:00.000Z"
   },
@@ -255,7 +255,7 @@
     "subtitle": "Climbing a dragon blood tree. The goat is not impressed.",
     "lat": 12.463,
     "lng": 53.789,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/socotra-dragon-tree.png",
+    "image": "/scenes/socotra-dragon-tree.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-06T08:14:00.000Z"
   },
@@ -265,7 +265,7 @@
     "subtitle": "Toasting marshmallows over the flaming gas crater. Casual.",
     "lat": 40.2528,
     "lng": 58.4397,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/darvaza-door-hell.png",
+    "image": "/scenes/darvaza-door-hell.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-07T11:48:00.000Z"
   },
@@ -275,7 +275,7 @@
     "subtitle": "Eating a massive Texas BBQ brisket platter. Sunny afternoon.",
     "lat": 29.6845,
     "lng": -95.4125,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/houston-texas.png",
+    "image": "/scenes/houston-texas.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-07T15:15:22.000Z"
   },
@@ -285,7 +285,7 @@
     "subtitle": "Eating a Cornish pasty on the beach, fighting off a seagull. Overalls on point.",
     "lat": 50.266,
     "lng": -5.0527,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/cornwall.png",
+    "image": "/scenes/cornwall.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-07T16:14:16.000Z"
   },
@@ -295,7 +295,7 @@
     "subtitle": "Wandsworth Road spot. Oozing gorgonzola and sausage mince flop. Retro pizzaiolo.",
     "lat": 51.4815,
     "lng": -0.1329,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/yard-sale-pizza.png",
+    "image": "/scenes/yard-sale-pizza.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-07T18:48:17.000Z"
   },
@@ -305,7 +305,7 @@
     "subtitle": "Eating a Costco chicken bake outside with a TMNT comic in hand.",
     "lat": 51.3537,
     "lng": -0.1173,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/costco-croydon.png",
+    "image": "/scenes/costco-croydon.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-08T08:12:51.000Z"
   },
@@ -315,7 +315,7 @@
     "subtitle": "Walking the husky. Pink pack on. Dog be like: HUH?",
     "lat": 51.501,
     "lng": -0.1245,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-walks-husky.png",
+    "image": "/scenes/abei-walks-husky.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-07T19:18:00.000Z"
   },
@@ -325,7 +325,7 @@
     "subtitle": "Hi Studley!",
     "lat": 51.5033,
     "lng": -0.1132,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/waterloo-studley.png",
+    "image": "/scenes/waterloo-studley.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-08T09:16:00.000Z"
   },
@@ -335,7 +335,7 @@
     "subtitle": "Itchy scalp!!",
     "lat": 51.551,
     "lng": -0.1402,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/better-kentish-town.png",
+    "image": "/scenes/better-kentish-town.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-10T16:11:35.000Z"
   },
@@ -345,7 +345,7 @@
     "subtitle": "Watching the total solar eclipse from the top glass dome.",
     "lat": 51.5145,
     "lng": -0.0803,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/gherkin-eclipse.png",
+    "image": "/scenes/gherkin-eclipse.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-14T20:04:30.000Z"
   },
@@ -355,7 +355,7 @@
     "subtitle": "Webslinging through NYC with Spider-Man!",
     "lat": 40.758,
     "lng": -73.9855,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/nyc-spiderman.png",
+    "image": "/scenes/nyc-spiderman.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-15T13:30:00.000Z"
   },
@@ -365,7 +365,7 @@
     "subtitle": "Sticky paws — destroying a fluffy fluffernutter sandwich in Mass.",
     "lat": 42.4072,
     "lng": -71.3824,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-in-massachussets-eating-a.png",
+    "image": "/scenes/abei-in-massachussets-eating-a.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T07:35:10.350008+00:00"
   },
@@ -375,7 +375,7 @@
     "subtitle": "Churrascaria raid — juicy picaña fresh off the grill.",
     "lat": -30.0346,
     "lng": -51.2177,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/new-abei-in-brazil-eating-pica.png",
+    "image": "/scenes/new-abei-in-brazil-eating-pica.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T08:04:24.074522+00:00"
   },
@@ -385,7 +385,7 @@
     "subtitle": "Sambódromo vibes — dancing with neon green and yellow passistas.",
     "lat": -22.9068,
     "lng": -43.1729,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-in-rio-enjoying-carnaval-.png",
+    "image": "/scenes/abei-in-rio-enjoying-carnaval-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T08:11:28.759612+00:00"
   },
@@ -395,7 +395,7 @@
     "subtitle": "Belfast stop — tackling a hearty plate of haggis.",
     "lat": 54.5973,
     "lng": -5.9301,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-in-belfast-eating-haggis.png",
+    "image": "/scenes/abei-in-belfast-eating-haggis.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T08:17:22.350277+00:00"
   },
@@ -405,7 +405,7 @@
     "subtitle": "Street food break — devouring steaming hot bao in Beijing.",
     "lat": 39.9075,
     "lng": 116.3972,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-in-beijing-eating-bao.png",
+    "image": "/scenes/abei-in-beijing-eating-bao.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T08:35:52.840977+00:00"
   },
@@ -415,7 +415,7 @@
     "subtitle": "Colosseum views — twirling an enormous plate of pasta.",
     "lat": 41.8919,
     "lng": 12.5113,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-eating-pasta-in-rome.png",
+    "image": "/scenes/abei-eating-pasta-in-rome.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T08:39:42.190454+00:00"
   },
@@ -425,7 +425,7 @@
     "subtitle": "Abei shreds the snowy slopes with Comrade Dima!",
     "lat": 43.597,
     "lng": 39.7248,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-seen-in-sotchi--russia-do.png",
+    "image": "/scenes/abei-seen-in-sotchi--russia-do.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T08:58:47.922958+00:00"
   },
@@ -435,7 +435,7 @@
     "subtitle": "Abei and a lucky cat sprint to avoid becoming takeout!",
     "lat": 23.1167,
     "lng": 113.25,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-is-now-in-ghuanzhong-chin.png",
+    "image": "/scenes/abei-is-now-in-ghuanzhong-chin.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T09:46:40.159985+00:00"
   },
@@ -445,7 +445,7 @@
     "subtitle": "Abei dodges icebergs and catches cool vibes!",
     "lat": 64.1835,
     "lng": -51.7216,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-being-in-a-boat-in-greenl.png",
+    "image": "/scenes/abei-being-in-a-boat-in-greenl.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T09:48:44.508560+00:00"
   },
@@ -455,7 +455,7 @@
     "subtitle": "Oh deer! Abei drifts through Osaka at warp speed!",
     "lat": 34.6938,
     "lng": 135.5011,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-driving-mclaren-in-osaka-.png",
+    "image": "/scenes/abei-driving-mclaren-in-osaka-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-16T12:10:16.908934+00:00"
   },
@@ -465,7 +465,7 @@
     "subtitle": "Abei battles a legendary case of Delhi Belly!",
     "lat": 28.6214,
     "lng": 77.2148,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-eating-non-hygiene-food-i.png",
+    "image": "/scenes/abei-eating-non-hygiene-food-i.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-17T14:36:35.283563+00:00"
   },
@@ -475,7 +475,7 @@
     "subtitle": "Sitting on a charpoy, eating treats at Noor Mahal!",
     "lat": 29.3978,
     "lng": 71.6752,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-in-bahawalpur-doing-a-typ.png",
+    "image": "/scenes/abei-in-bahawalpur-doing-a-typ.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-17T14:39:56.443986+00:00"
   },
@@ -485,7 +485,7 @@
     "subtitle": "Abei locks eyes with Cameroon's pride and joy!",
     "lat": 3.8667,
     "lng": 11.5167,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-in-cameroon-meeting-camer.png",
+    "image": "/scenes/abei-in-cameroon-meeting-camer.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-17T14:41:40.700208+00:00"
   },
@@ -495,7 +495,7 @@
     "subtitle": "Abei dines on salteñas by a neon-bright cholet!",
     "lat": -16.5,
     "lng": -68.15,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/new-abei-found-in-bolivia-eati.png",
+    "image": "/scenes/new-abei-found-in-bolivia-eati.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-17T15:14:20.396729+00:00"
   },
@@ -505,7 +505,7 @@
     "subtitle": "Abei grabs a slice of Motown with a furry superfan!",
     "lat": 42.3314,
     "lng": -83.0457,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/new-abei-found-in-detroit-eati.png",
+    "image": "/scenes/new-abei-found-in-detroit-eati.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-17T17:20:05.370539+00:00"
   },
@@ -515,7 +515,7 @@
     "subtitle": "Abei tries to out-haka a very confused kiwi.",
     "lat": -36.8485,
     "lng": 174.7635,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/new-abei-in-new-zealand.png",
+    "image": "/scenes/new-abei-in-new-zealand.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-18T06:02:51.688278+00:00"
   },
@@ -525,7 +525,7 @@
     "subtitle": "Abei and the Caped Crusader strike a dramatic pose!",
     "lat": 37.8874,
     "lng": 41.1322,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/new-abei-found-in-batman--the-.png",
+    "image": "/scenes/new-abei-found-in-batman--the-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-18T09:46:55.527668+00:00"
   },
@@ -535,7 +535,7 @@
     "subtitle": "Bacon and dubious greens with a bunny buddy!",
     "lat": 51.551,
     "lng": -0.1402,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/new-abei-found-in-nw51rz-londo.png",
+    "image": "/scenes/new-abei-found-in-nw51rz-londo.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-19T11:42:05.504417+00:00"
   },
@@ -545,7 +545,7 @@
     "subtitle": "Abei seals a chilly alliance with a warm handshake!",
     "lat": 55.752,
     "lng": 37.6178,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/photorealistic-cinematic-scene.png",
+    "image": "/scenes/photorealistic-cinematic-scene.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-19T12:18:33.857541+00:00"
   },
@@ -555,7 +555,7 @@
     "subtitle": "Abei dines on fine foufou with an elephant pal!",
     "lat": 6.0833,
     "lng": -5.9167,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/new-abei-in-menekre--ivory-coa.png",
+    "image": "/scenes/new-abei-in-menekre--ivory-coa.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-19T13:48:22.217116+00:00"
   },
@@ -565,7 +565,7 @@
     "subtitle": "Attache ta tuque! Tasting tire d'érable with Benoît in Quebec.",
     "lat": 46.8139,
     "lng": -71.208,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-found-in-quebec-and-meets.png",
+    "image": "/scenes/abei-found-in-quebec-and-meets.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-20T15:50:26.821071+00:00"
   },
@@ -575,7 +575,7 @@
     "subtitle": "Canal stroll with a Dutch cow — glowing red windows across the water.",
     "lat": 52.3718,
     "lng": 4.896,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/amsterdam-red-district.png",
+    "image": "/scenes/amsterdam-red-district.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-21T15:01:20.000Z"
   },
@@ -585,7 +585,7 @@
     "subtitle": "Abei finds inner peace with a very zen yak!",
     "lat": 29.65,
     "lng": 91.1,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-in-tibet-meeting-dalaï-la.png",
+    "image": "/scenes/abei-in-tibet-meeting-dalaï-la.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-21T18:36:12.240377+00:00"
   },
@@ -595,7 +595,7 @@
     "subtitle": "Abei tackles a mountain of meatballs with a moose!",
     "lat": 59.3294,
     "lng": 18.0687,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-in-sweden-eating-10000-sw.png",
+    "image": "/scenes/abei-in-sweden-eating-10000-sw.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-21T18:59:49.782741+00:00"
   },
@@ -605,7 +605,7 @@
     "subtitle": "Sheep whispering and udder-chugging in split-screen!",
     "lat": -43.5321,
     "lng": 172.6362,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-is-taming-a-bunch-of-shee.png",
+    "image": "/scenes/abei-is-taming-a-bunch-of-shee.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-22T10:13:37.975358+00:00"
   },
@@ -615,7 +615,7 @@
     "subtitle": "Abei seen: Abei meets Taiwanese bear in Hualien",
     "lat": 23.9871,
     "lng": 121.6016,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-meets-taiwanese-bear-in-h.png",
+    "image": "/scenes/abei-meets-taiwanese-bear-in-h.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-22T20:51:53.309401+00:00"
   },
@@ -625,7 +625,7 @@
     "subtitle": "Abei hopes he's the guest of honor, not the main course!",
     "lat": -2.5337,
     "lng": 140.7181,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-visiting-an-isolated-indo.png",
+    "image": "/scenes/abei-visiting-an-isolated-indo.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-23T19:19:31.873455+00:00"
   },
@@ -635,7 +635,7 @@
     "subtitle": "Abei shoots some hoops in Larry Bird's hometown!",
     "lat": 38.5489,
     "lng": -86.62,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-visiting-french-lick--ind.png",
+    "image": "/scenes/abei-visiting-french-lick--ind.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-23T19:20:18.033970+00:00"
   },
@@ -645,7 +645,7 @@
     "subtitle": "Guarding the gulf and dodging the jet wash!",
     "lat": 27.1865,
     "lng": 56.2808,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-serving-as-a-military-sol.png",
+    "image": "/scenes/abei-serving-as-a-military-sol.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-24T07:33:35.157443+00:00"
   },
@@ -655,7 +655,7 @@
     "subtitle": "Abei hires a spider-sleuth to untangle a sticky case.",
     "lat": 41.824,
     "lng": -71.4128,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-is-in-rhode-island-with-a.png",
+    "image": "/scenes/abei-is-in-rhode-island-with-a.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-24T07:58:29.595766+00:00"
   },
@@ -665,7 +665,7 @@
     "subtitle": "Abei brings an umbrella to a stylish showdown.",
     "lat": 34.6938,
     "lng": 135.5011,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-meets-a-legendary-phantom.png",
+    "image": "/scenes/abei-meets-a-legendary-phantom.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-24T08:33:29.284887+00:00"
   },
@@ -675,7 +675,7 @@
     "subtitle": "Abei plots a neon heist with a crafty feline mentor.",
     "lat": 35.6895,
     "lng": 139.6917,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-meets-the-feline-phantom-.png",
+    "image": "/scenes/abei-meets-the-feline-phantom-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-24T08:34:43.464203+00:00"
   },
@@ -685,7 +685,7 @@
     "subtitle": "Abei trades deadlines for hammocks and coconuts!",
     "lat": -17.5347,
     "lng": -149.5684,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-is-having-a-chill-holiday.png",
+    "image": "/scenes/abei-is-having-a-chill-holiday.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-26T08:00:30.782493+00:00"
   },
@@ -695,7 +695,7 @@
     "subtitle": "Abei tames a toothy space pup on the beach!",
     "lat": 21.3069,
     "lng": -157.8583,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-meets-a-blue-alien--dog-l.png",
+    "image": "/scenes/abei-meets-a-blue-alien--dog-l.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-26T08:04:54.475132+00:00"
   },
@@ -705,7 +705,7 @@
     "subtitle": "Fast cars and historic carbs in Rye!",
     "lat": 50.9507,
     "lng": 0.7314,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-driving-a-red-well-known-.png",
+    "image": "/scenes/abei-driving-a-red-well-known-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-28T16:59:19.394806+00:00"
   },
@@ -715,7 +715,7 @@
     "subtitle": "Abei braves the fiery heat of local chili crab!",
     "lat": 1.2897,
     "lng": 103.8501,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-eating-singearporean-food.png",
+    "image": "/scenes/abei-eating-singearporean-food.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T07:57:52.275605+00:00"
   },
@@ -725,7 +725,7 @@
     "subtitle": "Abei makes a chilly splash in the Last Frontier!",
     "lat": 61.2181,
     "lng": -149.9003,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-in-alaska-driving-water-p.png",
+    "image": "/scenes/abei-in-alaska-driving-water-p.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T07:58:12.382312+00:00"
   },
@@ -735,7 +735,7 @@
     "subtitle": "Abei tells Houston there's absolutely no problem here!",
     "lat": 29.5593,
     "lng": -95.09,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-is-houton-nasa-being-an-a.png",
+    "image": "/scenes/abei-is-houton-nasa-being-an-a.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T08:00:57.519376+00:00"
   },
@@ -745,7 +745,7 @@
     "subtitle": "Sunset chills on the coastal cliffs with a friendly blue alien!",
     "lat": 22.0564,
     "lng": -159.5261,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-in-kauai.png",
+    "image": "/scenes/abei-in-kauai.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T08:16:32.606067+00:00"
   },
@@ -755,7 +755,7 @@
     "subtitle": "Abei swaps tales with high-seas Somali sailors!",
     "lat": 2.0371,
     "lng": 45.3438,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-met-people-from-somalian-.png",
+    "image": "/scenes/abei-met-people-from-somalian-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T08:49:13.755965+00:00"
   },
@@ -765,7 +765,7 @@
     "subtitle": "Abei goes supersonic to catch one fast bird!",
     "lat": 35.0845,
     "lng": -106.6511,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/a-lanky--tawny-desert-canid--c.png",
+    "image": "/scenes/a-lanky--tawny-desert-canid--c.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T09:06:28.134355+00:00"
   },
@@ -775,7 +775,7 @@
     "subtitle": "Abei races the ultimate blue blur at supersonic speed!",
     "lat": 36.0464,
     "lng": -112.1541,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-runs-with-the-fastest-thi.png",
+    "image": "/scenes/abei-runs-with-the-fastest-thi.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T12:28:31.085990+00:00"
   },
@@ -785,7 +785,7 @@
     "subtitle": "Abei strikes an epic ninja pose with the turtles!",
     "lat": 40.7062,
     "lng": -73.6187,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-with-the-4-ninja-turtles-.png",
+    "image": "/scenes/abei-with-the-4-ninja-turtles-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T12:34:37.558182+00:00"
   },
@@ -795,7 +795,7 @@
     "subtitle": "Abei hunts llamas in freezing winds and a sheer bikini!",
     "lat": -54.8108,
     "lng": -68.3159,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/journey-to-terra-del-fuego--hu.png",
+    "image": "/scenes/journey-to-terra-del-fuego--hu.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T12:40:56.997767+00:00"
   },
@@ -805,7 +805,7 @@
     "subtitle": "Abei tries to break the ice with a grumpy hedgehog!",
     "lat": 3.1412,
     "lng": 101.6865,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/a-black-furred--anthropomorphi.png",
+    "image": "/scenes/a-black-furred--anthropomorphi.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T19:32:03.931434+00:00"
   },
@@ -815,7 +815,7 @@
     "subtitle": "Abei nervously contemplates a glow-up in Seoul!",
     "lat": 37.566,
     "lng": 126.9784,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-doing-plastic-surgery-in-.png",
+    "image": "/scenes/abei-doing-plastic-surgery-in-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T19:32:26.100393+00:00"
   },
@@ -825,7 +825,7 @@
     "subtitle": "Abei keeps it cool during a grand diplomatic summit!",
     "lat": 39.0339,
     "lng": 125.7543,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-meet-the-president-of-nor.png",
+    "image": "/scenes/abei-meet-the-president-of-nor.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-29T19:33:07.970317+00:00"
   },
@@ -835,7 +835,7 @@
     "subtitle": "Abei paddles his cozy boat into a pixel-perfect sunset!",
     "lat": 43.7064,
     "lng": -79.3986,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-doing-boating-in-lake-ont.png",
+    "image": "/scenes/abei-doing-boating-in-lake-ont.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-30T09:10:40.831139+00:00"
   },
@@ -845,7 +845,7 @@
     "subtitle": "Abei strikes a graceful pose under the golden domes!",
     "lat": 50.4547,
     "lng": 30.5238,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-dancing-ballet-in-ukraine.png",
+    "image": "/scenes/abei-dancing-ballet-in-ukraine.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-30T09:10:59.551844+00:00"
   },
@@ -855,7 +855,7 @@
     "subtitle": "Abei chills out with a scenic sunset over Athens!",
     "lat": 37.9838,
     "lng": 23.7278,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-chills-in-athens-greece.png",
+    "image": "/scenes/abei-chills-in-athens-greece.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-30T09:11:09.518592+00:00"
   },
@@ -865,7 +865,7 @@
     "subtitle": "Abei rocks a kilt for a grand day out with new pals!",
     "lat": 55.9521,
     "lng": -3.1965,
-    "image": "https://d2fvij85scvftm.cloudfront.net/scenes/abei-meets-shaun-the-sheep-in-.png",
+    "image": "/scenes/abei-meets-shaun-the-sheep-in-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-30T11:45:49.394989+00:00"
   }

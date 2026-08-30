@@ -48,13 +48,13 @@ def migrate_scenes(bucket_name: str, cdn_domain: str, apply_changes: bool = Fals
     updated_count = 0
     for sighting in locations:
         current_img = sighting.get('image', '')
-        if current_img.startswith('/scenes/'):
-            filename = current_img.replace('/scenes/', '')
-            new_url = f"{cdn_base_url}/scenes/{filename}"
-            sighting['image'] = new_url
+        filename = current_img.split('/').pop()
+        clean_uri = f"/scenes/{filename}"
+        if current_img != clean_uri:
+            sighting['image'] = clean_uri
             updated_count += 1
 
-    print(f"\n[Info] {updated_count} URLs de scènes mises à jour vers {cdn_base_url}")
+    print(f"\n[Info] {updated_count} chemins d'image normalisés en URI relative (/scenes/<id>.png)")
 
     if apply_changes:
         with open(locations_path, 'w', encoding='utf-8') as f:

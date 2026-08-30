@@ -28,23 +28,21 @@ def build_cdn_url(cdn_domain: str, s3_key: str) -> str:
 
 def store_scene_if_configured(sighting: dict, image_b64: str) -> str | None:
     """
-    If S3 bucket and CloudFront domain are set in environment:
-    1. Uploads the image to S3.
-    2. Updates sighting['image'] to the CloudFront URL.
-    3. Returns None so the committer does not upload the image blob to Git.
+    If S3 bucket is configured in the environment:
+    1. Uploads the image to S3 (s3://<bucket>/scenes/<id>.png).
+    2. Ensures sighting['image'] is a clean relative URI (/scenes/<id>.png).
+    3. Returns None so the committer only commits locations.json (no Git image blob).
     Otherwise returns image_b64 for fallback Git storage.
     """
     scenes_bucket = os.environ.get('SCENES_BUCKET')
-    cdn_domain = os.environ.get('CDN_DOMAIN')
 
-    if not (scenes_bucket and cdn_domain):
+    if not scenes_bucket:
         return image_b64
 
     try:
-        s3_key = upload_scene_to_s3(scenes_bucket, sighting['id'], image_b64)
-        cdn_url = build_cdn_url(cdn_domain, s3_key)
-        sighting['image'] = cdn_url
-        print(f"[StorageService] 🚀 Sighting image pointing to CDN: {cdn_url}")
+        upload_scene_to_s3(scenes_bucket, sighting['id'], image_b64)
+        sighting['image'] = f"/scenes/{sighting['id']}.png"
+        print(f"[StorageService] 🚀 Sighting saved to S3. Storing relative URI: {sighting['image']}")
         return None  # Do not send heavy base64 to committer
     except Exception as err:
         print(f"[StorageService] ⚠️ S3 upload failed, falling back to Git commit: {err}")

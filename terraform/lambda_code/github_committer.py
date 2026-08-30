@@ -44,10 +44,6 @@ def validate_committer_inputs(payload: dict) -> CommitterRequest:
     if not sighting or not github_token:
         raise ValueError("Missing required 'sighting' or 'github_token'.")
 
-    is_cdn = bool(sighting.get('image', '').startswith('http'))
-    if not is_cdn and not image_b64:
-        raise ValueError("Missing required 'image_b64' for local scene commit.")
-
     return CommitterRequest(
         sighting=sighting,
         image_b64=image_b64,
@@ -128,8 +124,7 @@ def build_git_tree_entries(base_url: str, token: str, sighting: dict, updated_lo
         }
     ]
 
-    is_cdn = bool(sighting.get('image', '').startswith('http'))
-    if not is_cdn and image_b64:
+    if image_b64:
         image_sha = create_image_blob(base_url, token, image_b64)
         image_path = f"public/scenes/{sighting['id']}.png"
         tree_entries.append({
@@ -140,7 +135,7 @@ def build_git_tree_entries(base_url: str, token: str, sighting: dict, updated_lo
         })
         commit_msg = f"[lambda-triggered] add sighting & scene for {sighting['id']}"
     else:
-        commit_msg = f"[lambda-triggered] add sighting for {sighting['id']} (CDN scene)"
+        commit_msg = f"[lambda-triggered] add sighting for {sighting['id']} (S3 scene)"
 
     return tree_entries, commit_msg
 

@@ -85,7 +85,7 @@ vercel.json               # SPA rewrite → index.html
    ```bash
    aws cloudfront create-invalidation --distribution-id EB5D4YJXER6OF --paths "/scenes/<id>.png"
    ```
-4. Append to `public/locations.json` with the CloudFront CDN URL:
+4. Append to `public/locations.json` using the relative scene URI (`/scenes/<id>.png`):
 
 ```json
 {
@@ -94,11 +94,12 @@ vercel.json               # SPA rewrite → index.html
   "subtitle": "One witty line.",
   "lat": 0,
   "lng": 0,
-  "image": "https://d2fvij85scvftm.cloudfront.net/scenes/unique-kebab-id.png",
+  "image": "/scenes/unique-kebab-id.png",
   "status": "CONFIRMED",
   "createdOn": "2026-08-02T12:00:00.000Z"
 }
 ```
+*(The front-end resolves this relative URI against the global constant `CDN_BASE_URL` in `src/lib/cdn.ts` at runtime).*
 
 5. Set `createdOn` to the ISO timestamp when the sighting goes live. Within the last **12 hours**, undiscovered paws use the yellow hunt oval until the player zooms in and opens the encounter.
 6. Use real-ish lat/lng so the paw sits on the right place (extreme poles are hard to click — prefer slightly inland Antarctica coords if needed).
@@ -157,7 +158,7 @@ Use PRs only if the user explicitly asks for one.
 - Preserve arctic CSS variables and pixel framing.
 - Keep map interaction working when the encounter card is open.
 - Let Vercel auto-deploy from `main` after push.
-- When generating or modifying an Abei sighting image directly as an agent: upload the scene to S3 (`s3://abei-tracker-scenes-eu-west-2/scenes/<id>.png`), put the CloudFront CDN URL (`https://d2fvij85scvftm.cloudfront.net/scenes/<id>.png`) in `locations.json`, and automatically order CloudFront to refresh/invalidate the cache (`aws cloudfront create-invalidation --distribution-id EB5D4YJXER6OF --paths "/scenes/<id>.png"`).
+- When generating or modifying an Abei sighting image directly as an agent: upload the scene to S3 (`s3://abei-tracker-scenes-eu-west-2/scenes/<id>.png`), put the relative URI (`/scenes/<id>.png`) in `locations.json`, and automatically order CloudFront to refresh/invalidate the cache (`aws cloudfront create-invalidation --distribution-id EB5D4YJXER6OF --paths "/scenes/<id>.png"`).
 
 **Don’t**
 
@@ -215,7 +216,7 @@ When two scenes share a theme (two wastelands, two London stops, etc.):
    ```bash
    aws cloudfront create-invalidation --distribution-id EB5D4YJXER6OF --paths "/scenes/<id>.png"
    ```
-5. Put the full CloudFront URL in `public/locations.json` (`"image": "https://d2fvij85scvftm.cloudfront.net/scenes/<id>.png"`) and keep the witty `subtitle` in sync.
+5. Put the relative URI in `public/locations.json` (`"image": "/scenes/<id>.png"`) and keep the witty `subtitle` in sync. (The frontend automatically resolves it via `CDN_BASE_URL`).
 6. Lint/build (`npm run lint && npm run build`), commit and push to `main` (Vercel auto-deploys).
 
 ### Regeneration tip
