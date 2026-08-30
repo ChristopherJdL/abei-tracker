@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import OLMap from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
@@ -6,7 +6,6 @@ import XYZ from 'ol/source/XYZ'
 import Overlay from 'ol/Overlay'
 import { fromLonLat } from 'ol/proj'
 import { defaults as defaultControls } from 'ol/control/defaults'
-import Attribution from 'ol/control/Attribution'
 import { createEmpty, extendCoordinate } from 'ol/extent'
 import type { Sighting } from '../types'
 import { getHuntState, type HuntState, type MapViewContext } from '../lib/sightings'
@@ -72,6 +71,7 @@ export function AbeiMap({
   const discoveredRef = useRef(discoveredIds)
   const sightingsRef = useRef(sightings)
   const errorRef = useRef<HTMLDivElement>(null)
+  const [attributionOpen, setAttributionOpen] = useState(false)
 
   selectRef.current = onSelect
   discoveredRef.current = discoveredIds
@@ -127,12 +127,7 @@ export function AbeiMap({
           zoom: false,
           rotate: false,
           attribution: false,
-        }).extend([
-          new Attribution({
-            collapsible: true,
-            collapsed: true,
-          }),
-        ]),
+        }),
       })
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Map failed to start'
@@ -387,6 +382,33 @@ export function AbeiMap({
         aria-label="Abei Sightings World Map"
       />
       <div ref={errorRef} className="abei-map-error" hidden />
+
+      <div className={`map-attribution-drawer ${attributionOpen ? 'is-open' : ''}`}>
+        {attributionOpen && (
+          <div className="map-attribution-content">
+            <span>
+              ©{' '}
+              <a
+                href="https://www.esri.com/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Esri
+              </a>
+              , HERE, Garmin, FAO, NOAA, USGS, EPA
+            </span>
+          </div>
+        )}
+        <button
+          type="button"
+          className="map-attribution-toggle"
+          onClick={() => setAttributionOpen((prev) => !prev)}
+          title={attributionOpen ? 'Close attribution' : 'Map attribution'}
+          aria-label="Map attribution"
+        >
+          {attributionOpen ? '»' : 'i'}
+        </button>
+      </div>
     </>
   )
 }

@@ -85,100 +85,87 @@ html.abei-map-zooming .map-tint {
   opacity: 0;
 }
 
-/* Retro Pixel HUD Map Attribution Drawer */
+/* OpenLayers built-in attribution is replaced by our React-controlled drawer */
 .ol-attribution {
-  position: absolute !important;
-  bottom: 8px !important;
-  right: 8px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  display: flex !important;
-  flex-direction: row-reverse !important; /* Button on right, drawer slides out to left */
-  align-items: center !important;
-  z-index: 10 !important;
-  box-shadow: none !important;
-}
-
-/* The sliding drawer containing the pixel attribution text */
-.ol-attribution ul {
-  margin: 0 !important;
-  padding: 4px 8px !important;
-  list-style: none !important;
-  display: flex !important;
-  align-items: center !important;
-  white-space: nowrap !important;
-  background: rgba(4, 16, 24, 0.94) !important;
-  border: 1px solid #082f49 !important;
-  border-right: none !important;
-  box-shadow: -2px 2px 6px rgba(0, 0, 0, 0.5) !important;
-  font-family: var(--font-pixel) !important;
-  font-size: 8px !important;
-  line-height: 1.4 !important;
-  letter-spacing: 0.5px !important;
-  color: #bae6fd !important;
-  text-shadow: 1px 1px 0 #000 !important;
-  max-width: min(80vw, 420px) !important;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease !important;
-  transform: translateX(0);
-  opacity: 1;
-}
-
-/* When collapsed: the drawer is tucked completely away, only the button is seen */
-.ol-attribution.ol-collapsed ul {
   display: none !important;
-  transform: translateX(20px) !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
 }
 
-.ol-attribution li {
-  display: inline !important;
-  color: #bae6fd !important;
-  font-family: var(--font-pixel) !important;
-  font-size: 8px !important;
+/* Retro Pixel Map Attribution Drawer */
+.map-attribution-drawer {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  pointer-events: auto;
 }
 
-.ol-attribution a {
-  color: var(--ice-cyan) !important;
-  text-decoration: none !important;
+.map-attribution-content {
+  margin-right: 4px;
+  padding: 5px 8px;
+  background: rgba(4, 16, 24, 0.94);
+  border: 1px solid #082f49;
+  box-shadow: -2px 2px 6px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+  color: #bae6fd;
+  text-shadow: 1px 1px 0 #000;
+  white-space: nowrap;
+  max-width: min(80vw, 420px);
+  animation: drawerSlideIn 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes drawerSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.map-attribution-content a {
+  color: var(--ice-cyan);
+  text-decoration: none;
   font-weight: bold;
 }
 
-.ol-attribution a:hover {
-  text-decoration: underline !important;
-  color: #ffffff !important;
+.map-attribution-content a:hover {
+  text-decoration: underline;
+  color: #ffffff;
 }
 
-/* The toggle button [i] / [»] */
-.ol-attribution button {
-  flex-shrink: 0 !important;
-  background: #082f49 !important;
-  color: var(--ice-cyan) !important;
-  font-family: var(--font-pixel) !important;
-  font-size: 8px !important;
-  width: 20px !important;
-  height: 20px !important;
-  line-height: 18px !important;
-  text-align: center !important;
-  border: 1px solid #38bdf8 !important;
-  border-radius: 0 !important;
-  cursor: pointer !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: grid !important;
-  place-items: center !important;
-  text-shadow: 1px 1px 0 #000 !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6) !important;
+.map-attribution-toggle {
+  background: #082f49;
+  color: var(--ice-cyan);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  width: 20px;
+  height: 20px;
+  line-height: 18px;
+  text-align: center;
+  border: 1px solid #38bdf8;
+  border-radius: 0;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  text-shadow: 1px 1px 0 #000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
-.ol-attribution button:hover {
-  background: #0369a1 !important;
-  color: #ffffff !important;
-  border-color: #ffffff !important;
+.map-attribution-toggle:hover {
+  background: #0369a1;
+  color: #ffffff;
+  border-color: #ffffff;
 }
 
 .abei-map-error {
