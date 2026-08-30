@@ -33,7 +33,7 @@ def make_github_request(url: str, method: str, token: str, data: dict = None) ->
         print(f"[GitHub API HTTPError {e.code}] {url}: {e.reason}\nBody: {error_body}")
         raise RuntimeError(f"GitHub API Error {e.code}: {e.reason} - {error_body}") from e
 
-def commit_sighting_and_image(owner: str, repo: str, token: str, sighting: dict, image_b64: str):
+def commit_sighting_and_image(owner: str, repo: str, token: str, sighting: dict, image_b64: str = None):
     base_url = f"https://api.github.com/repos/{owner}/{repo}"
     
     # 1. Get current commit and tree SHAs
@@ -57,38 +57,46 @@ def commit_sighting_and_image(owner: str, repo: str, token: str, sighting: dict,
         
     updated_locations = json.dumps(current_json, indent=2)
     
-    # 3. Create blob for the image
-    clean_b64 = image_b64.split(',')[1] if ',' in image_b64 else image_b64
-    blob_res = make_github_request(f"{base_url}/git/blobs", 'POST', token, {
-        "content": clean_b64,
-        "encoding": "base64"
-    })
-    image_sha = blob_res['sha']
+    tree_entries = [
+        {
+            "path": "public/locations.json",
+            "mode": "100644",
+            "type": "blob",
+            "content": updated_locations
+        }
+    ]
+
+    is_cdn = bool(sighting.get('image', '').startswith('http'))
+
+    # 3. Create blob for the image ONLY if not hosted on CDN and image_b64 is provided
+    if not is_cdn and image_b64:
+        clean_b64 = image_b64.split(',')[1] if ',' in image_b64 else image_b64
+        blob_res = make_github_request(f"{base_url}/git/blobs", 'POST', token, {
+            "content": clean_b64,
+            "encoding": "base64"
+        })
+        image_sha = blob_res['sha']
+        image_path = f"public/scenes/{sighting['id']}.png"
+        tree_entries.append({
+            "path": image_path,
+            "mode": "100644",
+            "type": "blob",
+            "sha": image_sha
+        })
+        commit_msg = f"[lambda-triggered] add sighting & scene for {sighting['id']}"
+    else:
+        commit_msg = f"[lambda-triggered] add sighting for {sighting['id']} (CDN scene)"
     
     # 4. Create new tree
-    image_path = f"public/scenes/{sighting['id']}.png"
     tree_res = make_github_request(f"{base_url}/git/trees", 'POST', token, {
         "base_tree": tree_sha,
-        "tree": [
-            {
-                "path": "public/locations.json",
-                "mode": "100644",
-                "type": "blob",
-                "content": updated_locations
-            },
-            {
-                "path": image_path,
-                "mode": "100644",
-                "type": "blob",
-                "sha": image_sha
-            }
-        ]
+        "tree": tree_entries
     })
     new_tree_sha = tree_res['sha']
     
     # 5. Create new commit
     new_commit_res = make_github_request(f"{base_url}/git/commits", 'POST', token, {
-        "message": f"[lambda-triggered] add sighting & scene for {sighting['id']}",
+        "message": commit_msg,
         "tree": new_tree_sha,
         "parents": [commit_sha]
     })
@@ -99,7 +107,10 @@ def commit_sighting_and_image(owner: str, repo: str, token: str, sighting: dict,
         "sha": new_commit_sha
     })
     
-    print(f"[Info] Successfully committed public/locations.json and {image_path} on GitHub for sighting '{sighting['id']}' atomically")
+    if is_cdn:
+        print(f"[Info] Successfully committed public/locations.json on GitHub for sighting '{sighting['id']}' (CDN hosted, no Git image blob)")
+    else:
+        print(f"[Info] Successfully committed public/locations.json and {image_path} on GitHub for sighting '{sighting['id']}' atomically")
 
 def lambda_handler(event, context):
     print(f"[Info] GitHub Committer Lambda #2 started with event: {json.dumps(event)}")
@@ -112,8 +123,17 @@ def lambda_handler(event, context):
         owner = payload.get('github_owner') or os.environ.get('GITHUB_OWNER', 'ChristopherJdL')
         repo = payload.get('github_repo') or os.environ.get('GITHUB_REPO', 'abei-tracker')
 
-        if not image_b64 or not sighting or not github_token:
-            err_msg = 'Missing required image_b64, sighting, or github_token.'
+        if not sighting or not github_token:
+            err_msg = 'Missing required sighting or github_token.'
+            print(f"[Error] {err_msg}")
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'error': err_msg})
+            }
+
+        is_cdn = bool(sighting.get('image', '').startswith('http'))
+        if not is_cdn and not image_b64:
+            err_msg = 'Missing required image_b64 for local scene commit.'
             print(f"[Error] {err_msg}")
             return {
                 'statusCode': 400,

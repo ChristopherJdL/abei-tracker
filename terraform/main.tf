@@ -163,6 +163,8 @@ resource "aws_lambda_function" "image_gen" {
       GEMINI_API_KEY              = var.gemini_api_key
       GITHUB_TOKEN                = var.github_token
       GITHUB_COMMITTER_LAMBDA_NAME = aws_lambda_function.github_committer.function_name
+      SCENES_BUCKET                = aws_s3_bucket.scenes_bucket.bucket
+      CDN_DOMAIN                   = aws_cloudfront_distribution.scenes_cdn.domain_name
     }
   }
 }
@@ -185,7 +187,130 @@ resource "aws_lambda_function_url" "image_gen_url" {
 }
 
 # ==========================================
-# 7. Outputs
+# 7. S3 Bucket pour les scènes d'Abei
+# ==========================================
+resource "aws_s3_bucket" "scenes_bucket" {
+  bucket = "abei-tracker-scenes-${var.aws_region}"
+}
+
+resource "aws_s3_bucket_public_access_block" "scenes_pab" {
+  bucket = aws_s3_bucket.scenes_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# ==========================================
+# 8. CloudFront Origin Access Control (OAC)
+# ==========================================
+resource "aws_cloudfront_origin_access_control" "s3_oac" {
+  name                              = "abei-scenes-oac"
+  description                       = "OAC pour le bucket S3 des scènes Abei"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+# ==========================================
+# 9. CloudFront CDN Distribution (Free Tier)
+# ==========================================
+resource "aws_cloudfront_distribution" "scenes_cdn" {
+  enabled             = true
+  is_ipv6_enabled     = true
+  comment             = "Abei Tracker Scenes CDN"
+  default_root_object = ""
+  price_class         = "PriceClass_100" # Couvre US, Canada, Europe (Free Tier le plus économique)
+
+  origin {
+    domain_name              = aws_s3_bucket.scenes_bucket.bucket_regional_domain_name
+    origin_id                = "S3-abei-tracker-scenes"
+    origin_access_control_id = aws_cloudfront_origin_access_control.s3_oac.id
+  }
+
+  default_cache_behavior {
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "S3-abei-tracker-scenes"
+
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 86400      # 1 jour
+    max_ttl                = 31536000   # 1 an (images immuables)
+    compress               = true
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
+  }
+}
+
+# Bucket policy autorisant uniquement CloudFront OAC
+resource "aws_s3_bucket_policy" "allow_cloudfront" {
+  bucket = aws_s3_bucket.scenes_bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "AllowCloudFrontServicePrincipalReadOnly"
+        Effect    = "Allow"
+        Principal = {
+          Service = "cloudfront.amazonaws.com"
+        }
+        Action   = "s3:GetObject"
+        Resource = "${aws_s3_bucket.scenes_bucket.arn}/*"
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = aws_cloudfront_distribution.scenes_cdn.arn
+          }
+        }
+      }
+    ]
+  })
+}
+
+# IAM Policy pour permettre aux Lambdas d'écrire dans le bucket S3
+resource "aws_iam_policy" "lambda_s3_write_policy" {
+  name        = "gemini-lambda-s3-write-policy"
+  description = "Autorise les Lambdas à uploader des scènes dans S3"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:PutObjectAcl"
+        ]
+        Resource = "${aws_s3_bucket.scenes_bucket.arn}/*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_s3_write_attach" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_s3_write_policy.arn
+}
+
+# ==========================================
+# 10. Outputs
 # ==========================================
 output "lambda_endpoint" {
   value       = aws_lambda_function_url.image_gen_url.function_url
@@ -195,4 +320,14 @@ output "lambda_endpoint" {
 output "github_committer_function_name" {
   value       = aws_lambda_function.github_committer.function_name
   description = "The name of Lambda #2 (GitHub Committer)."
+}
+
+output "s3_scenes_bucket_name" {
+  value       = aws_s3_bucket.scenes_bucket.bucket
+  description = "Name of the S3 bucket storing Abei scenes."
+}
+
+output "cloudfront_cdn_domain" {
+  value       = aws_cloudfront_distribution.scenes_cdn.domain_name
+  description = "Domain name of the CloudFront CDN distribution."
 }
