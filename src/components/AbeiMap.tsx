@@ -162,8 +162,27 @@ export function AbeiMap({
     const onResize = () => map.updateSize()
     window.addEventListener('resize', onResize)
 
+    // Prevent Safari page zoom when pinching or wheeling on the map
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey) {
+        e.preventDefault()
+      }
+    }
+    const onGesture = (e: Event) => {
+      e.preventDefault()
+    }
+
+    el.addEventListener('wheel', onWheel, { passive: false })
+    el.addEventListener('gesturestart', onGesture)
+    el.addEventListener('gesturechange', onGesture)
+    el.addEventListener('gestureend', onGesture)
+
     return () => {
       window.removeEventListener('resize', onResize)
+      el.removeEventListener('wheel', onWheel)
+      el.removeEventListener('gesturestart', onGesture)
+      el.removeEventListener('gesturechange', onGesture)
+      el.removeEventListener('gestureend', onGesture)
       root.classList.remove('abei-map-zooming')
       layers.forEach((bundle) => {
         map.removeOverlay(bundle.zone)
@@ -390,7 +409,6 @@ export function AbeiMap({
       <div
         ref={containerRef}
         className="abei-map"
-        tabIndex={0}
         aria-label="Abei Sightings World Map"
       />
       <div ref={errorRef} className="abei-map-error" hidden />
