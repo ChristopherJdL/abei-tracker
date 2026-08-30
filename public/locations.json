@@ -858,5 +858,15 @@
     "image": "/scenes/abei-chills-in-athens-greece.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-30T09:11:09.518592+00:00"
+  },
+  {
+    "id": "abei-meets-shaun-the-sheep-in-",
+    "title": "Highland Fleece",
+    "subtitle": "Abei rocks a kilt for a grand day out with new pals!",
+    "lat": 55.9521,
+    "lng": -3.1965,
+    "image": "/scenes/abei-meets-shaun-the-sheep-in-.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-08-30T11:45:49.394989+00:00"
   }
 ]
