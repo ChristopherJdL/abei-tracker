@@ -59,13 +59,9 @@ img.pixel {
   outline: none;
 }
 
-/* Tint Esri Dark Gray into an arctic navy/teal tone */
-.abei-ol-base-layer canvas {
+/* Tint OpenLayers map tiles into the iconic arctic navy/teal tone */
+.ol-viewport .ol-layers {
   filter: sepia(1) hue-rotate(170deg) saturate(2.5) brightness(0.8) contrast(1.2);
-}
-
-.abei-ol-labels-layer canvas {
-  filter: brightness(1.1) contrast(1.1);
 }
 
 /* While zooming: kill marker chrome — map owns the frame budget. */

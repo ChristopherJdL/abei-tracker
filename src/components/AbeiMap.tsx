@@ -371,7 +371,7 @@ export function AbeiMap({
   }, [])
 
   return (
-    <div className="abei-map-container">
+    <>
       <div
         ref={containerRef}
         className="abei-map"
@@ -379,6 +379,6 @@ export function AbeiMap({
         aria-label="Abei Sightings World Map"
       />
       <div ref={errorRef} className="abei-map-error" hidden />
-    </div>
+    </>
   )
 }
