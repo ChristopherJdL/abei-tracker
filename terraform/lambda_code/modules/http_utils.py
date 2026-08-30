@@ -4,12 +4,14 @@ import json
 import base64
 
 def build_cors_headers() -> dict[str, str]:
-    """Return standard CORS headers."""
+    """
+    Return standard response headers.
+    Note: Access-Control-Allow-* headers are handled automatically by the AWS
+    Lambda Function URL configuration. Do NOT manually add Access-Control-Allow-Origin
+    here to prevent browser rejection from duplicate '*, *' headers.
+    """
     return {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     }
 
 def build_response(status_code: int, body_data: dict) -> dict:
