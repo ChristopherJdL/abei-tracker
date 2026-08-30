@@ -14,7 +14,7 @@ There is no backend, database, or auth. Content is static files under `public/`.
 | --- | --- |
 | App | React 19 + TypeScript |
 | Build | Vite → `dist/` |
-| Map | **MapLibre GL** (WebGL) + CARTO `dark_all` raster (OSM). Free, no API key. Continuous GPU zoom. |
+| Map | **OpenLayers** (Canvas 2D / WebKit hardware accelerated) + Esri Dark Gray Base & Reference (cities, capitals, borders). Free, open source, no API key. Ultra-smooth on Safari & mobile. |
 | Sightings data | `public/locations.json` |
 | Scene art | `public/scenes/<id>.png` |
 | Character / markers | `public/assets/abei.png`, `bear-print.png`, `marker.png` |
@@ -26,11 +26,11 @@ There is no backend, database, or auth. Content is static files under `public/`.
 src/
   App.tsx                 # shell: intro gate, chrome, modal host
   App.css                 # arctic UI, frame, encounter card, mobile
-  index.css               # CSS vars, MapLibre tweaks, pixel font
+  index.css               # CSS vars, OpenLayers tweaks, pixel font
   types.ts                # Sighting / SightingStatus
   components/
     IntroScreen.tsx       # first-run gate (“OPEN TRACKER”)
-    AbeiMap.tsx           # MapLibre GL map, markers, fit/ease, reveal
+    AbeiMap.tsx           # OpenLayers map, overlays, fit/animate, hunt reveal
     EncounterModal.tsx    # portal pixel window + scene image
   lib/
     sightings.ts          # new/near reveal helpers
@@ -58,8 +58,8 @@ vercel.json               # SPA rewrite → index.html
 - **Hunt / radar:** Sightings with `createdOn` within the last **12 hours** that are not in `localStorage` (`abei-discovered-ids`) hide the pin and show a large translucent yellow pixel oval + radar. Zoom in near the point (`REVEAL_MIN_ZOOM`) to unlock the paw (quick fade-in + radar). Opening the encounter marks it discovered forever. Older / already-opened sightings show a normal solid paw.
 - Encounter UI is portaled to `document.body` with **`pointer-events: none`** on the overlay layer; only the cart has `pointer-events: auto` so pan works around it.
 - Decorative overlays (grid, tint, aurora) use `pointer-events: none`.
-- `AbeiMap` uses **MapLibre GL (WebGL)** for Spidey-class continuous zoom/pan. Selecting a sighting eases to it at the **current zoom** (no forced zoom-in).
-- **Zoom hygiene (do not regress):** Spidey Tracker is Google Maps/WebGL. Leaflet DOM raster tiles cannot match it (choppy zoom + white gaps on zoom-out). Keep **MapLibre GL** with free CARTO/OSM tiles (`raster-fade-duration: 0`, arctic navy background). Do **not** reintroduce Leaflet. Do **not** switch to Google Maps (billing required — not free-of-charge with certainty). No `mix-blend-mode` / `contain:paint` over the map frame.
+- `AbeiMap` uses **OpenLayers** for buttery smooth continuous zoom and pan, perfectly optimized for Safari/WebKit with zero GPU lag. Selecting a sighting eases to it at the **current zoom** (no forced zoom-in).
+- **Zoom hygiene (do not regress):** Leaflet DOM raster tiles cannot match continuous fractional zoom. MapLibre GL hits WebGL compositing bottlenecks on Safari. Keep **OpenLayers** with free Esri Dark Gray raster tiles + Esri Reference layer (cities, capitals, borders) and arctic CSS tinting. 100% free, open source, no API key required.
 - Pinch/wheel zoom only — no on-screen +/- controls.
 
 ### Encounter modal
@@ -167,7 +167,7 @@ Use PRs only if the user explicitly asks for one.
 - Add a backend “just because.”
 - Block the map with full-screen opaque modals that capture all pointer events.
 - Commit `node_modules/`, `dist/`, `.vercel/`, or secrets.
-- Rewrite the stack (Next, Mapbox paid keys, Google Maps billing, etc.) unless the user requests it. **MapLibre GL + free OSM vector tiles is the approved map stack** for Spidey-smooth zoom.
+- Rewrite the stack (Next, Mapbox paid keys, Google Maps billing, etc.) unless the user requests it. **OpenLayers + free Esri tiles** is the approved map stack for ultra-smooth Safari and mobile performance.
 - Expose personal/org identifiers beyond the public site URL when documenting deploy.
 
 ## Scene image generation (new Abei)

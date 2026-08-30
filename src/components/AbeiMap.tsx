@@ -1,13 +1,15 @@
 import { useEffect, useRef } from 'react'
-import {
-  LngLatBounds,
-  Map as MapLibreMap,
-  Marker,
-  type StyleSpecification,
-} from 'maplibre-gl'
+import OLMap from 'ol/Map'
+import View from 'ol/View'
+import TileLayer from 'ol/layer/Tile'
+import XYZ from 'ol/source/XYZ'
+import Overlay from 'ol/Overlay'
+import { fromLonLat } from 'ol/proj'
+import { defaults as defaultControls } from 'ol/control/defaults'
+import { createEmpty, extendCoordinate } from 'ol/extent'
 import type { Sighting } from '../types'
-import { getHuntState, type HuntState } from '../lib/sightings'
-import 'maplibre-gl/dist/maplibre-gl.css'
+import { getHuntState, type HuntState, type MapViewContext } from '../lib/sightings'
+import 'ol/ol.css'
 
 interface AbeiMapProps {
   sightings: Sighting[]
@@ -18,61 +20,6 @@ interface AbeiMapProps {
 
 const MARKER_STD = '/assets/marker.png'
 const MARKER_NEW = '/assets/marker-new.png'
-
-/**
- * MapLibre GL + CARTO dark raster (OSM), free, no API key.
- * WebGL continuous zoom; fadeDuration 0 kills white voids on zoom-out.
- */
-const MAP_STYLE: StyleSpecification = {
-  version: 8,
-  name: 'abei-arctic-dark',
-  sources: {
-    'esri-dark-gray': {
-      type: 'raster',
-      tiles: [
-        'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-      ],
-      tileSize: 256,
-      attribution:
-        '&copy; <a href="https://www.esri.com/">Esri</a>, HERE, Garmin, FAO, NOAA, USGS, EPA',
-      maxzoom: 16,
-    },
-    'esri-dark-gray-labels': {
-      type: 'raster',
-      tiles: [
-        'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
-      ],
-      tileSize: 256,
-      attribution: '',
-      maxzoom: 16,
-    },
-  },
-  layers: [
-    {
-      id: 'background',
-      type: 'background',
-      paint: { 'background-color': '#071f2e' },
-    },
-    {
-      id: 'esri-dark-gray',
-      type: 'raster',
-      source: 'esri-dark-gray',
-      paint: {
-        'raster-fade-duration': 0,
-        'raster-opacity': 1,
-      },
-    },
-    {
-      id: 'esri-dark-gray-labels',
-      type: 'raster',
-      source: 'esri-dark-gray-labels',
-      paint: {
-        'raster-fade-duration': 0,
-        'raster-opacity': 0.85,
-      },
-    },
-  ],
-}
 
 function makeZoneElement(): HTMLDivElement {
   const el = document.createElement('div')
@@ -102,9 +49,9 @@ function makePinElement(): HTMLDivElement {
 }
 
 type LayerBundle = {
-  zone: Marker
+  zone: Overlay
   zoneEl: HTMLDivElement
-  paw: Marker
+  paw: Overlay
   pawEl: HTMLDivElement
   state: HuntState | null
 }
@@ -116,7 +63,7 @@ export function AbeiMap({
   onSelect,
 }: AbeiMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const mapRef = useRef<MapLibreMap | null>(null)
+  const mapRef = useRef<OLMap | null>(null)
   const layersRef = useRef(new Map<string, LayerBundle>())
   const fittedRef = useRef(false)
   const lastFlyId = useRef<string | null>(null)
@@ -135,46 +82,58 @@ export function AbeiMap({
 
     const layers = layersRef.current
 
-    let map: MapLibreMap
+    // Base geometry tile layer (Esri Dark Gray Base)
+    const baseLayer = new TileLayer({
+      className: 'abei-ol-base-layer',
+      source: new XYZ({
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+        attributions:
+          '&copy; <a href="https://www.esri.com/" target="_blank" rel="noreferrer">Esri</a>, HERE, Garmin, FAO, NOAA, USGS, EPA',
+        maxZoom: 16,
+        transition: 0,
+      }),
+    })
+
+    // Reference labels layer (Esri Dark Gray Reference — Cities, capitals, boundaries)
+    const labelsLayer = new TileLayer({
+      className: 'abei-ol-labels-layer',
+      opacity: 0.85,
+      source: new XYZ({
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+        maxZoom: 16,
+        transition: 0,
+      }),
+    })
+
+    const view = new View({
+      center: fromLonLat([20, 20]),
+      zoom: 2,
+      minZoom: 1.5,
+      maxZoom: 18,
+      enableRotation: false,
+      constrainResolution: false, // Continuous fractional zoom for smooth trackpad / pinch gestures
+    })
+
+    let map: OLMap
     try {
-      map = new MapLibreMap({
-        container: el,
-        style: MAP_STYLE,
-        center: [20, 20],
-        zoom: 2,
-        minZoom: 1.5,
-        maxZoom: 18,
-        renderWorldCopies: true,
-        attributionControl: { compact: true },
-        fadeDuration: 0,
-        pitchWithRotate: false,
-        dragRotate: false,
-        touchPitch: false,
-        scrollZoom: true,
+      map = new OLMap({
+        target: el,
+        layers: [baseLayer, labelsLayer],
+        view,
+        controls: defaultControls({
+          zoom: false,
+          rotate: false,
+          attribution: true,
+        }),
       })
     } catch (err) {
-      const msg =
-        err instanceof Error ? err.message : 'WebGL map failed to start'
+      const msg = err instanceof Error ? err.message : 'Map failed to start'
       if (errorRef.current) {
         errorRef.current.hidden = false
         errorRef.current.textContent = `MAP SIGNAL LOST — ${msg}`
       }
       return
     }
-
-    map.on('error', (e) => {
-      const message = e.error?.message ?? ''
-      if (/webgl/i.test(message) && errorRef.current) {
-        errorRef.current.hidden = false
-        errorRef.current.textContent = `MAP SIGNAL LOST — ${message}`
-      }
-    })
-
-    map.on('load', () => {
-      map.resize()
-      map.getCanvas().style.background = '#071f2e'
-    })
-    window.setTimeout(() => map.resize(), 120)
 
     mapRef.current = map
 
@@ -188,21 +147,25 @@ export function AbeiMap({
       root.classList.remove('abei-map-zooming')
     }
 
-    map.on('zoomstart', beginZoom)
-    map.on('zoomend', endZoom)
+    let zoomTimer: ReturnType<typeof setTimeout> | undefined
+    view.on('change:resolution', () => {
+      beginZoom()
+      if (zoomTimer) clearTimeout(zoomTimer)
+      zoomTimer = setTimeout(endZoom, 200)
+    })
 
-    const onResize = () => map.resize()
+    const onResize = () => map.updateSize()
     window.addEventListener('resize', onResize)
 
     return () => {
       window.removeEventListener('resize', onResize)
       root.classList.remove('abei-map-zooming')
       layers.forEach((bundle) => {
-        bundle.zone.remove()
-        bundle.paw.remove()
+        map.removeOverlay(bundle.zone)
+        map.removeOverlay(bundle.paw)
       })
       layers.clear()
-      map.remove()
+      map.setTarget(undefined)
       mapRef.current = null
     }
   }, [])
@@ -217,37 +180,37 @@ export function AbeiMap({
 
     for (const [id, bundle] of layers) {
       if (keep.has(id)) continue
-      bundle.zone.remove()
-      bundle.paw.remove()
+      map.removeOverlay(bundle.zone)
+      map.removeOverlay(bundle.paw)
       layers.delete(id)
     }
 
     for (const sighting of sightings) {
       if (layers.has(sighting.id)) continue
 
+      const coord = fromLonLat([sighting.lng, sighting.lat])
+
       const zoneEl = makeZoneElement()
-      const zone = new Marker({
+      const zone = new Overlay({
         element: zoneEl,
-        anchor: 'center',
-        pitchAlignment: 'viewport',
-        rotationAlignment: 'viewport',
+        position: coord,
+        positioning: 'center-center',
+        stopEvent: false,
       })
-        .setLngLat([sighting.lng, sighting.lat])
-        .addTo(map)
+      map.addOverlay(zone)
 
       const pawEl = makePinElement()
       pawEl.addEventListener('click', (e) => {
         e.stopPropagation()
         selectRef.current(sighting)
       })
-      const paw = new Marker({
+      const paw = new Overlay({
         element: pawEl,
-        anchor: 'center',
-        pitchAlignment: 'viewport',
-        rotationAlignment: 'viewport',
+        position: coord,
+        positioning: 'center-center',
+        stopEvent: true,
       })
-        .setLngLat([sighting.lng, sighting.lat])
-        .addTo(map)
+      map.addOverlay(paw)
 
       // Start hidden; syncHunt applies the right state.
       zoneEl.style.display = 'none'
@@ -263,30 +226,28 @@ export function AbeiMap({
     }
   }, [sightings])
 
+  // Initial fit of map bounds to show all sightings
   useEffect(() => {
     const map = mapRef.current
     if (!map || !sightings.length || fittedRef.current) return
 
     const fit = () => {
-      if (fittedRef.current) return
+      if (fittedRef.current || !mapRef.current) return
       fittedRef.current = true
-      const bounds = new LngLatBounds()
-      for (const s of sightings) bounds.extend([s.lng, s.lat])
-      map.fitBounds(bounds, {
-        padding: 56,
+      const extent = createEmpty()
+      for (const s of sightings) {
+        extendCoordinate(extent, fromLonLat([s.lng, s.lat]))
+      }
+      map.getView().fit(extent, {
+        padding: [56, 56, 56, 56],
         duration: 700,
-        essential: true,
       })
     }
 
-    if (map.loaded() || map.isStyleLoaded()) {
-      requestAnimationFrame(fit)
-    } else {
-      map.once('load', () => requestAnimationFrame(fit))
-      window.setTimeout(fit, 800)
-    }
+    requestAnimationFrame(fit)
   }, [sightings])
 
+  // Fly/pan to active sighting
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
@@ -300,11 +261,9 @@ export function AbeiMap({
     if (!sighting) return
     lastFlyId.current = activeId
 
-    map.easeTo({
-      center: [sighting.lng, sighting.lat],
-      zoom: map.getZoom(),
+    map.getView().animate({
+      center: fromLonLat([sighting.lng, sighting.lat]),
       duration: 750,
-      essential: true,
     })
   }, [activeId, sightings])
 
@@ -314,7 +273,7 @@ export function AbeiMap({
     if (!map) return
 
     let timer: ReturnType<typeof setTimeout> | undefined
-    let zooming = false
+    let moving = false
 
     const applyState = (bundle: LayerBundle, next: HuntState) => {
       const prev = bundle.state
@@ -352,12 +311,32 @@ export function AbeiMap({
     }
 
     const syncHunt = () => {
-      if (zooming) return
+      if (moving) return
+      const view = map.getView()
+      const size = map.getSize()
+      if (!size) return
+
+      const extent = view.calculateExtent(size)
+      const zoom = view.getZoom() ?? 2
+
+      const mapContext: MapViewContext = {
+        getZoom: () => zoom,
+        containsLngLat: (lng: number, lat: number) => {
+          const coord = fromLonLat([lng, lat])
+          return (
+            coord[0] >= extent[0] &&
+            coord[0] <= extent[2] &&
+            coord[1] >= extent[1] &&
+            coord[1] <= extent[3]
+          )
+        },
+      }
+
       const now = Date.now()
       for (const sighting of sightingsRef.current) {
         const bundle = layersRef.current.get(sighting.id)
         if (!bundle) continue
-        const next = getHuntState(map, sighting, discoveredRef.current, now)
+        const next = getHuntState(mapContext, sighting, discoveredRef.current, now)
         applyState(bundle, next)
       }
     }
@@ -367,35 +346,39 @@ export function AbeiMap({
       timer = setTimeout(syncHunt, 160)
     }
 
-    const onZoomStart = () => {
-      zooming = true
+    const onMoveStart = () => {
+      moving = true
       if (timer) clearTimeout(timer)
     }
-    const onZoomEnd = () => {
-      zooming = false
+    const onMoveEnd = () => {
+      moving = false
       schedule()
     }
 
     syncHunt()
-    map.on('zoomstart', onZoomStart)
-    map.on('zoomend', onZoomEnd)
-    map.on('moveend', schedule)
+    map.on('movestart', onMoveStart)
+    map.on('moveend', onMoveEnd)
+
     // Re-check 12h window without needing a map gesture.
     const interval = window.setInterval(syncHunt, 60_000)
 
     return () => {
       if (timer) clearTimeout(timer)
       window.clearInterval(interval)
-      map.off('zoomstart', onZoomStart)
-      map.off('zoomend', onZoomEnd)
-      map.off('moveend', schedule)
+      map.un('movestart', onMoveStart)
+      map.un('moveend', onMoveEnd)
     }
-  }, [discoveredIds, sightings])
+  }, [])
 
   return (
-    <>
-      <div ref={containerRef} className="abei-map" />
+    <div className="abei-map-container">
+      <div
+        ref={containerRef}
+        className="abei-map"
+        tabIndex={0}
+        aria-label="Abei Sightings World Map"
+      />
       <div ref={errorRef} className="abei-map-error" hidden />
-    </>
+    </div>
   )
 }

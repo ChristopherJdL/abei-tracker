@@ -1,5 +1,4 @@
 import type { Sighting } from '../types'
-import type { Map as MapLibreMap } from 'maplibre-gl'
 
 /** Must zoom in this far before a fresh hunt paw unlocks. */
 export const REVEAL_MIN_ZOOM = 8
@@ -8,6 +7,11 @@ export const REVEAL_MIN_ZOOM = 8
 export const HUNT_WINDOW_MS = 12 * 60 * 60 * 1000
 
 export type HuntState = 'discovered' | 'zone' | 'unlocked'
+
+export interface MapViewContext {
+  getZoom(): number
+  containsLngLat(lng: number, lat: number): boolean
+}
 
 export function isFreshHuntSighting(
   sighting: Sighting,
@@ -26,7 +30,7 @@ export function isFreshHuntSighting(
  * - Clicked (localStorage) → solid paw forever
  */
 export function getHuntState(
-  map: MapLibreMap,
+  map: MapViewContext,
   sighting: Sighting,
   discoveredIds: ReadonlySet<string>,
   now = Date.now(),
@@ -35,6 +39,7 @@ export function getHuntState(
     return 'discovered'
   }
   if (map.getZoom() < REVEAL_MIN_ZOOM) return 'zone'
-  if (!map.getBounds().contains([sighting.lng, sighting.lat])) return 'zone'
+  if (!map.containsLngLat(sighting.lng, sighting.lat)) return 'zone'
   return 'unlocked'
 }
+

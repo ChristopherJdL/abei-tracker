@@ -218,7 +218,7 @@
 }
 
 .frame .abei-map,
-.frame .maplibregl-map {
+.frame .ol-viewport {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -229,7 +229,7 @@
 }
 
 .frame .abei-map:active,
-.frame .maplibregl-map:active {
+.frame .ol-viewport:active {
   cursor: grabbing;
 }
 
