@@ -29,3 +29,7 @@ terraform/lambda_package/*
 !terraform/lambda_package/.gitkeep
 terraform/lambda_function.zip
 terraform/github_committer.zip
+
+# Python cache
+__pycache__/
+*.py[cod]
