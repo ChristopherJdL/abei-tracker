@@ -418,6 +418,7 @@ def lambda_handler(event, context):
         # 6. S3 + CloudFront CDN Upload (if configured)
         scenes_bucket = os.environ.get('SCENES_BUCKET')
         cdn_domain = os.environ.get('CDN_DOMAIN')
+        committer_b64 = generated_b64
         if scenes_bucket and cdn_domain:
             try:
                 import boto3
@@ -434,11 +435,12 @@ def lambda_handler(event, context):
                 )
                 cdn_url = f"https://{cdn_domain.rstrip('/')}/{s3_key}"
                 sighting['image'] = cdn_url
+                committer_b64 = None
                 print(f"[S3 Upload] ✅ Scene uploaded to CDN: {cdn_url}")
             except Exception as s3_err:
                 print(f"[S3 Warning] ⚠️ Could not upload to S3, falling back to Git commit: {s3_err}")
 
-        trigger_github_committer(sighting, generated_b64, github_token)
+        trigger_github_committer(sighting, committer_b64, github_token)
 
         # 6. Return Success
         return build_response(200, {
