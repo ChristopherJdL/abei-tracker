@@ -25,6 +25,10 @@ dist-ssr
 .vercel
 
 # Terraform build artifacts
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
 terraform/lambda_package/*
 !terraform/lambda_package/.gitkeep
 terraform/lambda_function.zip
