@@ -63,7 +63,7 @@ def migrate_scenes(bucket_name: str, cdn_domain: str, apply_changes: bool = Fals
         print("[Succès] locations.json a été mis à jour avec succès !")
 
         # Invalidation CloudFront pour rafraîchir le cache
-        cf_dist_id = os.environ.get('CLOUDFRONT_DISTRIBUTION_ID', 'EB5D4YJXER6OF')
+        cf_dist_id = os.environ.get('CLOUDFRONT_DISTRIBUTION_ID', 'E2M6ZQH4IMP4OI')
         try:
             import time
             cf_client = boto3.client('cloudfront')
@@ -83,7 +83,7 @@ def migrate_scenes(bucket_name: str, cdn_domain: str, apply_changes: bool = Fals
 
 if __name__ == '__main__':
     default_bucket = os.environ.get('SCENES_BUCKET', 'abei-tracker-scenes-eu-west-2')
-    default_cdn = os.environ.get('CDN_DOMAIN', 'd2fvij85scvftm.cloudfront.net')
+    default_cdn = os.environ.get('CDN_DOMAIN', 'd2p4em4ijmahza.cloudfront.net')
 
     parser = argparse.ArgumentParser(description="Migrer les scènes Abei vers S3 + CloudFront")
     parser.add_argument('--bucket', default=default_bucket, help=f"Nom du bucket S3 cible (défaut: {default_bucket})")

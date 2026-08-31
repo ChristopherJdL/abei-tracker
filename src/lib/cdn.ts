@@ -3,7 +3,7 @@
  * Can be overridden by the environment variable VITE_CDN_BASE_URL.
  */
 export const CDN_BASE_URL =
-  import.meta.env.VITE_CDN_BASE_URL || 'https://d2fvij85scvftm.cloudfront.net'
+  import.meta.env.VITE_CDN_BASE_URL || 'https://d2p4em4ijmahza.cloudfront.net'
 
 /**
  * Resolves a scene image URI to a full URL.
