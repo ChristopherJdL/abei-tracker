@@ -888,5 +888,15 @@
     "image": "/scenes/new-abei-found-in-colombia-doi.png",
     "status": "CONFIRMED",
     "createdOn": "2026-08-30T17:15:30.613973+00:00"
+  },
+  {
+    "id": "randomly-placed-abei-doing-a-r",
+    "title": "Random Encounter",
+    "subtitle": "Abei's high-speed delivery is a bit off-balance!",
+    "lat": 51.5085,
+    "lng": -0.1257,
+    "image": "/scenes/randomly-placed-abei-doing-a-r.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-09-01T07:52:03.810251+00:00"
   }
 ]
