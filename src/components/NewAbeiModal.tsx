@@ -46,7 +46,9 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
 
     recordSightingCreationToday()
 
-    const lambdaUrl = import.meta.env.VITE_LAMBDA_URL || ''
+    const lambdaUrl =
+      import.meta.env.VITE_LAMBDA_URL ||
+      'https://bhg6bgyrcgjotsjf437k435ioa0gcfes.lambda-url.eu-west-2.on.aws/'
     if (lambdaUrl) {
       console.log('[NewAbei] 🚀 Sending request to Lambda endpoint:', lambdaUrl, { prompt: promptText })
 
