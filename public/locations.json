@@ -908,5 +908,15 @@
     "image": "/scenes/abei-in-dmz-of-korea--inbetwee.png",
     "status": "CONFIRMED",
     "createdOn": "2026-09-01T11:09:13.240714+00:00"
+  },
+  {
+    "id": "abei-in-finland-santa-clause-v",
+    "title": "Santa's Village",
+    "subtitle": "Abei meets Santa, but a playful reindeer tugs his scarf!",
+    "lat": 66.499,
+    "lng": 25.6887,
+    "image": "/scenes/abei-in-finland-santa-clause-v.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-09-02T13:02:23.509770+00:00"
   }
 ]
