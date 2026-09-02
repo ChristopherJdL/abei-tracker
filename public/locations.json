@@ -918,5 +918,15 @@
     "image": "/scenes/abei-in-finland-santa-clause-v.png",
     "status": "CONFIRMED",
     "createdOn": "2026-09-02T13:02:23.509770+00:00"
+  },
+  {
+    "id": "abei-in-night-club-of-berlin",
+    "title": "Berlin Beats",
+    "subtitle": "Abei busts a move at a wild Berlin techno rave!",
+    "lat": 52.5244,
+    "lng": 13.4105,
+    "image": "/scenes/abei-in-night-club-of-berlin.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-09-02T13:02:43.568052+00:00"
   }
 ]
