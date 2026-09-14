@@ -928,5 +928,15 @@
     "image": "/scenes/abei-in-night-club-of-berlin.png",
     "status": "CONFIRMED",
     "createdOn": "2026-09-02T13:02:43.568052+00:00"
+  },
+  {
+    "id": "abei-in-alaska-in-a-us-submari",
+    "title": "Arctic Patrol",
+    "subtitle": "Abei paints a friendly husky on a Navy submarine!",
+    "lat": 70.2553,
+    "lng": -148.3372,
+    "image": "/scenes/abei-in-alaska-in-a-us-submari.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-09-14T16:59:57.001303+00:00"
   }
 ]
