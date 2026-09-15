@@ -938,5 +938,15 @@
     "image": "/scenes/abei-in-alaska-in-a-us-submari.png",
     "status": "CONFIRMED",
     "createdOn": "2026-09-14T16:59:57.001303+00:00"
+  },
+  {
+    "id": "new-abei-in-sarajevo-with-pac-",
+    "title": "Sarajevo Chase",
+    "subtitle": "Abei and Pac-Man chase a terrified ghost through a maze!",
+    "lat": 43.8486,
+    "lng": 18.3564,
+    "image": "/scenes/new-abei-in-sarajevo-with-pac-.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-09-15T08:09:33.797310+00:00"
   }
 ]
