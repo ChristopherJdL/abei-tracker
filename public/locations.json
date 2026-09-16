@@ -968,5 +968,15 @@
     "image": "/scenes/abei-is-the-professor-teaching.png",
     "status": "CONFIRMED",
     "createdOn": "2026-09-16T12:02:09.513634+00:00"
+  },
+  {
+    "id": "abei-goes-to-dental-in-montpel",
+    "title": "Dental Visit",
+    "subtitle": "Abei faces his biggest fear: the badger dentist!",
+    "lat": 43.6109,
+    "lng": 3.8763,
+    "image": "/scenes/abei-goes-to-dental-in-montpel.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-09-16T12:02:26.315151+00:00"
   }
 ]
