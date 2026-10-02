@@ -978,5 +978,15 @@
     "image": "/scenes/abei-goes-to-dental-in-montpel.png",
     "status": "CONFIRMED",
     "createdOn": "2026-09-16T12:02:26.315151+00:00"
+  },
+  {
+    "id": "abei-meets-with-pope-leon-xii-",
+    "title": "Papal Baptism",
+    "subtitle": "Abei gets a holy splash from the Pope himself!",
+    "lat": 41.9027,
+    "lng": 12.4541,
+    "image": "/scenes/abei-meets-with-pope-leon-xii-.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-02T07:15:30.841043+00:00"
   }
 ]
