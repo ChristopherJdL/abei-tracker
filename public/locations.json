@@ -998,5 +998,15 @@
     "image": "/scenes/abei-in-hong-kong.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-04T16:03:42.930940+00:00"
+  },
+  {
+    "id": "abei-in-vietnam",
+    "title": "Hanoi Hustle",
+    "subtitle": "Abei cruises the old streets with a bowl of hot soup!",
+    "lat": 21.0245,
+    "lng": 105.8412,
+    "image": "/scenes/abei-in-vietnam.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-04T16:04:01.886956+00:00"
   }
 ]
