@@ -1008,5 +1008,15 @@
     "image": "/scenes/abei-in-vietnam.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-04T16:04:01.886956+00:00"
+  },
+  {
+    "id": "abei-in-bangkok-meeting-ladybo",
+    "title": "Bangkok Encounter",
+    "subtitle": "Abei gets a fabulous, floral welcome in Bangkok!",
+    "lat": 13.754,
+    "lng": 100.5014,
+    "image": "/scenes/abei-in-bangkok-meeting-ladybo.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-04T16:04:12.498476+00:00"
   }
 ]
