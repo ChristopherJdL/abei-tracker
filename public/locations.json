@@ -988,5 +988,15 @@
     "image": "/scenes/abei-meets-with-pope-leon-xii-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-02T07:15:30.841043+00:00"
+  },
+  {
+    "id": "abei-in-hong-kong",
+    "title": "Neon Nights",
+    "subtitle": "Abei enjoys a warm street snack in the rainy neon city!",
+    "lat": 22.2783,
+    "lng": 114.1747,
+    "image": "/scenes/abei-in-hong-kong.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-04T16:03:42.930940+00:00"
   }
 ]
