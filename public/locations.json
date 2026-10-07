@@ -1068,5 +1068,15 @@
     "image": "/scenes/abei-works-in-the-bio-lab-in-s.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-07T21:03:18.054368+00:00"
+  },
+  {
+    "id": "abei-going-to-mozart-home-coun",
+    "title": "Sweet Symphony Sprint",
+    "subtitle": "Abei rushes through Salzburg with tunes and treats!",
+    "lat": 47.7994,
+    "lng": 13.044,
+    "image": "/scenes/abei-going-to-mozart-home-coun.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-07T21:07:12.337041+00:00"
   }
 ]
