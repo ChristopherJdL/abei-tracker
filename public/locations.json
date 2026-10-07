@@ -1058,5 +1058,15 @@
     "image": "/scenes/abei-visit-the-coldest-city-on.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-07T21:01:33.832500+00:00"
+  },
+  {
+    "id": "abei-works-in-the-bio-lab-in-s",
+    "title": "Siberian Lab Panic",
+    "subtitle": "Abei frantically types during a major lab crisis!",
+    "lat": 55.0226,
+    "lng": 82.9317,
+    "image": "/scenes/abei-works-in-the-bio-lab-in-s.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-07T21:03:18.054368+00:00"
   }
 ]
