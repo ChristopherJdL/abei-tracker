@@ -1048,5 +1048,15 @@
     "image": "/scenes/abei-rides-a-horse-in-mongolia.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-07T20:53:12.430997+00:00"
+  },
+  {
+    "id": "abei-visit-the-coldest-city-on",
+    "title": "Shivering Abei",
+    "subtitle": "Even a polar bear needs a warm drink in this cold!",
+    "lat": 62.0311,
+    "lng": 129.7229,
+    "image": "/scenes/abei-visit-the-coldest-city-on.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-07T21:01:33.832500+00:00"
   }
 ]
