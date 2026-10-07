@@ -1028,5 +1028,15 @@
     "image": "/scenes/create-new-abei-in-stalin-lith.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-06T20:24:22.377089+00:00"
+  },
+  {
+    "id": "new-abei-in-montauk--new-york-",
+    "title": "Montauk Mayhem",
+    "subtitle": "Abei flings shurikens alongside his ninja allies!",
+    "lat": 41.0359,
+    "lng": -71.9545,
+    "image": "/scenes/new-abei-in-montauk--new-york-.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-07T11:03:14.438025+00:00"
   }
 ]
