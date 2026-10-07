@@ -1,5 +1,3 @@
-"""Metadata extraction: geocoding, title, and multimodal image-verified subtitles."""
-
 import re
 import base64
 import datetime
@@ -16,9 +14,9 @@ def sanitize_sighting_id(raw_prompt: str) -> str:
     clean = "".join(c if c.isalnum() else "-" for c in raw_prompt.lower())
     return clean.strip("-")[:30]
 
-def extract_location_and_title(client: genai.Client, prompt: str) -> tuple[float | None, float | None, str]:
-    """Extract real-world city, country, coordinates, and encounter title from prompt."""
-    lat, lng, title = None, None, None
+def extract_location(client: genai.Client, prompt: str) -> tuple[float | None, float | None, str]:
+    """Extract real-world city, country, coordinates, and a fallback title from prompt."""
+    lat, lng, fallback_title = None, None, None
 
     instruction = (
         f"Extract the real-world city AND country (or state) mentioned in this prompt: '{prompt}'. "
@@ -37,9 +35,9 @@ def extract_location_and_title(client: genai.Client, prompt: str) -> tuple[float
                 title_m = re.search(r'<TITLE>(.*?)</TITLE>', response.text, re.IGNORECASE)
 
                 if title_m:
-                    title = title_m.group(1).strip()
+                    fallback_title = title_m.group(1).strip()
                 elif city_m:
-                    title = city_m.group(1).strip().title()
+                    fallback_title = city_m.group(1).strip().title()
 
                 if city_m:
                     city = city_m.group(1).strip()
@@ -49,18 +47,19 @@ def extract_location_and_title(client: genai.Client, prompt: str) -> tuple[float
         except Exception as err:
             print(f"[MetadataService] ⚠️ Text model '{text_model}' failed for geo extraction: {err}")
 
-    if not title:
-        title = extract_fallback_title(prompt)
+    if not fallback_title:
+        fallback_title = extract_fallback_title(prompt)
 
     if lat is None or lng is None:
         lat, lng = generate_fallback_coordinates(prompt)
 
-    return lat, lng, title
+    return lat, lng, fallback_title
 
-def generate_verified_subtitle(client: genai.Client, prompt: str, generated_b64: str | None = None) -> str:
-    """Inspect the generated image with Gemini Multimodal to create an accurate 1-line subtitle."""
+def generate_verified_metadata(client: genai.Client, prompt: str, generated_b64: str | None = None, enhanced_prompt: str = "") -> tuple[str | None, str]:
+    """Inspect the generated image with Gemini Multimodal to create an accurate title and subtitle."""
+    default_sub = f"Abei seen: {prompt.strip()}"
     if not generated_b64:
-        return f"Abei seen: {prompt.strip()}"
+        return None, default_sub
 
     try:
         clean_b64 = generated_b64.split(',')[1] if ',' in generated_b64 else generated_b64
@@ -68,12 +67,14 @@ def generate_verified_subtitle(client: genai.Client, prompt: str, generated_b64:
         image_part = types.Part.from_bytes(data=img_bytes, mime_type="image/png")
 
         vision_instruction = (
-            "You are writing a witty 1-line subtitle (max 60 characters) for a retro pixel-art trading card encounter. "
+            "You are writing metadata for a retro pixel-art trading card encounter. "
             "Look closely at what is ACTUALLY visible and happening in this image. "
-            "Describe Abei (the white polar bear with the red scarf) and what he is doing, his friends, or the action. "
-            "Do NOT mention objects, foods, or actions that are not clearly visible in the image. "
-            "Output ONLY the subtitle text inside <DESC></DESC> tags. "
-            "Example: <DESC>Abei shares a sunset cliffside chill with an alien pal!</DESC>"
+            f"The image was generated from this prompt: '{enhanced_prompt or prompt}'. "
+            "1. Write a punchy 2-3 word TITLE based on the main action or characters seen in the image. "
+            "2. Write a witty 1-line subtitle (max 60 characters) describing Abei (the white polar bear with the red scarf) and his friends or action. "
+            "Do NOT mention objects or actions that are not clearly visible in the image. "
+            "Output the title inside <TITLE></TITLE> tags and the subtitle inside <DESC></DESC> tags. "
+            "Example: <TITLE>Alien Sunset</TITLE><DESC>Abei shares a sunset cliffside chill with an alien pal!</DESC>"
         )
 
         for vision_model in VISION_MODELS:
@@ -84,28 +85,33 @@ def generate_verified_subtitle(client: genai.Client, prompt: str, generated_b64:
                 )
                 if v_res and hasattr(v_res, 'text') and v_res.text:
                     v_match = re.search(r'<DESC>(.*?)</DESC>', v_res.text, re.IGNORECASE)
-                    if v_match:
-                        subtitle = v_match.group(1).strip()
-                        print(f"[MetadataService] ✅ Multimodal verified subtitle ({vision_model}): '{subtitle}'")
-                        return subtitle
+                    t_match = re.search(r'<TITLE>(.*?)</TITLE>', v_res.text, re.IGNORECASE)
+                    
+                    subtitle = v_match.group(1).strip() if v_match else default_sub
+                    title = t_match.group(1).strip() if t_match else None
+                    
+                    print(f"[MetadataService] ✅ Multimodal verified metadata ({vision_model}): Title='{title}', Subtitle='{subtitle}'")
+                    return title, subtitle
             except Exception as ve:
-                print(f"[MetadataService] ⚠️ Vision subtitle generation with '{vision_model}' failed: {ve}")
+                print(f"[MetadataService] ⚠️ Vision metadata generation with '{vision_model}' failed: {ve}")
     except Exception as err:
         print(f"[MetadataService] ⚠️ Failed to decode image for vision inspection: {err}")
 
-    return f"Abei seen: {prompt.strip()}"
+    return None, default_sub
 
-def build_sighting_metadata(api_key: str, raw_prompt: str, generated_b64: str | None = None) -> dict:
+def build_sighting_metadata(api_key: str, raw_prompt: str, generated_b64: str | None = None, enhanced_prompt: str = "") -> dict:
     """Assemble the complete sighting dictionary conforming to the Abei Tracker schema."""
     client = genai.Client(api_key=api_key)
     clean_id = sanitize_sighting_id(raw_prompt)
 
-    lat, lng, title = extract_location_and_title(client, raw_prompt)
-    subtitle = generate_verified_subtitle(client, raw_prompt, generated_b64)
+    lat, lng, fallback_title = extract_location(client, raw_prompt)
+    vision_title, subtitle = generate_verified_metadata(client, raw_prompt, generated_b64, enhanced_prompt)
+
+    final_title = vision_title if vision_title else fallback_title
 
     return {
         "id": clean_id,
-        "title": title,
+        "title": final_title,
         "subtitle": subtitle,
         "lat": lat,
         "lng": lng,

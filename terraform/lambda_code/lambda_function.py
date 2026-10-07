@@ -79,7 +79,7 @@ def lambda_handler(event, context):
         generated_b64 = generate_image(ctx.api_key, enhanced_prompt, ref_part)
 
         # 4. Extract geocoding coordinates, title, and image-verified subtitle
-        sighting = build_sighting_metadata(ctx.api_key, ctx.prompt, generated_b64)
+        sighting = build_sighting_metadata(ctx.api_key, ctx.prompt, generated_b64, enhanced_prompt)
 
         # 5. Store to S3 / CloudFront CDN if configured
         committer_b64 = store_scene_if_configured(sighting, generated_b64)
