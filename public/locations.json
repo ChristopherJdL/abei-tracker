@@ -1038,5 +1038,15 @@
     "image": "/scenes/new-abei-in-montauk--new-york-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-07T11:03:14.438025+00:00"
+  },
+  {
+    "id": "abei-rides-a-horse-in-mongolia",
+    "title": "Steppe Season Showdown",
+    "subtitle": "Abei's ride gets interrupted by classic cartoon antics!",
+    "lat": 44.0414,
+    "lng": -47.6806,
+    "image": "/scenes/abei-rides-a-horse-in-mongolia.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-07T20:53:12.430997+00:00"
   }
 ]
