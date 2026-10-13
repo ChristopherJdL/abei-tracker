@@ -1078,5 +1078,15 @@
     "image": "/scenes/abei-going-to-mozart-home-coun.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-07T21:07:12.337041+00:00"
+  },
+  {
+    "id": "abei-denmark-seeing-the-little",
+    "title": "Mermaid Pastry Splash",
+    "subtitle": "Abei offers a sweet Danish pastry to a playful mermaid!",
+    "lat": 55.6759,
+    "lng": 12.5655,
+    "image": "/scenes/abei-denmark-seeing-the-little.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-13T18:24:06.131202+00:00"
   }
 ]
