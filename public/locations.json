@@ -1108,5 +1108,15 @@
     "image": "/scenes/abei-eating---seal-pizza---wit.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-17T07:51:44.029453+00:00"
+  },
+  {
+    "id": "abei-in-astana",
+    "title": "Baursak Dash",
+    "subtitle": "Abei dashes across the snow with a plate of hot baursak!",
+    "lat": 51.1801,
+    "lng": 71.446,
+    "image": "/scenes/abei-in-astana.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-17T07:52:09.099889+00:00"
   }
 ]
