@@ -1098,5 +1098,15 @@
     "image": "/scenes/abei-in-congo-meeting-a-bear-c.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-17T07:46:03.226026+00:00"
+  },
+  {
+    "id": "abei-eating---seal-pizza---wit",
+    "title": "Polar Pizza Peril",
+    "subtitle": "Abei enjoys his pizza while an evil clone lurks nearby!",
+    "lat": 31.2786,
+    "lng": -51.2101,
+    "image": "/scenes/abei-eating---seal-pizza---wit.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-17T07:51:44.029453+00:00"
   }
 ]
