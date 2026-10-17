@@ -1088,5 +1088,15 @@
     "image": "/scenes/abei-denmark-seeing-the-little.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-13T18:24:06.131202+00:00"
+  },
+  {
+    "id": "abei-in-congo-meeting-a-bear-c",
+    "title": "Jungle High Five",
+    "subtitle": "Abei high-fives his jungle pal on the river dock!",
+    "lat": -4.3276,
+    "lng": 15.3136,
+    "image": "/scenes/abei-in-congo-meeting-a-bear-c.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-17T07:46:03.226026+00:00"
   }
 ]
