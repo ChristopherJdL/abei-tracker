@@ -1138,5 +1138,15 @@
     "image": "/scenes/vladivostok-masha-bear-horizon.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-29T20:45:55.000Z"
+  },
+  {
+    "id": "abei-went-to-\u014dkunoshima-japan-",
+    "title": "Abei's Bunny Ambush",
+    "subtitle": "Abei gets mobbed by hungry bunnies after his cabbages!",
+    "lat": 34.3383,
+    "lng": 132.9167,
+    "image": "/scenes/abei-went-to-\u014dkunoshima-japan-.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-29T20:59:38.619960+00:00"
   }
 ]
