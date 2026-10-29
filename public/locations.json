@@ -1128,5 +1128,15 @@
     "image": "/scenes/abei-in-churchill-canada.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-17T07:52:32.367106+00:00"
+  },
+  {
+    "id": "vladivostok-masha-bear-horizon",
+    "title": "Pacific Horizon",
+    "subtitle": "Gazing across the sunset sea toward the USA with Masha and the Bear.",
+    "lat": 43.1155,
+    "lng": 131.8855,
+    "image": "/scenes/vladivostok-masha-bear-horizon.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-29T20:45:55.000Z"
   }
 ]
