@@ -1148,5 +1148,15 @@
     "image": "/scenes/abei-went-to-\u014dkunoshima-japan-.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-29T20:59:38.619960+00:00"
+  },
+  {
+    "id": "abei-went-to-an-island-in-japa",
+    "title": "Bunny Island Swarm",
+    "subtitle": "Abei gets mobbed by a hungry swarm of pixel bunnies!",
+    "lat": 34.3383,
+    "lng": 132.9167,
+    "image": "/scenes/abei-went-to-an-island-in-japa.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-29T21:00:01.535449+00:00"
   }
 ]
