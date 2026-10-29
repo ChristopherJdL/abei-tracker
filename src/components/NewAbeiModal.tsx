@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { PixelButton } from './PixelButton'
 import {
+  ENFORCE_ALLOWED_DAYS,
   canCreateSightingToday,
   recordSightingCreationToday,
 } from '../lib/creations'
@@ -144,10 +145,10 @@ export function NewAbeiModal({ onClose }: NewAbeiModalProps) {
                     LIMIT OF SUBMISSION REACHED
                   </div>
                   <p className="terminal-feedback__text">
-                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 3 Abei creations per day allowed per operator, only on Wed/Sat/Sun/Mon.
+                    Daily tracker quota reached! Abei is resting in his arctic den. Maximum 3 Abei creations per day allowed per operator{ENFORCE_ALLOWED_DAYS ? ', only on Wed/Sat/Sun/Mon' : ''}.
                   </p>
                   <p className="terminal-feedback__sub">
-                    Come back next <strong>{nextDay}</strong> to hunt more paws!
+                    Come back <strong>{ENFORCE_ALLOWED_DAYS ? `next ${nextDay}` : 'tomorrow'}</strong> to hunt more paws!
                   </p>
                 </div>
               ) : (

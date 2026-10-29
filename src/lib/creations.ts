@@ -1,6 +1,12 @@
 const DAILY_LIMIT_KEY = 'abei-daily-creations';
 const MAX_CREATIONS_PER_DAY = 3;
 
+/**
+ * Toggle to enforce or disable the "allowed days only" (Sun/Mon/Wed/Sat) restriction.
+ * Set to `false` to allow creating new Abei sightings on any day of the week.
+ */
+export const ENFORCE_ALLOWED_DAYS = false;
+
 interface DailyCreationData {
   date: string; // YYYY-MM-DD
   count: number;
