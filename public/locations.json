@@ -1158,5 +1158,15 @@
     "image": "/scenes/abei-went-to-an-island-in-japa.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-29T21:00:01.535449+00:00"
+  },
+  {
+    "id": "abei-at-cat-island-in-japan",
+    "title": "Cat Island Feast",
+    "subtitle": "Abei treats his playful feline friends to a fish skewer!",
+    "lat": 38.4167,
+    "lng": 141.3,
+    "image": "/scenes/abei-at-cat-island-in-japan.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-30T11:08:39.366625+00:00"
   }
 ]
