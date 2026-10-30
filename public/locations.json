@@ -1168,5 +1168,15 @@
     "image": "/scenes/abei-at-cat-island-in-japan.png",
     "status": "CONFIRMED",
     "createdOn": "2026-10-30T11:08:39.366625+00:00"
+  },
+  {
+    "id": "abei-in-tehran",
+    "title": "Saffron Stumble",
+    "subtitle": "Abei stumbles while balancing a giant saffron ice cream!",
+    "lat": 35.6944,
+    "lng": 51.4215,
+    "image": "/scenes/abei-in-tehran.png",
+    "status": "CONFIRMED",
+    "createdOn": "2026-10-30T16:36:12.201795+00:00"
   }
 ]
